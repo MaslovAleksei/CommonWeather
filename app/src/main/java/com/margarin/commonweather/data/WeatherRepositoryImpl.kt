@@ -13,6 +13,7 @@ import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -22,17 +23,20 @@ class WeatherRepositoryImpl @Inject constructor(
     private val byDaysDao: ByDaysWeatherDao,
     private val byHoursDao: ByHoursWeatherDao,
     private val currentDao: CurrentWeatherDao
-): WeatherRepository {
+) : WeatherRepository {
 
     override suspend fun loadData(location: String) {
-        val currentData = apiService.getCurrentWeather(location)
-        val currentDbModel = mapper.mapCurrentDataToCurrentDbModel(currentData)
-        currentDao.insertCurrentWeather(currentDbModel)
-        Log.d("MyLog", currentDbModel.last_updated)
+        try {
+            val currentData = apiService.getCurrentWeather(city = location)
+            val currentDbModel = mapper.mapCurrentDataToCurrentDbModel(currentData)
+            currentDao.insertCurrentWeather(currentDbModel)
+        } catch (e: Exception) {
+
+        }
     }
 
-    override fun loadCurrentWeather(): LiveData<CurrentWeatherModel> {
-        return currentDao.loadCurrentWeather().map {
+    override fun loadCurrentWeather(): LiveData<CurrentWeatherModel>? {
+        return currentDao.loadCurrentWeather()?.map {
             mapper.mapCurrentDbToEntity(it)
         }
     }

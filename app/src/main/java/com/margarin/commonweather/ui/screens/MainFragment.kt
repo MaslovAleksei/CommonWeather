@@ -45,12 +45,19 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadDataFromApi()
-    }
+        viewModel.loadDataFromApi("Tyumen")
 
-    override fun onPause() {
-        super.onPause()
-        //observeViewModel()
+        observeViewModel()
+
+
+        binding.tv.setOnClickListener {
+            viewModel.loadDataFromApi("ilfov")
+        }
+        binding.button.setOnClickListener {
+            viewModel.loadDataFromApi("Moscow")
+        }
+
+
     }
 
     override fun onDestroyView() {
@@ -58,11 +65,11 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    //private fun observeViewModel(){
-    //    viewModel.currentWeather.observe(viewLifecycleOwner){
-     //       binding.tv.text = it.temp_c.toString()
-    //    }
-    //}
+    private fun observeViewModel(){
+        viewModel.currentWeather?.observe(viewLifecycleOwner){
+            binding.tv.text = it.location
+       }
+    }
 
 
 }

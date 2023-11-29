@@ -16,6 +16,4 @@ interface ByHoursWeatherDao {
     @Query("SELECT * FROM weather_by_hours")
     fun loadByHoursWeather(): LiveData<List<ByHoursWeatherDbModel>>
 
-    @Query("DELETE FROM weather_by_hours")
-    suspend fun deleteByHoursWeather()
 }

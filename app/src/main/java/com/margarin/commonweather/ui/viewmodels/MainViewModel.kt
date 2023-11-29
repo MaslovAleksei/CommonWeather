@@ -1,7 +1,9 @@
 package com.margarin.commonweather.ui.viewmodels
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import com.margarin.commonweather.domain.usecases.LoadByDaysWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadByHoursWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadCurrentWeatherUseCase
@@ -17,14 +19,16 @@ class MainViewModel @Inject constructor(
     private val loadByHoursWeatherUseCase: LoadByHoursWeatherUseCase
 ) : ViewModel() {
 
-    //var currentWeather = loadCurrentWeatherUseCase()
+    var currentWeather: LiveData<CurrentWeatherModel>? = loadCurrentWeatherUseCase()
 
 
-    fun loadDataFromApi() {
-        viewModelScope.launch(Dispatchers.Default) {
-            loadDataUseCase("Tyumen")
+    fun loadDataFromApi(city: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            loadDataUseCase(city)
         }
     }
+
+
 
 
 }

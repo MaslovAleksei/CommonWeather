@@ -16,6 +16,4 @@ interface ByDaysWeatherDao {
     @Query("SELECT * FROM weather_by_days")
     fun loadByDaysWeather(): LiveData<List<ByDaysWeatherDbModel>>
 
-    @Query("DELETE FROM weather_by_days")
-    suspend fun deleteByDaysWeather()
 }
