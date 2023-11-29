@@ -16,6 +16,4 @@ interface CurrentWeatherDao {
     @Query("SELECT * FROM weather_current")
     fun loadCurrentWeather(): LiveData<CurrentWeatherDbModel>
 
-    @Query("DELETE FROM weather_current")
-    suspend fun deleteCurrentWeather()
 }

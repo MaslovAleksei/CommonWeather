@@ -1,7 +1,7 @@
 package com.margarin.commonweather.domain.models
 
 data class CurrentWeatherModel(
-    val id: Long,
+    val id: Long?,
     val condition: String,
     val icon_url: String,
     val last_updated: String,

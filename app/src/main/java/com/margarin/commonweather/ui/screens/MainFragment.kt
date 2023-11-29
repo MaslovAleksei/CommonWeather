@@ -11,6 +11,8 @@ import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -45,12 +47,18 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.loadDataFromApi()
-    }
+        viewModel.initViewModel("Tyumen")
+        observeViewModel()
 
-    override fun onPause() {
-        super.onPause()
-        //observeViewModel()
+
+        binding.tv.setOnClickListener {
+            viewModel.loadDataFromApi("ilfov")
+        }
+        binding.button.setOnClickListener {
+            viewModel.loadDataFromApi("Moscow")
+        }
+
+
     }
 
     override fun onDestroyView() {
@@ -58,11 +66,17 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    //private fun observeViewModel(){
-    //    viewModel.currentWeather.observe(viewLifecycleOwner){
-     //       binding.tv.text = it.temp_c.toString()
-    //    }
-    //}
+    private fun observeViewModel(){
+        viewModel.currentWeather?.observe(viewLifecycleOwner){
+            binding.tv.text = it.location
+       }
+
+        viewModel.byDaysWeather?.observe(viewLifecycleOwner){
+           // binding.textViewDayly.text = it[0].maxtemp_c.toString()
+        }
+
+
+    }
 
 
 }

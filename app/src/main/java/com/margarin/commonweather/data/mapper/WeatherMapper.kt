@@ -1,11 +1,13 @@
 package com.margarin.commonweather.data.mapper
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
 import com.margarin.commonweather.data.remote.apimodels.current.CurrentData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Day
+import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
@@ -34,18 +36,18 @@ class WeatherMapper @Inject constructor() {
         longitude = dto.location.lon
     )
 
-    fun mapForecastDataToByDaysDbModel(day: Day, date: String) = ByDaysWeatherDbModel(
-        id = UNDEFINED_ID,
-        date = date,
+    fun mapForecastDataToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
+        id = id,
+        date = "date",
         maxtemp_c = day.maxtemp_c.roundToInt(),
         mintemp_c = day.mintemp_c.roundToInt(),
         condition = day.condition.text,
         icon_url = day.condition.icon,
         maxwind_kph = day.maxwind_kph.roundToInt(),
-        chance_of_rain = day.daily_chance_of_rain
+        chance_of_rain = day.daily_chance_of_rain,
     )
 
-    fun mapForecastDataToByDaysDbModel(hour: Hour) = ByHoursWeatherDbModel(
+    fun mapForecastDataToByHoursDbModel(hour: Hour) = ByHoursWeatherDbModel(
         id = UNDEFINED_ID,
         time = hour.time,
         temp_c = hour.temp_c.roundToInt(),
@@ -53,7 +55,7 @@ class WeatherMapper @Inject constructor() {
         wind_kph = hour.wind_kph.roundToInt()
     )
 
-    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) = CurrentWeatherModel (
+    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) = CurrentWeatherModel(
         id = db.id,
         condition = db.condition,
         icon_url = db.icon_url,
@@ -72,14 +74,14 @@ class WeatherMapper @Inject constructor() {
 
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         id = db.id,
-        date = bindDate(db.date),
+        date = db.date,
         maxtemp_c = db.maxtemp_c,
         mintemp_c = db.mintemp_c,
         condition = db.condition,
         icon_url = db.icon_url,
         maxwind_kph = db.maxwind_kph,
         chance_of_rain = db.chance_of_rain,
-        convertDateToDayOfWeek(db.date)
+        day_of_week = db.date
     )
 
     fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) = ByHoursWeatherModel(
@@ -90,8 +92,16 @@ class WeatherMapper @Inject constructor() {
         wind_kph = db.wind_kph
     )
 
-
-
+    fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
+        val result = mutableListOf<ByDaysWeatherDbModel>()
+        for (i in 0 until forecastData.forecast.forecastday.size) {
+            val day =
+                mapForecastDataToByDaysDbModel(forecastData.forecast.forecastday[i].day, i)
+            result.add(day)
+        }
+        Log.d("MyLog", "result $result")
+        return result
+    }
 
 
     private fun convertDateToDayOfWeek(date: String): String {
@@ -146,7 +156,7 @@ class WeatherMapper @Inject constructor() {
     @SuppressLint("SimpleDateFormat")
     private fun getCurrentDate() = SimpleDateFormat(TIME_FORMAT).format(Date())
 
-    companion object{
+    companion object {
         private const val UNDEFINED_ID = 0L
         private const val TIME_FORMAT = "dd-MM-yyyy"
     }
