@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity("weather_by_days")
 data class ByDaysWeatherDbModel(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    @PrimaryKey
+    val id: Int,
     val date: String,
     val maxtemp_c: Int,
     val mintemp_c: Int,

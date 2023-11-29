@@ -9,7 +9,7 @@ interface WeatherRepository {
 
     suspend fun loadData(location: String)
 
-    fun loadCurrentWeather(): LiveData<CurrentWeatherModel>?
+    fun loadCurrentWeather(): LiveData<CurrentWeatherModel>
 
     fun loadByDaysWeather(): LiveData<List<ByDaysWeatherModel>>
 
