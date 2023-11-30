@@ -29,7 +29,7 @@ interface ApiService {
     @GET("search.json")
     suspend fun getSearchWeather(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_CITY) city: String
+        @Query(QUERY_PARAM_CITY) query: String = "Moscow"
     ): List<Search>
 
 
