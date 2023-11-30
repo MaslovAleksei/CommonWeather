@@ -14,6 +14,7 @@ import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import com.margarin.commonweather.domain.models.SearchModel
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
@@ -56,6 +57,17 @@ class WeatherRepositoryImpl @Inject constructor(
                 mapper.mapByHoursDbModelToEntity(it)
             }
         }
+    }
+
+    override suspend fun getSearchLocation(query: String): List<SearchModel> {
+        var result: List<SearchModel> = mutableListOf()
+        try {
+            result = apiService.getSearchWeather(query = query).map {
+                mapper.mapSearchDtoToSearchModel(it)
+            }
+        } catch (e: Exception) {
+        }
+        return result
     }
 
     private suspend fun insertCurrentData(currentData: CurrentData) {

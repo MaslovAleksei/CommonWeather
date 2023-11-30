@@ -1,11 +1,14 @@
 package com.margarin.commonweather.ui.viewmodels
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import com.margarin.commonweather.domain.models.SearchModel
+import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
 import com.margarin.commonweather.domain.usecases.LoadByDaysWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadByHoursWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadCurrentWeatherUseCase
@@ -18,7 +21,8 @@ class MainViewModel @Inject constructor(
     private val loadDataUseCase: LoadDataUseCase,
     private val loadCurrentWeatherUseCase: LoadCurrentWeatherUseCase,
     private val loadByDaysWeatherUseCase: LoadByDaysWeatherUseCase,
-    private val loadByHoursWeatherUseCase: LoadByHoursWeatherUseCase
+    private val loadByHoursWeatherUseCase: LoadByHoursWeatherUseCase,
+    private val getSearchLocationUseCase: GetSearchLocationUseCase
 ) : ViewModel() {
 
     private var _currentWeather: LiveData<CurrentWeatherModel>? = null
@@ -33,6 +37,10 @@ class MainViewModel @Inject constructor(
     val byHoursWeather: LiveData<List<ByHoursWeatherModel>>?
         get() = _byHoursWeather
 
+    private val _searchLocation = MutableLiveData<List<SearchModel>?>()
+    val searchLocation: LiveData<List<SearchModel>?>
+        get() = _searchLocation
+
     fun initViewModel(location: String) {
         loadDataFromApi(location)
         Thread.sleep(3000)
@@ -45,5 +53,12 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             loadDataUseCase(location)
         }
+    }
+
+    fun getSearchLocation(query: String) {
+        viewModelScope.launch {
+            _searchLocation.value = getSearchLocationUseCase(query)
+        }
+
     }
 }

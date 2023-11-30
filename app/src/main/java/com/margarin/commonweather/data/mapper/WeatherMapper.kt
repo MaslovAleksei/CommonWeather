@@ -8,9 +8,11 @@ import com.margarin.commonweather.data.remote.apimodels.current.CurrentData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
+import com.margarin.commonweather.data.remote.apimodels.search.Search
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import com.margarin.commonweather.domain.models.SearchModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -110,6 +112,16 @@ class WeatherMapper @Inject constructor() {
         }
         return hourList
     }
+
+    fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
+        id = search.id,
+        name = search.name,
+        region = search.region,
+        country = search.country,
+        lat = search.lat,
+        lon = search.lon,
+        url = search.url
+    )
 
 
     private fun convertDateToDayOfWeek(date: String): String {
