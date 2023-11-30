@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
+import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import com.margarin.commonweather.domain.usecases.LoadByDaysWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadByHoursWeatherUseCase
@@ -20,25 +21,29 @@ class MainViewModel @Inject constructor(
     private val loadByHoursWeatherUseCase: LoadByHoursWeatherUseCase
 ) : ViewModel() {
 
-    var currentWeather : LiveData<CurrentWeatherModel>? = null
-    var byDaysWeather :  LiveData<List<ByDaysWeatherModel>>? = null
+    private var _currentWeather: LiveData<CurrentWeatherModel>? = null
+    val currentWeather: LiveData<CurrentWeatherModel>?
+        get() = _currentWeather
 
-    fun initViewModel(location: String){
+    private var _byDaysWeather: LiveData<List<ByDaysWeatherModel>>? = null
+    val byDaysWeather: LiveData<List<ByDaysWeatherModel>>?
+        get() = _byDaysWeather
+
+    private var _byHoursWeather: LiveData<List<ByHoursWeatherModel>>? = null
+    val byHoursWeather: LiveData<List<ByHoursWeatherModel>>?
+        get() = _byHoursWeather
+
+    fun initViewModel(location: String) {
         loadDataFromApi(location)
-        currentWeather = loadCurrentWeatherUseCase()
-        byDaysWeather = loadByDaysWeatherUseCase()
+        Thread.sleep(3000)
+        _currentWeather = loadCurrentWeatherUseCase()
+        _byDaysWeather = loadByDaysWeatherUseCase()
+        _byHoursWeather = loadByHoursWeatherUseCase()
     }
-
 
     fun loadDataFromApi(location: String) {
         viewModelScope.launch(Dispatchers.IO) {
             loadDataUseCase(location)
         }
     }
-
-
-
-
-
-
 }

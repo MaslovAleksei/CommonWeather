@@ -1,7 +1,6 @@
 package com.margarin.commonweather.data.mapper
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
@@ -20,7 +19,6 @@ import kotlin.math.roundToInt
 class WeatherMapper @Inject constructor() {
 
     fun mapCurrentDataToCurrentDbModel(dto: CurrentData) = CurrentWeatherDbModel(
-        id = UNDEFINED_ID,
         condition = dto.current.condition.text,
         icon_url = dto.current.condition.icon,
         last_updated = dto.current.last_updated,
@@ -36,7 +34,7 @@ class WeatherMapper @Inject constructor() {
         longitude = dto.location.lon
     )
 
-    fun mapForecastDataToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
+    fun mapByDayDtoToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
         id = id,
         date = "date",
         maxtemp_c = day.maxtemp_c.roundToInt(),
@@ -47,8 +45,8 @@ class WeatherMapper @Inject constructor() {
         chance_of_rain = day.daily_chance_of_rain,
     )
 
-    fun mapForecastDataToByHoursDbModel(hour: Hour) = ByHoursWeatherDbModel(
-        id = UNDEFINED_ID,
+    fun mapByHourDtoToByHoursDbModel(hour: Hour, id: Int) = ByHoursWeatherDbModel(
+        id = id,
         time = hour.time,
         temp_c = hour.temp_c.roundToInt(),
         icon_url = hour.condition.icon,
@@ -93,14 +91,24 @@ class WeatherMapper @Inject constructor() {
     )
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
-        val result = mutableListOf<ByDaysWeatherDbModel>()
+        val dayList = mutableListOf<ByDaysWeatherDbModel>()
         for (i in 0 until forecastData.forecast.forecastday.size) {
             val day =
-                mapForecastDataToByDaysDbModel(forecastData.forecast.forecastday[i].day, i)
-            result.add(day)
+                mapByDayDtoToByDaysDbModel(forecastData.forecast.forecastday[i].day, i)
+            dayList.add(day)
         }
-        Log.d("MyLog", "result $result")
-        return result
+        return dayList
+    }
+
+    fun mapForecastDataToListHoursDbModel(forecastData: ForecastData): List<ByHoursWeatherDbModel> {
+        val hourList = mutableListOf<ByHoursWeatherDbModel>()
+        for (i in 0 until forecastData.forecast.forecastday.size) {
+            for (j in 0 until forecastData.forecast.forecastday[i].hour.size){
+                val hour = mapByHourDtoToByHoursDbModel(forecastData.forecast.forecastday[i].hour[j], "$i$i$j".toInt())
+                hourList.add(hour)
+            }
+        }
+        return hourList
     }
 
 
@@ -157,7 +165,7 @@ class WeatherMapper @Inject constructor() {
     private fun getCurrentDate() = SimpleDateFormat(TIME_FORMAT).format(Date())
 
     companion object {
-        private const val UNDEFINED_ID = 0L
+        private const val UNDEFINED_ID = 0
         private const val TIME_FORMAT = "dd-MM-yyyy"
     }
 }

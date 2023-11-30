@@ -11,8 +11,6 @@ import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -72,7 +70,7 @@ class MainFragment : Fragment() {
        }
 
         viewModel.byDaysWeather?.observe(viewLifecycleOwner){
-           // binding.textViewDayly.text = it[0].maxtemp_c.toString()
+           binding.textViewDayly.text = it[0].maxtemp_c.toString()
         }
 
 
