@@ -2,6 +2,7 @@ package com.margarin.commonweather.di
 
 import android.app.Application
 import com.margarin.commonweather.app.WeatherApp
+import com.margarin.commonweather.ui.screens.CityListFragment
 import com.margarin.commonweather.ui.screens.MainFragment
 import com.margarin.commonweather.ui.screens.SearchFragment
 import dagger.BindsInstance
@@ -19,7 +20,8 @@ interface ApplicationComponent {
 
     fun inject(application: WeatherApp)
     fun inject(fragment: MainFragment)
-    fun inject(fragmnt: SearchFragment)
+    fun inject(fragment: SearchFragment)
+    fun inject(fragment: CityListFragment)
 
     @Component.Factory
     interface Factory {

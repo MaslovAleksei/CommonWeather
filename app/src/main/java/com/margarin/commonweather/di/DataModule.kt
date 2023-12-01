@@ -6,6 +6,7 @@ import com.margarin.commonweather.data.database.AppDatabase
 import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
 import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
 import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
+import com.margarin.commonweather.data.database.dao.SearchDao
 import com.margarin.commonweather.data.remote.ApiFactory
 import com.margarin.commonweather.data.remote.ApiService
 import com.margarin.commonweather.domain.WeatherRepository
@@ -44,6 +45,12 @@ interface DataModule {
         @ApplicationScope
         fun provideByHoursWeatherDao(application: Application): ByHoursWeatherDao {
             return AppDatabase.getInstance(application).byHoursWeatherDao()
+        }
+
+        @Provides
+        @ApplicationScope
+        fun provideSearchDao(application: Application): SearchDao {
+            return AppDatabase.getInstance(application).searchDao()
         }
     }
 }

@@ -7,15 +7,18 @@ import androidx.room.RoomDatabase
 import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
 import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
 import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
+import com.margarin.commonweather.data.database.dao.SearchDao
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
+import com.margarin.commonweather.data.database.dbmodels.SearchDbModel
 
 @Database(
     entities = [
         CurrentWeatherDbModel::class,
         ByHoursWeatherDbModel::class,
-        ByDaysWeatherDbModel::class
+        ByDaysWeatherDbModel::class,
+        SearchDbModel::class
     ], version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -45,5 +48,6 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun byDaysWeatherDao(): ByDaysWeatherDao
     abstract fun byHoursWeatherDao(): ByHoursWeatherDao
     abstract fun currentWeatherDao(): CurrentWeatherDao
+    abstract fun searchDao(): SearchDao
 
 }

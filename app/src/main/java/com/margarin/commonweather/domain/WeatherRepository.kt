@@ -8,6 +8,7 @@ import com.margarin.commonweather.domain.models.SearchModel
 
 interface WeatherRepository {
 
+    //Weather functions
     suspend fun loadData(query: String)
 
     fun loadCurrentWeather(): LiveData<CurrentWeatherModel>
@@ -16,6 +17,17 @@ interface WeatherRepository {
 
     fun loadByHoursWeather(): LiveData<List<ByHoursWeatherModel>>
 
-    suspend fun getSearchLocation(location: String): List<SearchModel>
+    //Search functions
+    suspend fun getSearchLocation(query: String): List<SearchModel>
+
+    suspend fun insertSearchItem(searchModel: SearchModel)
+
+    fun loadSearchList(): LiveData<List<SearchModel>>
+
+    suspend fun deleteSearchItem(searchModel: SearchModel)
+
+    suspend fun getSearchItem(searchId: Int): SearchModel
+
+
 
 }

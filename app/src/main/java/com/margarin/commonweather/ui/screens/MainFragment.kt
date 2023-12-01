@@ -2,17 +2,18 @@ package com.margarin.commonweather.ui.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
-import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.utils.launchFragment
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -32,11 +33,17 @@ class MainFragment : Fragment() {
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("binding == null")
 
-    private lateinit var adapter: SearchAdapter
+    private var location: String = UNDEFINED_LOCATION
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
     }
 
     override fun onCreateView(
@@ -49,7 +56,8 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.initViewModel("Tyumen")
+        Log.d("MyLog", "onViewCreated")
+        viewModel.initViewModel(location)
         observeViewModel()
         setOnClickListeners()
 
@@ -57,18 +65,16 @@ class MainFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.d("MyLog", "onDestroyView")
         _binding = null
     }
 
     private fun observeViewModel() {
-        try {
 
             viewModel.currentWeather?.observe(viewLifecycleOwner){
                 binding.tvCityname.text = it.location
                 binding.tvCurrentTemp.text = it.temp_c.toString()
             }
-
-
 
             viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
                 binding.tvTommorowDate.text = it[1].date
@@ -78,25 +84,35 @@ class MainFragment : Fragment() {
                 binding.tvHourDate.text = it[0].time
             }
 
-
-        } catch (e: Exception) {
-
-        }
-
+            viewModel.currentWeather?.observe(viewLifecycleOwner){
+                Picasso.get().load(it.icon_url).into(binding.imageView)
+            }
 
     }
 
+    private fun parseParams() {
+        val args = requireArguments()
+        location = args.getString(LOCATION, UNDEFINED_LOCATION)
+    }
 
     private fun setOnClickListeners() {
         binding.bSearch.setOnClickListener {
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.holder, SearchFragment.newInstance())
-                .addToBackStack(null)
-                .commit()
+            launchFragment(CityListFragment.newInstance())
+        }
 
+    }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    companion object{
+
+        private const val LOCATION = "location"
+        private const val UNDEFINED_LOCATION = ""
+
+        fun newInstance(location: String): MainFragment {
+            return MainFragment().apply {
+                arguments = Bundle().apply {
+                    putString(LOCATION, location)
+                }
+            }
         }
     }
-
-
 }

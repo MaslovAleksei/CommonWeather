@@ -1,8 +1,8 @@
 package com.margarin.commonweather.ui.adapters
 
 import androidx.recyclerview.widget.RecyclerView
-import com.margarin.commonweather.databinding.SearchItemBinding
+import androidx.viewbinding.ViewBinding
 
 class SearchHolder(
-    val binding: SearchItemBinding
+    val binding: ViewBinding
 ): RecyclerView.ViewHolder(binding.root)

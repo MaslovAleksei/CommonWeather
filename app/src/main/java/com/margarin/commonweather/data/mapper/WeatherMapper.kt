@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
+import com.margarin.commonweather.data.database.dbmodels.SearchDbModel
 import com.margarin.commonweather.data.remote.apimodels.current.CurrentData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
@@ -22,7 +23,7 @@ class WeatherMapper @Inject constructor() {
 
     fun mapCurrentDataToCurrentDbModel(dto: CurrentData) = CurrentWeatherDbModel(
         condition = dto.current.condition.text,
-        icon_url = dto.current.condition.icon,
+        icon_url = "https:" +  dto.current.condition.icon,
         last_updated = dto.current.last_updated,
         wind_kph = dto.current.wind_kph.roundToInt(),
         wind_dir = dto.current.wind_dir,
@@ -42,7 +43,7 @@ class WeatherMapper @Inject constructor() {
         maxtemp_c = day.maxtemp_c.roundToInt(),
         mintemp_c = day.mintemp_c.roundToInt(),
         condition = day.condition.text,
-        icon_url = day.condition.icon,
+        icon_url = "https:" + day.condition.icon,
         maxwind_kph = day.maxwind_kph.roundToInt(),
         chance_of_rain = day.daily_chance_of_rain,
     )
@@ -51,7 +52,7 @@ class WeatherMapper @Inject constructor() {
         id = id,
         time = hour.time,
         temp_c = hour.temp_c.roundToInt(),
-        icon_url = hour.condition.icon,
+        icon_url = "https:" + hour.condition.icon,
         wind_kph = hour.wind_kph.roundToInt()
     )
 
@@ -121,6 +122,26 @@ class WeatherMapper @Inject constructor() {
         lat = search.lat,
         lon = search.lon,
         url = search.url
+    )
+
+    fun mapSearchModelToSearchDbModel(searchModel: SearchModel) = SearchDbModel(
+        id = searchModel.id,
+        name = searchModel.name,
+        region = searchModel.region,
+        country = searchModel.country,
+        lat = searchModel.lat,
+        lon = searchModel.lon,
+        url = searchModel.url
+    )
+
+    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) = SearchModel(
+        id = searchDb.id,
+        name = searchDb.name,
+        region = searchDb.region,
+        country = searchDb.country,
+        lat = searchDb.lat,
+        lon = searchDb.lon,
+        url = searchDb.url
     )
 
 
