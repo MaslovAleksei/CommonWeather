@@ -14,6 +14,7 @@ class SearchAdapter(private var layout: Int) :
     var onItemClickListener: ((SearchModel) -> Unit)? = null
     var onButtonDeleteClickListener: ((SearchModel) -> Unit)? = null
     var onButtonAddToFavClickListener: ((SearchModel) -> Unit)? = null
+    var onSwipeItemClickListener: ((SearchModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchHolder {
 
@@ -56,10 +57,11 @@ class SearchAdapter(private var layout: Int) :
                 holder.binding.root.setOnClickListener{
                     onItemClickListener?.invoke(item)
                 }
-                holder.binding.buttonDelete.setOnClickListener {
-                    onButtonDeleteClickListener?.invoke(item)
-                }
+
+
             }
         }
     }
+
+
 }

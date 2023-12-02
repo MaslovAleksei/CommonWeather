@@ -1,7 +1,7 @@
-package com.margarin.commonweather.di
+package com.margarin.commonweather.data.di
 
 import android.app.Application
-import com.margarin.commonweather.data.WeatherRepositoryImpl
+import com.margarin.commonweather.data.repository.WeatherRepositoryImpl
 import com.margarin.commonweather.data.database.AppDatabase
 import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
 import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao

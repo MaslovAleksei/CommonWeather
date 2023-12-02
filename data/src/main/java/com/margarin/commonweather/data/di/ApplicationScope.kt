@@ -1,4 +1,4 @@
-package com.margarin.commonweather.di
+package com.margarin.commonweather.data.di
 
 import javax.inject.Scope
 

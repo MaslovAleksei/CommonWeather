@@ -13,7 +13,7 @@ object ApiFactory {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         return interceptor
     }
-    val client = OkHttpClient.Builder()
+    private val client = OkHttpClient.Builder()
         .addInterceptor(configureInterceptor())
         .build()
 
