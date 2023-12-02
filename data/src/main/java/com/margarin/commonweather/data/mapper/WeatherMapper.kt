@@ -10,10 +10,6 @@ import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.data.remote.apimodels.search.Search
-import com.margarin.commonweather.domain.models.ByDaysWeatherModel
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
-import com.margarin.commonweather.domain.models.CurrentWeatherModel
-import com.margarin.commonweather.domain.models.SearchModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -56,42 +52,45 @@ class WeatherMapper @Inject constructor() {
         wind_kph = hour.wind_kph.roundToInt()
     )
 
-    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) = CurrentWeatherModel(
-        id = db.id,
-        condition = db.condition,
-        icon_url = db.icon_url,
-        last_updated = db.last_updated,
-        wind_kph = db.wind_kph,
-        wind_dir = db.wind_dir,
-        temp_c = db.temp_c,
-        pressure_mb = db.pressure_mb,
-        humidity = db.humidity,
-        uv = db.uv,
-        feels_like = db.feels_like,
-        location = db.location,
-        latitude = db.latitude,
-        longitude = db.longitude
-    )
+    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) =
+        com.margarin.commonweather.domain.models.CurrentWeatherModel(
+            id = db.id,
+            condition = db.condition,
+            icon_url = db.icon_url,
+            last_updated = db.last_updated,
+            wind_kph = db.wind_kph,
+            wind_dir = db.wind_dir,
+            temp_c = db.temp_c,
+            pressure_mb = db.pressure_mb,
+            humidity = db.humidity,
+            uv = db.uv,
+            feels_like = db.feels_like,
+            location = db.location,
+            latitude = db.latitude,
+            longitude = db.longitude
+        )
 
-    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
-        id = db.id,
-        date = db.date,
-        maxtemp_c = db.maxtemp_c,
-        mintemp_c = db.mintemp_c,
-        condition = db.condition,
-        icon_url = db.icon_url,
-        maxwind_kph = db.maxwind_kph,
-        chance_of_rain = db.chance_of_rain,
-        day_of_week = db.date
-    )
+    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) =
+        com.margarin.commonweather.domain.models.ByDaysWeatherModel(
+            id = db.id,
+            date = db.date,
+            maxtemp_c = db.maxtemp_c,
+            mintemp_c = db.mintemp_c,
+            condition = db.condition,
+            icon_url = db.icon_url,
+            maxwind_kph = db.maxwind_kph,
+            chance_of_rain = db.chance_of_rain,
+            day_of_week = db.date
+        )
 
-    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) = ByHoursWeatherModel(
-        id = db.id,
-        time = db.time,
-        temp_c = db.temp_c,
-        icon_url = db.icon_url,
-        wind_kph = db.wind_kph
-    )
+    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) =
+        com.margarin.commonweather.domain.models.ByHoursWeatherModel(
+            id = db.id,
+            time = db.time,
+            temp_c = db.temp_c,
+            icon_url = db.icon_url,
+            wind_kph = db.wind_kph
+        )
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
         val dayList = mutableListOf<ByDaysWeatherDbModel>()
@@ -114,17 +113,18 @@ class WeatherMapper @Inject constructor() {
         return hourList
     }
 
-    fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
-        id = search.id,
-        name = search.name,
-        region = search.region,
-        country = search.country,
-        lat = search.lat,
-        lon = search.lon,
-        url = search.url
-    )
+    fun mapSearchDtoToSearchModel(search: Search) =
+        com.margarin.commonweather.domain.models.SearchModel(
+            id = search.id,
+            name = search.name,
+            region = search.region,
+            country = search.country,
+            lat = search.lat,
+            lon = search.lon,
+            url = search.url
+        )
 
-    fun mapSearchModelToSearchDbModel(searchModel: SearchModel) = SearchDbModel(
+    fun mapSearchModelToSearchDbModel(searchModel: com.margarin.commonweather.domain.models.SearchModel) = SearchDbModel(
         id = searchModel.id,
         name = searchModel.name,
         region = searchModel.region,
@@ -134,15 +134,16 @@ class WeatherMapper @Inject constructor() {
         url = searchModel.url
     )
 
-    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) = SearchModel(
-        id = searchDb.id,
-        name = searchDb.name,
-        region = searchDb.region,
-        country = searchDb.country,
-        lat = searchDb.lat,
-        lon = searchDb.lon,
-        url = searchDb.url
-    )
+    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
+        com.margarin.commonweather.domain.models.SearchModel(
+            id = searchDb.id,
+            name = searchDb.name,
+            region = searchDb.region,
+            country = searchDb.country,
+            lat = searchDb.lat,
+            lon = searchDb.lon,
+            url = searchDb.url
+        )
 
 
     private fun convertDateToDayOfWeek(date: String): String {

@@ -20,17 +20,20 @@ class SearchViewModel @Inject constructor(
     private val insertSearchItemUseCase: InsertSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
     private val loadSearchListUseCase: LoadSearchListUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    private val _searchLocation = MutableLiveData<List<SearchModel>?>()
+    private val _searchLocation =
+        MutableLiveData<List<SearchModel>?>()
     val searchLocation: LiveData<List<SearchModel>?>
         get() = _searchLocation
 
-    private var _searchList: LiveData<List<SearchModel>>? = null
+    private var _searchList: LiveData<List<SearchModel>>? =
+        null
     val searchList: LiveData<List<SearchModel>>?
         get() = _searchList
 
-    private val _searchItem = MutableLiveData<SearchModel?>()
+    private val _searchItem =
+        MutableLiveData<SearchModel?>()
     val searchItem: LiveData<SearchModel?>
         get() = _searchItem
 
@@ -47,7 +50,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun insertSearchItem(searchModel: SearchModel) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             insertSearchItemUseCase(searchModel)
         }
     }
