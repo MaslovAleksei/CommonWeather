@@ -7,8 +7,8 @@ import androidx.room.PrimaryKey
 data class ByHoursWeatherDbModel(
     @PrimaryKey
     val id: Int,
-    val time: String,
-    val temp_c: Int,
-    val icon_url: String,
-    val wind_kph: Int,
+    val time: String?,
+    val temp_c: Int?,
+    val icon_url: String?,
+    val wind_kph: Int?,
 )

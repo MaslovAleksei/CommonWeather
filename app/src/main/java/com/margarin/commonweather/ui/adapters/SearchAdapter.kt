@@ -57,6 +57,9 @@ class SearchAdapter(private var layout: Int) :
                 holder.binding.root.setOnClickListener{
                     onItemClickListener?.invoke(item)
                 }
+                holder.binding.bDelete.setOnClickListener {
+                    onButtonDeleteClickListener?.invoke(item)
+                }
 
 
             }

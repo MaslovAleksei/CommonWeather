@@ -15,7 +15,6 @@ import com.margarin.commonweather.databinding.FragmentSearchBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
-import com.margarin.commonweather.utils.launchFragment
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -93,11 +92,14 @@ class SearchFragment : Fragment() {
 
     private fun setOnClickListeners(){
         adapter.onItemClickListener = {
-            launchFragment(MainFragment.newInstance(it.name))
+            it.name?.let { name -> viewModel.changeSearchItem(name) }
+            requireActivity().supportFragmentManager.popBackStack("CityListFragment", -1)
+
         }
         adapter.onButtonAddToFavClickListener = {
             viewModel.insertSearchItem(it)
-            launchFragment(CityListFragment.newInstance())
+            requireActivity().supportFragmentManager.popBackStack("CityListFragment", 0)
+
         }
         binding.bCancel.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
