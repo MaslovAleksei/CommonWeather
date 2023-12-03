@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
         _byHoursWeather = loadByHoursWeatherUseCase()
     }
 
-    private fun loadDataFromApi(location: String) {
+    fun loadDataFromApi(location: String) {
         viewModelScope.launch(Dispatchers.IO) {
             loadDataUseCase(location)
         }

@@ -19,7 +19,8 @@ class SearchViewModel @Inject constructor(
     private val getSearchItemUseCase: GetSearchItemUseCase,
     private val insertSearchItemUseCase: InsertSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
-    private val loadSearchListUseCase: LoadSearchListUseCase
+    private val loadSearchListUseCase: LoadSearchListUseCase,
+    private val mainViewModel: MainViewModel
 ) : ViewModel() {
 
     private val _searchLocation =
@@ -65,5 +66,9 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _searchItem.value = getSearchItemUseCase(searchId)
         }
+    }
+
+    fun changeSearchItem(city: String){
+        mainViewModel.loadDataFromApi(location = city)
     }
 }

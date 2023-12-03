@@ -80,14 +80,19 @@ class CityListFragment : Fragment() {
 
     private fun setOnClickListeners(){
         adapter.onItemClickListener = {
-            launchFragment(MainFragment.newInstance(it.name))
+            it.name?.let { name -> viewModel.changeSearchItem(name) }
+            requireActivity().supportFragmentManager.popBackStack()
+        }
+        adapter.onButtonDeleteClickListener = {
+            viewModel.deleteSearchItem(it)
         }
         binding.bInputLocation.setOnClickListener {
-            launchFragment(SearchFragment.newInstance())
+            launchFragment(SearchFragment.newInstance(), "SearchFragment")
         }
         binding.bBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
+
     }
 
     private fun setupSwipeListener(recyclerView: RecyclerView) {

@@ -57,7 +57,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("MyLog", "onViewCreated")
-        viewModel.initViewModel(location)
+        launchMainFragment()
         observeViewModel()
         setOnClickListeners()
 
@@ -90,14 +90,23 @@ class MainFragment : Fragment() {
 
     }
 
+    private fun launchMainFragment(){
+        if (viewModel.currentWeather == null) {
+            viewModel.initViewModel(location)
+        }
+    }
+
     private fun parseParams() {
-        val args = requireArguments()
-        location = args.getString(LOCATION, UNDEFINED_LOCATION)
+        val args = arguments
+        location = args?.getString(LOCATION, UNDEFINED_LOCATION).toString()
+        if (args == null) {
+            location = "Moscow"
+        }
     }
 
     private fun setOnClickListeners() {
         binding.bSearch.setOnClickListener {
-            launchFragment(CityListFragment.newInstance())
+            launchFragment(CityListFragment.newInstance(), "CityListFragment")
         }
 
     }

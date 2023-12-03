@@ -7,11 +7,11 @@ import androidx.room.PrimaryKey
 data class ByDaysWeatherDbModel(
     @PrimaryKey
     val id: Int,
-    val date: String,
-    val maxtemp_c: Int,
-    val mintemp_c: Int,
-    val condition: String,
-    val icon_url: String,
-    val maxwind_kph: Int,
-    val chance_of_rain: Int
+    val date: String?,
+    val maxtemp_c: Int?,
+    val mintemp_c: Int?,
+    val condition: String?,
+    val icon_url: String?,
+    val maxwind_kph: Int?,
+    val chance_of_rain: Int?
 )

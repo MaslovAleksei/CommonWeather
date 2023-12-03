@@ -18,38 +18,38 @@ import kotlin.math.roundToInt
 class WeatherMapper @Inject constructor() {
 
     fun mapCurrentDataToCurrentDbModel(dto: CurrentData) = CurrentWeatherDbModel(
-        condition = dto.current.condition.text,
-        icon_url = "https:" +  dto.current.condition.icon,
-        last_updated = dto.current.last_updated,
-        wind_kph = dto.current.wind_kph.roundToInt(),
-        wind_dir = dto.current.wind_dir,
-        temp_c = dto.current.temp_c.roundToInt(),
-        pressure_mb = dto.current.pressure_mb.roundToInt(),
-        humidity = dto.current.humidity,
-        uv = dto.current.uv.roundToInt(),
-        feels_like = dto.current.feelslike_c.roundToInt(),
-        location = dto.location.name,
-        latitude = dto.location.lat,
-        longitude = dto.location.lon
+        condition = dto.current?.condition?.text,
+        icon_url = "https:" +  dto.current?.condition?.icon,
+        last_updated = dto.current?.last_updated,
+        wind_kph = dto.current?.wind_kph?.roundToInt(),
+        wind_dir = dto.current?.wind_dir,
+        temp_c = dto.current?.temp_c?.roundToInt(),
+        pressure_mb = dto.current?.pressure_mb?.roundToInt(),
+        humidity = dto.current?.humidity,
+        uv = dto.current?.uv?.roundToInt(),
+        feels_like = dto.current?.feelslike_c?.roundToInt(),
+        location = dto.location?.name,
+        latitude = dto.location?.lat,
+        longitude = dto.location?.lon
     )
 
     fun mapByDayDtoToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
         id = id,
         date = "date",
-        maxtemp_c = day.maxtemp_c.roundToInt(),
-        mintemp_c = day.mintemp_c.roundToInt(),
-        condition = day.condition.text,
-        icon_url = "https:" + day.condition.icon,
-        maxwind_kph = day.maxwind_kph.roundToInt(),
+        maxtemp_c = day.maxtemp_c?.roundToInt(),
+        mintemp_c = day.mintemp_c?.roundToInt(),
+        condition = day.condition?.text,
+        icon_url = "https:" + day.condition?.icon,
+        maxwind_kph = day.maxwind_kph?.roundToInt(),
         chance_of_rain = day.daily_chance_of_rain,
     )
 
     fun mapByHourDtoToByHoursDbModel(hour: Hour, id: Int) = ByHoursWeatherDbModel(
         id = id,
         time = hour.time,
-        temp_c = hour.temp_c.roundToInt(),
-        icon_url = "https:" + hour.condition.icon,
-        wind_kph = hour.wind_kph.roundToInt()
+        temp_c = hour.temp_c?.roundToInt(),
+        icon_url = "https:" + hour.condition?.icon,
+        wind_kph = hour.wind_kph?.roundToInt()
     )
 
     fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) =
@@ -94,9 +94,8 @@ class WeatherMapper @Inject constructor() {
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
         val dayList = mutableListOf<ByDaysWeatherDbModel>()
-        for (i in 0 until forecastData.forecast.forecastday.size) {
-            val day =
-                mapByDayDtoToByDaysDbModel(forecastData.forecast.forecastday[i].day, i)
+        for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
+            val day = mapByDayDtoToByDaysDbModel(forecastData.forecast.forecastday[i].day!!, i)
             dayList.add(day)
         }
         return dayList
@@ -104,9 +103,12 @@ class WeatherMapper @Inject constructor() {
 
     fun mapForecastDataToListHoursDbModel(forecastData: ForecastData): List<ByHoursWeatherDbModel> {
         val hourList = mutableListOf<ByHoursWeatherDbModel>()
-        for (i in 0 until forecastData.forecast.forecastday.size) {
-            for (j in 0 until forecastData.forecast.forecastday[i].hour.size){
-                val hour = mapByHourDtoToByHoursDbModel(forecastData.forecast.forecastday[i].hour[j], "$i$i$j".toInt())
+        for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
+            for (j in 0 until forecastData.forecast.forecastday[i].hour?.size!!){
+                val hour = mapByHourDtoToByHoursDbModel(
+                    forecastData.forecast.forecastday[i].hour!![j],
+                    "$i$i$j".toInt()
+                )
                 hourList.add(hour)
             }
         }
