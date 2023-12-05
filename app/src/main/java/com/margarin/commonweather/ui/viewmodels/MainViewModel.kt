@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
-import com.margarin.commonweather.domain.usecases.LoadByDaysWeatherUseCase
-import com.margarin.commonweather.domain.usecases.LoadByHoursWeatherUseCase
-import com.margarin.commonweather.domain.usecases.LoadCurrentWeatherUseCase
+import com.margarin.commonweather.domain.usecases.GetByDaysWeatherUseCase
+import com.margarin.commonweather.domain.usecases.GetByHoursWeatherUseCase
+import com.margarin.commonweather.domain.usecases.GetCurrentWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadDataUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,9 +16,9 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val loadDataUseCase: LoadDataUseCase,
-    private val loadCurrentWeatherUseCase: LoadCurrentWeatherUseCase,
-    private val loadByDaysWeatherUseCase: LoadByDaysWeatherUseCase,
-    private val loadByHoursWeatherUseCase: LoadByHoursWeatherUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val getByDaysWeatherUseCase: GetByDaysWeatherUseCase,
+    private val getByHoursWeatherUseCase: GetByHoursWeatherUseCase,
 ) : ViewModel() {
 
     private var _currentWeather: LiveData<CurrentWeatherModel>? = null
@@ -36,9 +36,9 @@ class MainViewModel @Inject constructor(
     fun initViewModel(location: String) {
         loadDataFromApi(location)
         Thread.sleep(1000)
-        _currentWeather = loadCurrentWeatherUseCase()
-        _byDaysWeather = loadByDaysWeatherUseCase()
-        _byHoursWeather = loadByHoursWeatherUseCase()
+        _currentWeather = getCurrentWeatherUseCase()
+        _byDaysWeather = getByDaysWeatherUseCase()
+        _byHoursWeather = getByHoursWeatherUseCase()
     }
 
     fun loadDataFromApi(location: String) {

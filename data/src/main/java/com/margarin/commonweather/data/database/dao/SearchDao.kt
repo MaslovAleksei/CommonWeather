@@ -11,10 +11,10 @@ import com.margarin.commonweather.data.database.dbmodels.SearchDbModel
 interface SearchDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSearchItem(search: SearchDbModel)
+    suspend fun addSearchItem(search: SearchDbModel)
 
     @Query("SELECT * FROM search_table")
-    fun loadSearchList(): LiveData<List<SearchDbModel>>
+    fun getSearchList(): LiveData<List<SearchDbModel>>
 
     @Query("DELETE FROM search_table WHERE id=:searchId")
     suspend fun deleteSearchItem(searchId: Int)

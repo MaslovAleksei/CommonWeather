@@ -79,7 +79,6 @@ class SearchFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : OnQueryTextListener {
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let { viewModel.getSearchLocation(it) }
                 return true
             }
 
@@ -97,7 +96,7 @@ class SearchFragment : Fragment() {
 
         }
         adapter.onButtonAddToFavClickListener = {
-            viewModel.insertSearchItem(it)
+            viewModel.addSearchItem(it)
             requireActivity().supportFragmentManager.popBackStack("CityListFragment", 0)
 
         }

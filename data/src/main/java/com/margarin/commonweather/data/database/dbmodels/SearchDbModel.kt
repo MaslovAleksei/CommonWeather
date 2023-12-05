@@ -13,4 +13,5 @@ data class SearchDbModel(
     val lat: Float?,
     val lon: Float?,
     val url: String?,
+    val isMenuShown: Boolean
 )

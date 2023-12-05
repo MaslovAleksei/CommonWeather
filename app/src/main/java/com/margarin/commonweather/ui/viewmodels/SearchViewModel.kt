@@ -8,8 +8,8 @@ import com.margarin.commonweather.domain.models.SearchModel
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
-import com.margarin.commonweather.domain.usecases.InsertSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.LoadSearchListUseCase
+import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
+import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,9 +17,9 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val getSearchLocationUseCase: GetSearchLocationUseCase,
     private val getSearchItemUseCase: GetSearchItemUseCase,
-    private val insertSearchItemUseCase: InsertSearchItemUseCase,
+    private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
-    private val loadSearchListUseCase: LoadSearchListUseCase,
+    private val getSearchListUseCase: GetSearchListUseCase,
     private val mainViewModel: MainViewModel
 ) : ViewModel() {
 
@@ -46,13 +46,13 @@ class SearchViewModel @Inject constructor(
 
     fun loadSearchList() {
         viewModelScope.launch {
-            _searchList = loadSearchListUseCase()
+            _searchList = getSearchListUseCase()
         }
     }
 
-    fun insertSearchItem(searchModel: SearchModel) {
+    fun addSearchItem(searchModel: SearchModel) {
         viewModelScope.launch(Dispatchers.IO) {
-            insertSearchItemUseCase(searchModel)
+            addSearchItemUseCase(searchModel)
         }
     }
 
@@ -70,5 +70,12 @@ class SearchViewModel @Inject constructor(
 
     fun changeSearchItem(city: String){
         mainViewModel.loadDataFromApi(location = city)
+    }
+
+    fun changeIsMenuShown(searchModel: SearchModel) {
+        viewModelScope.launch {
+            val newItem = searchModel.copy(isMenuShown = !searchModel.isMenuShown)
+            addSearchItemUseCase(newItem)
+        }
     }
 }

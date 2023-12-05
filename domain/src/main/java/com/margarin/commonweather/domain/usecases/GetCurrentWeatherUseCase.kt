@@ -5,9 +5,9 @@ import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import javax.inject.Inject
 
-class LoadCurrentWeatherUseCase @Inject constructor(
+class GetCurrentWeatherUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
-    operator fun invoke() : LiveData<CurrentWeatherModel> = weatherRepository.loadCurrentWeather()
+    operator fun invoke() : LiveData<CurrentWeatherModel> = weatherRepository.getCurrentWeather()
 
 }

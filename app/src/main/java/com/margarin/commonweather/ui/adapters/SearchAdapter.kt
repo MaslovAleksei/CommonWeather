@@ -1,6 +1,7 @@
 package com.margarin.commonweather.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.margarin.commonweather.R
@@ -12,9 +13,11 @@ class SearchAdapter(private var layout: Int) :
     ListAdapter<SearchModel, SearchHolder>(SearchDiffCallback()) {
 
     var onItemClickListener: ((SearchModel) -> Unit)? = null
+    var onItemLongClickListener: ((SearchModel) -> Unit)? = null
     var onButtonDeleteClickListener: ((SearchModel) -> Unit)? = null
     var onButtonAddToFavClickListener: ((SearchModel) -> Unit)? = null
     var onSwipeItemClickListener: ((SearchModel) -> Unit)? = null
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchHolder {
 
@@ -54,11 +57,18 @@ class SearchAdapter(private var layout: Int) :
 
             is CityItemBinding -> {
                 holder.binding.tvName.text = item.name
-                holder.binding.root.setOnClickListener{
+                holder.binding.root.setOnClickListener {
                     onItemClickListener?.invoke(item)
                 }
                 holder.binding.bDelete.setOnClickListener {
                     onButtonDeleteClickListener?.invoke(item)
+                }
+                holder.binding.root.setOnLongClickListener {
+                    onItemLongClickListener?.invoke(item)
+                    true
+                }
+                if (item.isMenuShown) {
+                    holder.binding.bDelete.visibility = View.VISIBLE
                 }
 
 

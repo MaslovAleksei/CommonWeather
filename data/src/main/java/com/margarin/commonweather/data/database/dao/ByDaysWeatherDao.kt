@@ -11,9 +11,9 @@ import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 interface ByDaysWeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertByDaysWeather(byDaysWeatherDbModel: List<ByDaysWeatherDbModel>)
+    suspend fun addByDaysWeather(byDaysWeatherDbModel: List<ByDaysWeatherDbModel>)
 
     @Query("SELECT * FROM weather_by_days")
-    fun loadByDaysWeather(): LiveData<List<ByDaysWeatherDbModel>>
+    fun getByDaysWeather(): LiveData<List<ByDaysWeatherDbModel>>
 
 }

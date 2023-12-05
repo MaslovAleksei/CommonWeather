@@ -11,18 +11,18 @@ interface WeatherRepository {
     //Weather functions
     suspend fun loadData(query: String)
 
-    fun loadCurrentWeather(): LiveData<CurrentWeatherModel>
+    fun getCurrentWeather(): LiveData<CurrentWeatherModel>
 
-    fun loadByDaysWeather(): LiveData<List<ByDaysWeatherModel>>
+    fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>>
 
-    fun loadByHoursWeather(): LiveData<List<ByHoursWeatherModel>>
+    fun getByHoursWeather(): LiveData<List<ByHoursWeatherModel>>
 
     //Search functions
     suspend fun getSearchLocation(query: String): List<SearchModel>
 
-    suspend fun insertSearchItem(searchModel: SearchModel)
+    suspend fun addSearchItem(searchModel: SearchModel)
 
-    fun loadSearchList(): LiveData<List<SearchModel>>
+    fun getSearchList(): LiveData<List<SearchModel>>
 
     suspend fun deleteSearchItem(searchModel: SearchModel)
 
