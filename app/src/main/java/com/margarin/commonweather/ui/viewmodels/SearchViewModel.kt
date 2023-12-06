@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.models.SearchModel
+import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
-import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
+import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject

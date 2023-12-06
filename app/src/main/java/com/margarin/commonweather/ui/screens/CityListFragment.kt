@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
@@ -21,6 +22,9 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
+import com.margarin.commonweather.utils.saveInDataStore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -43,7 +47,7 @@ class CityListFragment : Fragment() {
 
     private lateinit var adapter: SearchAdapter
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -87,6 +91,9 @@ class CityListFragment : Fragment() {
     private fun setOnClickListeners(){
         adapter.onItemClickListener = {
             it.name?.let { name -> viewModel.changeSearchItem(name) }
+            lifecycleScope.launch {
+                runBlocking {saveInDataStore(MainFragment.LOCATION, it.name!!)}
+            }
             requireActivity().supportFragmentManager.popBackStack()
         }
         adapter.onButtonDeleteClickListener = {
@@ -98,8 +105,6 @@ class CityListFragment : Fragment() {
         binding.bBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
-
-
     }
 
     private fun setupSwipeListener(recyclerView: RecyclerView) {
@@ -108,7 +113,6 @@ class CityListFragment : Fragment() {
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
-
                 return makeFlag(ACTION_STATE_IDLE, RIGHT) or
                         makeFlag(ACTION_STATE_SWIPE, LEFT)
             }
@@ -126,7 +130,6 @@ class CityListFragment : Fragment() {
                 if (!item.isMenuShown) {
                     viewModel.changeIsMenuShown(item)
                 }
-
             }
 
             override fun clearView(
@@ -144,8 +147,7 @@ class CityListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////
     companion object {
 
         fun newInstance() =
