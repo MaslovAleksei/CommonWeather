@@ -45,9 +45,7 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleScope.launch {
-            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
-        }
+        getLastLocationFromDataStore()
         initViewModel(location)
     }
 
@@ -96,7 +94,12 @@ class MainFragment : Fragment() {
         } else {
             viewModel.initViewModel(location)
         }
+    }
 
+    private fun getLastLocationFromDataStore() {
+        lifecycleScope.launch {
+            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
+        }
     }
 
     private fun setOnClickListeners() {
