@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
@@ -15,6 +16,9 @@ import com.margarin.commonweather.databinding.FragmentSearchBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.utils.saveInDataStore
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -36,6 +40,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var adapter: SearchAdapter
 
+    ////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -55,7 +60,6 @@ class SearchFragment : Fragment() {
         configureRecyclerView()
         addTextChangeListeners()
         setOnClickListeners()
-
     }
 
     override fun onDestroyView() {
@@ -92,12 +96,19 @@ class SearchFragment : Fragment() {
     private fun setOnClickListeners(){
         adapter.onItemClickListener = {
             it.name?.let { name -> viewModel.changeSearchItem(name) }
-            requireActivity().supportFragmentManager.popBackStack("CityListFragment", -1)
+            lifecycleScope.launch {
+                runBlocking {saveInDataStore(MainFragment.LOCATION, it.name!!)}
+            }
+            requireActivity().supportFragmentManager.popBackStack(
+                "CityListFragment",
+                -1)
 
         }
         adapter.onButtonAddToFavClickListener = {
             viewModel.addSearchItem(it)
-            requireActivity().supportFragmentManager.popBackStack("CityListFragment", 0)
+            requireActivity().supportFragmentManager.popBackStack(
+                "CityListFragment",
+                0)
 
         }
         binding.bCancel.setOnClickListener {
@@ -105,6 +116,7 @@ class SearchFragment : Fragment() {
         }
     }
 
+    /////////////////////////////////////////////////////////////////////////////////
     companion object{
         fun newInstance() = SearchFragment()
     }

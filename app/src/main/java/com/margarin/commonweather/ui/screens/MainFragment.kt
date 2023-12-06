@@ -2,18 +2,20 @@ package com.margarin.commonweather.ui.screens
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
+import com.margarin.commonweather.utils.readFromDataStore
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -35,7 +37,7 @@ class MainFragment : Fragment() {
 
     private var location: String = UNDEFINED_LOCATION
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -43,7 +45,8 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        parseParams()
+        getLastLocationFromDataStore()
+        initViewModel(location)
     }
 
     override fun onCreateView(
@@ -56,51 +59,46 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("MyLog", "onViewCreated")
-        launchMainFragment()
-        observeViewModel()
         setOnClickListeners()
-
+        observeViewModel()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("MyLog", "onDestroyView")
         _binding = null
     }
 
     private fun observeViewModel() {
 
-            viewModel.currentWeather?.observe(viewLifecycleOwner){
-                binding.tvCityname.text = it.location
-                binding.tvCurrentTemp.text = it.temp_c.toString()
-            }
+        viewModel.currentWeather?.observe(viewLifecycleOwner) {
+            binding.tvCityname.text = it.location
+            binding.tvCurrentTemp.text = it.temp_c.toString()
+        }
 
-            viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
-                binding.tvTommorowDate.text = it[1].date
-            }
+        viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
+            binding.tvTommorowDate.text = it[1].date
+        }
 
-            viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
-                binding.tvHourDate.text = it[0].time
-            }
+        viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
+            binding.tvHourDate.text = it[0].time
+        }
 
-            viewModel.currentWeather?.observe(viewLifecycleOwner){
-                Picasso.get().load(it.icon_url).into(binding.imageView)
-            }
-
+        viewModel.currentWeather?.observe(viewLifecycleOwner) {
+            Picasso.get().load(it.icon_url).into(binding.imageView)
+        }
     }
 
-    private fun launchMainFragment(){
-        if (viewModel.currentWeather == null) {
+    private fun initViewModel(location: String) {
+        if (location == UNDEFINED_LOCATION) {
+            viewModel.initViewModel(DEFAULT_LOCATION)
+        } else {
             viewModel.initViewModel(location)
         }
     }
 
-    private fun parseParams() {
-        val args = arguments
-        location = args?.getString(LOCATION, UNDEFINED_LOCATION).toString()
-        if (args == null) {
-            location = "Moscow"
+    private fun getLastLocationFromDataStore() {
+        lifecycleScope.launch {
+            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
         }
     }
 
@@ -108,20 +106,13 @@ class MainFragment : Fragment() {
         binding.bSearch.setOnClickListener {
             launchFragment(CityListFragment.newInstance(), "CityListFragment")
         }
-
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////
-    companion object{
 
-        private const val LOCATION = "location"
+    ////////////////////////////////////////////////////////////////////
+    companion object {
+
+        const val LOCATION = "location"
         private const val UNDEFINED_LOCATION = ""
-
-        fun newInstance(location: String): MainFragment {
-            return MainFragment().apply {
-                arguments = Bundle().apply {
-                    putString(LOCATION, location)
-                }
-            }
-        }
+        private const val DEFAULT_LOCATION = "Москва"
     }
 }
