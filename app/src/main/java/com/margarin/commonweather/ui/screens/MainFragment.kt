@@ -35,18 +35,10 @@ class MainFragment : Fragment() {
     private val binding: FragmentMainBinding
         get() = _binding ?: throw RuntimeException("binding == null")
 
-    private var location: String = UNDEFINED_LOCATION
-
     //////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getLastLocationFromDataStore()
-        initViewModel(location)
     }
 
     override fun onCreateView(
@@ -59,6 +51,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewModel()
         setOnClickListeners()
         observeViewModel()
     }
@@ -88,17 +81,17 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun initViewModel(location: String) {
+    private fun initViewModel() {
+        var location: String = UNDEFINED_LOCATION
+
+        lifecycleScope.launch {
+            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
+        }
+
         if (location == UNDEFINED_LOCATION) {
             viewModel.initViewModel(DEFAULT_LOCATION)
         } else {
             viewModel.initViewModel(location)
-        }
-    }
-
-    private fun getLastLocationFromDataStore() {
-        lifecycleScope.launch {
-            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
         }
     }
 

@@ -1,19 +1,14 @@
 package com.margarin.commonweather.ui.screens
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
@@ -23,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
@@ -31,9 +25,6 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
-import com.margarin.commonweather.utils.saveInDataStore
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
@@ -57,8 +48,6 @@ class CityListFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("binding == null")
 
     private lateinit var adapter: SearchAdapter
-
-    private var locationLatLon = UNDEFINED_LOCATION
 
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
@@ -92,7 +81,6 @@ class CityListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        locationLatLon = ""
     }
 
     private fun observeViewModel() {
@@ -111,9 +99,6 @@ class CityListFragment : Fragment() {
     private fun setOnClickListeners() {
         adapter.onItemClickListener = {
             it.name?.let { name -> viewModel.changeSearchItem(name) }
-            lifecycleScope.launch {
-                runBlocking { saveInDataStore(LOCATION, it.name!!) }
-            }
             requireActivity().supportFragmentManager.popBackStack()
         }
         adapter.onButtonDeleteClickListener = {
@@ -127,49 +112,16 @@ class CityListFragment : Fragment() {
         }
         binding.bDefineLoc.setOnClickListener {
             checkLocation()
-            //lifecycleScope.launch {
-            //    runBlocking { saveInDataStore(MainFragment.LOCATION, locationLatLon) }
-            //}
-            //TODO Save last location from gps
             requireActivity().supportFragmentManager.popBackStack()
         }
     }
 
-    private fun getLocation() {
-        val ct = CancellationTokenSource()
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        fusedLocationClient
-            //.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
-            .lastLocation
-            .addOnCompleteListener {
-                locationLatLon = "${it.result.latitude}, ${it.result.longitude}"
-                viewModel.changeSearchItem(locationLatLon)
-                Log.d("MyLog", "locat $locationLatLon")
-            }
-
-    }
-
     private fun checkLocation() {
-        if (isLocationEnabled()) {
-            getLocation()
+        if (viewModel.isLocationEnabled()) {
+            viewModel.getLocation(fusedLocationClient)
         } else {
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
         }
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        val locationManager =
-            activity?.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
-        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
     private fun setupSwipeListener(recyclerView: RecyclerView) {
@@ -214,9 +166,6 @@ class CityListFragment : Fragment() {
 
     /////////////////////////////////////////////////////////////////////////////
     companion object {
-
-        const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = ""
 
         fun newInstance() =
             CityListFragment().apply {

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
@@ -16,9 +15,6 @@ import com.margarin.commonweather.databinding.FragmentSearchBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
-import com.margarin.commonweather.utils.saveInDataStore
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -96,9 +92,6 @@ class SearchFragment : Fragment() {
     private fun setOnClickListeners(){
         adapter.onItemClickListener = {
             it.name?.let { name -> viewModel.changeSearchItem(name) }
-            lifecycleScope.launch {
-                runBlocking {saveInDataStore(MainFragment.LOCATION, it.name!!)}
-            }
             requireActivity().supportFragmentManager.popBackStack(
                 "CityListFragment",
                 -1)
