@@ -36,8 +36,6 @@ class SearchViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
-    private var locationLatLon = UNDEFINED_LOCATION
-
     private val _searchLocation =
         MutableLiveData<List<SearchModel>?>()
     val searchLocation: LiveData<List<SearchModel>?>
@@ -84,12 +82,10 @@ class SearchViewModel @Inject constructor(
     }
 
     fun changeSearchItem(city: String) {
-        viewModelScope.launch {
-            runBlocking {
-                val dataStoreKey = stringPreferencesKey(LOCATION)
-                application.dataStore.edit { settings ->
-                    settings[dataStoreKey] = city
-                }
+        runBlocking {
+            val dataStoreKey = stringPreferencesKey(LOCATION)
+            application.dataStore.edit { settings ->
+                settings[dataStoreKey] = city
             }
         }
         mainViewModel.loadDataFromApi(city)
@@ -103,6 +99,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getLocation(fusedLocationClient: FusedLocationProviderClient) {
+        var locationLatLon: String
         val ct = CancellationTokenSource()
         if (ActivityCompat.checkSelfPermission(
                 application,
