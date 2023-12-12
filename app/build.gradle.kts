@@ -72,5 +72,7 @@ dependencies {
 
     implementation ("androidx.datastore:datastore-preferences:1.1.0-alpha07")
 
+    implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
+
 
 }

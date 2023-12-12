@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
-import com.margarin.commonweather.utils.readFromDataStore
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -41,6 +41,11 @@ class MainFragment : Fragment() {
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,7 +56,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewModel()
+
         setOnClickListeners()
         observeViewModel()
     }
@@ -66,6 +71,7 @@ class MainFragment : Fragment() {
         viewModel.currentWeather?.observe(viewLifecycleOwner) {
             binding.tvCityname.text = it.location
             binding.tvCurrentTemp.text = it.temp_c.toString()
+            Picasso.get().load(it.icon_url).into(binding.imageView)
         }
 
         viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
@@ -75,17 +81,15 @@ class MainFragment : Fragment() {
         viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
             binding.tvHourDate.text = it[0].time
         }
-
-        viewModel.currentWeather?.observe(viewLifecycleOwner) {
-            Picasso.get().load(it.icon_url).into(binding.imageView)
-        }
     }
 
     private fun initViewModel() {
-        var location: String = UNDEFINED_LOCATION
+        var location: String
 
-        lifecycleScope.launch {
-            location = readFromDataStore(LOCATION) ?: UNDEFINED_LOCATION
+        runBlocking {
+            val dataStoreKey = stringPreferencesKey(LOCATION)
+            val preferences = (requireContext().dataStore.data.first())
+            location = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
         }
 
         if (location == UNDEFINED_LOCATION) {

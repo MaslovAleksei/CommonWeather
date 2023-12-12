@@ -76,7 +76,7 @@ class SearchViewModel @Inject constructor(
     }
 
     fun getSearchItem(searchId: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             _searchItem.value = getSearchItemUseCase(searchId)
         }
     }

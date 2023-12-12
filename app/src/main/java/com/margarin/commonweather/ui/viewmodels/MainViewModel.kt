@@ -36,17 +36,13 @@ class MainViewModel @Inject constructor(
         get() = _byHoursWeather
 
     fun initViewModel(location: String) {
-        viewModelScope.launch {
             runBlocking {
-                loadDataFromApi(location)
-                delay(1000)
+                loadDataUseCase(location)
+                delay(1000)  //TODO throw away that delay
             }
-                _currentWeather = getCurrentWeatherUseCase()
-                _byDaysWeather = getByDaysWeatherUseCase()
-                _byHoursWeather = getByHoursWeatherUseCase()
-
-        }
-
+            _currentWeather = getCurrentWeatherUseCase()
+            _byDaysWeather = getByDaysWeatherUseCase()
+            _byHoursWeather = getByHoursWeatherUseCase()
     }
 
     fun loadDataFromApi(location: String) {

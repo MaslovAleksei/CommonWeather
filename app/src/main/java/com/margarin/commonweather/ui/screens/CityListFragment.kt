@@ -7,6 +7,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -25,6 +27,10 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
+import com.yandex.mapkit.Animation
+import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.Point
+import com.yandex.mapkit.map.CameraPosition
 import javax.inject.Inject
 
 
@@ -48,6 +54,10 @@ class CityListFragment : Fragment() {
         get() = _binding ?: throw RuntimeException("binding == null")
 
     private lateinit var adapter: SearchAdapter
+
+    private val map by lazy {
+        binding.mapview.mapWindow.map
+    }
 
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
@@ -75,12 +85,14 @@ class CityListFragment : Fragment() {
         configureRecyclerView()
         setOnClickListeners()
         setupSwipeListener(binding.rvCityList)
+        configureMap()
 
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        MapKitFactory.getInstance().onStop()
     }
 
     private fun observeViewModel() {
@@ -93,26 +105,94 @@ class CityListFragment : Fragment() {
         binding.rvCityList.layoutManager = LinearLayoutManager(activity)
         adapter = SearchAdapter(R.layout.city_item)
         binding.rvCityList.adapter = adapter
-        binding.rvCityList.animation = null
     }
 
     private fun setOnClickListeners() {
-        adapter.onItemClickListener = {
-            it.name?.let { name -> viewModel.changeSearchItem(name) }
-            requireActivity().supportFragmentManager.popBackStack()
+        with(adapter) {
+
+            onItemClickListener = {
+                it.name?.let { name -> viewModel.changeSearchItem(name) }
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+            onButtonDeleteClickListener = {
+                viewModel.deleteSearchItem(it)
+            }
         }
-        adapter.onButtonDeleteClickListener = {
-            viewModel.deleteSearchItem(it)
+        with(binding) {
+
+            bInputLocation.setOnClickListener {
+                launchFragment(SearchFragment.newInstance(), "SearchFragment")
+            }
+            bBack.setOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+            bDefineLoc.setOnClickListener {
+                if (mapContainer.isGone) {
+                    checkLocation()
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    checkLocation()
+                    //TODO
+                }
+            }
+
+            bMap.setOnClickListener {
+                if (mapContainer.isGone) {
+                    MapKitFactory.getInstance().onStart()
+                    mapview.onStart()
+
+                    mapContainer.visibility = View.VISIBLE
+                    rvCityList.visibility = View.GONE
+                    bMap.text = "Close Map"
+
+                } else {
+                    MapKitFactory.getInstance().onStop()
+
+                    mapContainer.visibility = View.GONE
+                    rvCityList.visibility = View.VISIBLE
+                    bMap.text = "Point at map"
+                }
+            }
+
+            bSavePoint.setOnClickListener {
+                val currentPosition = map.cameraPosition
+                val latLonString = "${currentPosition.target.latitude}, ${currentPosition.target.longitude}"
+                viewModel.getSearchLocation(latLonString)
+                viewModel.searchLocation.observe(requireActivity()){
+                    viewModel.addSearchItem(it?.first() ?: return@observe)
+                }
+                MapKitFactory.getInstance().onStop()
+
+                mapContainer.visibility = View.GONE
+                rvCityList.visibility = View.VISIBLE
+                bMap.text = "Point at map"
+            }
+
+            bZoomIn.setOnClickListener {
+                changeZoomByStep(ZOOM_STEP)
+            }
+
+            bZoomOut.setOnClickListener {
+                changeZoomByStep(-ZOOM_STEP)
+            }
+
         }
-        binding.bInputLocation.setOnClickListener {
-            launchFragment(SearchFragment.newInstance(), "SearchFragment")
+    }
+    private fun configureMap () {
+
+        MapKitFactory.initialize(requireActivity())
+        map.move(START_POSITION, START_ANIMATION)  {
+            Toast.makeText(requireActivity(), "Initial camera move", Toast.LENGTH_SHORT).show()
         }
-        binding.bBack.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-        binding.bDefineLoc.setOnClickListener {
-            checkLocation()
-            requireActivity().supportFragmentManager.popBackStack()
+    }
+
+    private fun changeZoomByStep(value: Float) {
+        with(map.cameraPosition) {
+            map.move(
+                CameraPosition(target, zoom + value, azimuth, tilt),
+                SMOOTH_ANIMATION,
+                null,
+            )
         }
     }
 
@@ -125,6 +205,7 @@ class CityListFragment : Fragment() {
     }
 
     private fun setupSwipeListener(recyclerView: RecyclerView) {
+        //TODO make a well-working swipe
         val callback = object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
@@ -166,6 +247,14 @@ class CityListFragment : Fragment() {
 
     /////////////////////////////////////////////////////////////////////////////
     companion object {
+        private const val ZOOM_STEP = 1f
+        private val START_ANIMATION = Animation(Animation.Type.LINEAR, 1f)
+        private val SMOOTH_ANIMATION = Animation(Animation.Type.SMOOTH, 0.4f)
+        private val START_POSITION = CameraPosition(
+            Point(55.0, 50.0),
+            4.0f,
+            0.0f,
+            0.0f)
 
         fun newInstance() =
             CityListFragment().apply {
