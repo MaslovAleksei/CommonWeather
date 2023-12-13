@@ -1,13 +1,10 @@
 package com.margarin.commonweather.ui.screens
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +15,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
@@ -27,10 +23,7 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
-import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.geometry.Point
-import com.yandex.mapkit.map.CameraPosition
 import javax.inject.Inject
 
 
@@ -47,27 +40,16 @@ class CityListFragment : Fragment() {
         (requireActivity().application as WeatherApp).component
     }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private var _binding: FragmentCityListBinding? = null
     private val binding: FragmentCityListBinding
         get() = _binding ?: throw RuntimeException("binding == null")
 
     private lateinit var adapter: SearchAdapter
 
-    private val map by lazy {
-        binding.mapview.mapWindow.map
-    }
-
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
     override fun onCreateView(
@@ -85,8 +67,6 @@ class CityListFragment : Fragment() {
         configureRecyclerView()
         setOnClickListeners()
         setupSwipeListener(binding.rvCityList)
-        configureMap()
-
     }
 
     override fun onDestroyView() {
@@ -108,6 +88,9 @@ class CityListFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        val map = binding.mapview.mapWindow.map
+
         with(adapter) {
 
             onItemClickListener = {
@@ -123,16 +106,17 @@ class CityListFragment : Fragment() {
             bInputLocation.setOnClickListener {
                 launchFragment(SearchFragment.newInstance(), "SearchFragment")
             }
+
             bBack.setOnClickListener {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
+
             bDefineLoc.setOnClickListener {
                 if (mapContainer.isGone) {
-                    checkLocation()
+                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
                     requireActivity().supportFragmentManager.popBackStack()
                 } else {
-                    checkLocation()
-                    //TODO
+                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
                 }
             }
 
@@ -140,6 +124,7 @@ class CityListFragment : Fragment() {
                 if (mapContainer.isGone) {
                     MapKitFactory.getInstance().onStart()
                     mapview.onStart()
+                    viewModel.configureMap(map)
 
                     mapContainer.visibility = View.VISIBLE
                     rvCityList.visibility = View.GONE
@@ -155,10 +140,10 @@ class CityListFragment : Fragment() {
             }
 
             bSavePoint.setOnClickListener {
-                val currentPosition = map.cameraPosition
-                val latLonString = "${currentPosition.target.latitude}, ${currentPosition.target.longitude}"
+                val latLonString =
+                    "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
                 viewModel.getSearchLocation(latLonString)
-                viewModel.searchLocation.observe(requireActivity()){
+                viewModel.searchLocation.observe(requireActivity()) {
                     viewModel.addSearchItem(it?.first() ?: return@observe)
                 }
                 MapKitFactory.getInstance().onStop()
@@ -169,38 +154,16 @@ class CityListFragment : Fragment() {
             }
 
             bZoomIn.setOnClickListener {
-                changeZoomByStep(ZOOM_STEP)
+                viewModel.changeZoomByStep(ZOOM_STEP, map)
             }
 
             bZoomOut.setOnClickListener {
-                changeZoomByStep(-ZOOM_STEP)
+                viewModel.changeZoomByStep(-ZOOM_STEP, map)
             }
 
-        }
-    }
-    private fun configureMap () {
-
-        MapKitFactory.initialize(requireActivity())
-        map.move(START_POSITION, START_ANIMATION)  {
-            Toast.makeText(requireActivity(), "Initial camera move", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun changeZoomByStep(value: Float) {
-        with(map.cameraPosition) {
-            map.move(
-                CameraPosition(target, zoom + value, azimuth, tilt),
-                SMOOTH_ANIMATION,
-                null,
-            )
-        }
-    }
-
-    private fun checkLocation() {
-        if (viewModel.isLocationEnabled()) {
-            viewModel.getLocation(fusedLocationClient)
-        } else {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            bCurrentLoc.setOnClickListener {
+                viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
+            }
         }
     }
 
@@ -248,13 +211,6 @@ class CityListFragment : Fragment() {
     /////////////////////////////////////////////////////////////////////////////
     companion object {
         private const val ZOOM_STEP = 1f
-        private val START_ANIMATION = Animation(Animation.Type.LINEAR, 1f)
-        private val SMOOTH_ANIMATION = Animation(Animation.Type.SMOOTH, 0.4f)
-        private val START_POSITION = CameraPosition(
-            Point(55.0, 50.0),
-            4.0f,
-            0.0f,
-            0.0f)
 
         fun newInstance() =
             CityListFragment().apply {

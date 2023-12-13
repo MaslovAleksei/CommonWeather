@@ -33,7 +33,7 @@ class WeatherRepositoryImpl @Inject constructor(
             addCurrentData(currentData)
             addByDayData(forecastData)
             addByHourData(forecastData)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
     }
 
@@ -65,7 +65,7 @@ class WeatherRepositoryImpl @Inject constructor(
             result = apiService.getSearchWeather(query = query).map {
                 mapper.mapSearchDtoToSearchModel(it)
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
         return result
     }
