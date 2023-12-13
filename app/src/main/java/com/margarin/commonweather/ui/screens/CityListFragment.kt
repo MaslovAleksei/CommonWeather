@@ -1,19 +1,13 @@
 package com.margarin.commonweather.ui.screens
 
-import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE
 import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
@@ -21,9 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
@@ -31,9 +23,7 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
-import com.margarin.commonweather.utils.saveInDataStore
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.yandex.mapkit.MapKitFactory
 import javax.inject.Inject
 
 
@@ -50,25 +40,16 @@ class CityListFragment : Fragment() {
         (requireActivity().application as WeatherApp).component
     }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private var _binding: FragmentCityListBinding? = null
     private val binding: FragmentCityListBinding
         get() = _binding ?: throw RuntimeException("binding == null")
 
     private lateinit var adapter: SearchAdapter
 
-    private var locationLatLon = UNDEFINED_LOCATION
-
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
     override fun onCreateView(
@@ -86,13 +67,12 @@ class CityListFragment : Fragment() {
         configureRecyclerView()
         setOnClickListeners()
         setupSwipeListener(binding.rvCityList)
-
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        locationLatLon = ""
+        MapKitFactory.getInstance().onStop()
     }
 
     private fun observeViewModel() {
@@ -105,74 +85,90 @@ class CityListFragment : Fragment() {
         binding.rvCityList.layoutManager = LinearLayoutManager(activity)
         adapter = SearchAdapter(R.layout.city_item)
         binding.rvCityList.adapter = adapter
-        binding.rvCityList.animation = null
     }
 
     private fun setOnClickListeners() {
-        adapter.onItemClickListener = {
-            it.name?.let { name -> viewModel.changeSearchItem(name) }
-            lifecycleScope.launch {
-                runBlocking { saveInDataStore(LOCATION, it.name!!) }
-            }
-            requireActivity().supportFragmentManager.popBackStack()
-        }
-        adapter.onButtonDeleteClickListener = {
-            viewModel.deleteSearchItem(it)
-        }
-        binding.bInputLocation.setOnClickListener {
-            launchFragment(SearchFragment.newInstance(), "SearchFragment")
-        }
-        binding.bBack.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-        binding.bDefineLoc.setOnClickListener {
-            checkLocation()
-            //lifecycleScope.launch {
-            //    runBlocking { saveInDataStore(MainFragment.LOCATION, locationLatLon) }
-            //}
-            //TODO Save last location from gps
-            requireActivity().supportFragmentManager.popBackStack()
-        }
-    }
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        val map = binding.mapview.mapWindow.map
 
-    private fun getLocation() {
-        val ct = CancellationTokenSource()
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+        with(adapter) {
+
+            onItemClickListener = {
+                it.name?.let { name -> viewModel.changeSearchItem(name) }
+                requireActivity().supportFragmentManager.popBackStack()
+            }
+            onButtonDeleteClickListener = {
+                viewModel.deleteSearchItem(it)
+            }
         }
-        fusedLocationClient
-            //.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, ct.token)
-            .lastLocation
-            .addOnCompleteListener {
-                locationLatLon = "${it.result.latitude}, ${it.result.longitude}"
-                viewModel.changeSearchItem(locationLatLon)
-                Log.d("MyLog", "locat $locationLatLon")
+        with(binding) {
+
+            bInputLocation.setOnClickListener {
+                launchFragment(SearchFragment.newInstance(), "SearchFragment")
             }
 
-    }
+            bBack.setOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
 
-    private fun checkLocation() {
-        if (isLocationEnabled()) {
-            getLocation()
-        } else {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            bDefineLoc.setOnClickListener {
+                if (mapContainer.isGone) {
+                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
+                }
+            }
+
+            bMap.setOnClickListener {
+                if (mapContainer.isGone) {
+                    MapKitFactory.getInstance().onStart()
+                    mapview.onStart()
+                    viewModel.configureMap(map)
+
+                    mapContainer.visibility = View.VISIBLE
+                    rvCityList.visibility = View.GONE
+                    bMap.text = "Close Map"
+
+                } else {
+                    MapKitFactory.getInstance().onStop()
+
+                    mapContainer.visibility = View.GONE
+                    rvCityList.visibility = View.VISIBLE
+                    bMap.text = "Point at map"
+                }
+            }
+
+            bSavePoint.setOnClickListener {
+                val latLonString =
+                    "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
+                viewModel.getSearchLocation(latLonString)
+                viewModel.searchLocation.observe(requireActivity()) {
+                    viewModel.addSearchItem(it?.first() ?: return@observe)
+                }
+                MapKitFactory.getInstance().onStop()
+
+                mapContainer.visibility = View.GONE
+                rvCityList.visibility = View.VISIBLE
+                bMap.text = "Point at map"
+            }
+
+            bZoomIn.setOnClickListener {
+                viewModel.changeZoomByStep(ZOOM_STEP, map)
+            }
+
+            bZoomOut.setOnClickListener {
+                viewModel.changeZoomByStep(-ZOOM_STEP, map)
+            }
+
+            bCurrentLoc.setOnClickListener {
+                viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
+            }
         }
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        val locationManager =
-            activity?.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
-        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
     private fun setupSwipeListener(recyclerView: RecyclerView) {
+        //TODO make a well-working swipe
         val callback = object : ItemTouchHelper.Callback() {
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
@@ -214,9 +210,7 @@ class CityListFragment : Fragment() {
 
     /////////////////////////////////////////////////////////////////////////////
     companion object {
-
-        const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = ""
+        private const val ZOOM_STEP = 1f
 
         fun newInstance() =
             CityListFragment().apply {

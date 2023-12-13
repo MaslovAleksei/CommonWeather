@@ -2,8 +2,8 @@ package com.margarin.commonweather.ui.screens
 
 import android.Manifest
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -20,10 +20,12 @@ class MainActivity : AppCompatActivity() {
         checkPermission()
     }
 
-    fun checkPermission() {
-        LocationManager(this).locationPermissionRequest.launch(arrayOf(
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ))
+    private fun checkPermission() {
+        LocationManager(this).locationPermissionRequest.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
     }
 }

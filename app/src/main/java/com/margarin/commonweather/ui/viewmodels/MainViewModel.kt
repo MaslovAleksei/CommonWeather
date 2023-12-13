@@ -11,7 +11,9 @@ import com.margarin.commonweather.domain.usecases.GetByHoursWeatherUseCase
 import com.margarin.commonweather.domain.usecases.GetCurrentWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadDataUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -34,11 +36,13 @@ class MainViewModel @Inject constructor(
         get() = _byHoursWeather
 
     fun initViewModel(location: String) {
-        loadDataFromApi(location)
-        Thread.sleep(1000)
-        _currentWeather = getCurrentWeatherUseCase()
-        _byDaysWeather = getByDaysWeatherUseCase()
-        _byHoursWeather = getByHoursWeatherUseCase()
+            runBlocking {
+                loadDataUseCase(location)
+                delay(1000)  //TODO throw away that delay
+            }
+            _currentWeather = getCurrentWeatherUseCase()
+            _byDaysWeather = getByDaysWeatherUseCase()
+            _byHoursWeather = getByHoursWeatherUseCase()
     }
 
     fun loadDataFromApi(location: String) {

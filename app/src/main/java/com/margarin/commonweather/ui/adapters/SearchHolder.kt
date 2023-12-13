@@ -5,4 +5,4 @@ import androidx.viewbinding.ViewBinding
 
 class SearchHolder(
     val binding: ViewBinding
-): RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.ViewHolder(binding.root)

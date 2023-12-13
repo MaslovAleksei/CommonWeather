@@ -13,7 +13,6 @@ class SearchAdapter(private var layout: Int) :
     ListAdapter<SearchModel, SearchHolder>(SearchDiffCallback()) {
 
     var onItemClickListener: ((SearchModel) -> Unit)? = null
-    var onItemLongClickListener: ((SearchModel) -> Unit)? = null
     var onButtonDeleteClickListener: ((SearchModel) -> Unit)? = null
     var onButtonAddToFavClickListener: ((SearchModel) -> Unit)? = null
     var onSwipeItemClickListener: ((SearchModel) -> Unit)? = null
@@ -62,10 +61,6 @@ class SearchAdapter(private var layout: Int) :
                 }
                 holder.binding.bDelete.setOnClickListener {
                     onButtonDeleteClickListener?.invoke(item)
-                }
-                holder.binding.root.setOnLongClickListener {
-                    onItemLongClickListener?.invoke(item)
-                    true
                 }
                 if (item.isMenuShown) {
                     holder.binding.bDelete.visibility = View.VISIBLE
