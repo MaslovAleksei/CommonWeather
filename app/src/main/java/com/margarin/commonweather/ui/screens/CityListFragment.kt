@@ -8,18 +8,13 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_IDLE
-import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
-import androidx.recyclerview.widget.ItemTouchHelper.LEFT
-import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.LocationServices
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
+import com.margarin.commonweather.ui.adapters.setItemTouchHelper
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.launchFragment
@@ -66,7 +61,7 @@ class CityListFragment : Fragment() {
         observeViewModel()
         configureRecyclerView()
         setOnClickListeners()
-        setupSwipeListener(binding.rvCityList)
+        setItemTouchHelper(requireContext(), binding.rvCityList, adapter)
     }
 
     override fun onDestroyView() {
@@ -165,47 +160,6 @@ class CityListFragment : Fragment() {
                 viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
             }
         }
-    }
-
-    private fun setupSwipeListener(recyclerView: RecyclerView) {
-        //TODO make a well-working swipe
-        val callback = object : ItemTouchHelper.Callback() {
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ): Int {
-                return makeFlag(ACTION_STATE_IDLE, RIGHT) or
-                        makeFlag(ACTION_STATE_SWIPE, LEFT)
-            }
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val item = adapter.currentList[viewHolder.adapterPosition]
-                if (!item.isMenuShown) {
-                    viewModel.changeIsMenuShown(item)
-                }
-            }
-
-            override fun clearView(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ) {
-                super.clearView(recyclerView, viewHolder)
-                val item = adapter.currentList[viewHolder.adapterPosition]
-                if (!item.isMenuShown) {
-                    viewModel.changeIsMenuShown(item)
-                }
-            }
-        }
-        val itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     /////////////////////////////////////////////////////////////////////////////
