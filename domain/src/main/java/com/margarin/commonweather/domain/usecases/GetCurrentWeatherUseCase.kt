@@ -8,6 +8,7 @@ import javax.inject.Inject
 class GetCurrentWeatherUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
-    operator fun invoke() : LiveData<CurrentWeatherModel> = weatherRepository.getCurrentWeather()
+    suspend operator fun invoke(name: String) : CurrentWeatherModel =
+        weatherRepository.getCurrentWeather(name)
 
 }

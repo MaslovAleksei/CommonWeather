@@ -37,11 +37,11 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getCurrentWeather(): LiveData<CurrentWeatherModel> {
-        return currentDao.getCurrentWeather().map {
-            mapper.mapCurrentDbToEntity(it)
-        }
+    override suspend fun getCurrentWeather(name: String) : CurrentWeatherModel {
+        val currentWeatherModel = currentDao.getCurrentWeather(name = name)
+        return mapper.mapCurrentDbToEntity(currentWeatherModel)
     }
+
 
     override fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>> {
         return byDaysDao.getByDaysWeather().map { list ->

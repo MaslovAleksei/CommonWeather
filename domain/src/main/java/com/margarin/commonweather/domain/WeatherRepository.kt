@@ -11,7 +11,7 @@ interface WeatherRepository {
     //Weather functions
     suspend fun loadData(query: String)
 
-    fun getCurrentWeather(): LiveData<CurrentWeatherModel>
+    suspend fun getCurrentWeather(name: String): CurrentWeatherModel
 
     fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>>
 

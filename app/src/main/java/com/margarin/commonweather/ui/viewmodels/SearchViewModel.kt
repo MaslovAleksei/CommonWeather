@@ -44,8 +44,7 @@ class SearchViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
-    private val _searchLocation =
-        MutableLiveData<List<SearchModel>?>()
+    private val _searchLocation = MutableLiveData<List<SearchModel>?>()
     val searchLocation: LiveData<List<SearchModel>?>
         get() = _searchLocation
 
@@ -54,8 +53,7 @@ class SearchViewModel @Inject constructor(
     val searchList: LiveData<List<SearchModel>>?
         get() = _searchList
 
-    private val _searchItem =
-        MutableLiveData<SearchModel?>()
+    private val _searchItem = MutableLiveData<SearchModel?>()
     val searchItem: LiveData<SearchModel?>
         get() = _searchItem
 
@@ -89,14 +87,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun changeSearchItem(city: String) {
+    fun changeSearchItem(name: String) {
         runBlocking {
             val dataStoreKey = stringPreferencesKey(LOCATION)
             application.dataStore.edit { settings ->
-                settings[dataStoreKey] = city
+                settings[dataStoreKey] = name
             }
         }
-        mainViewModel.loadDataFromApi(city)
+        mainViewModel.loadDataFromApi(name)
     }
 
     fun changeIsMenuShown(searchModel: SearchModel) {
