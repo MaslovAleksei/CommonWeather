@@ -28,9 +28,8 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun loadData(query: String) {
         try {
-            val currentData = apiService.getCurrentWeather(city = query)
             val forecastData = apiService.getForecastWeather(city = query)
-            addCurrentData(currentData)
+            addCurrentData(forecastData)
             addByDayData(forecastData)
             addByHourData(forecastData)
         } catch (_: Exception) {
@@ -78,8 +77,8 @@ class WeatherRepositoryImpl @Inject constructor(
         return mapper.mapSearchDbModelToSearchModel(searchModel)
     }
 
-    private suspend fun addCurrentData(currentData: CurrentData) {
-        val currentDbModel = mapper.mapCurrentDataToCurrentDbModel(currentData)
+    private suspend fun addCurrentData(forecastData: ForecastData) {
+        val currentDbModel = mapper.mapForecastDataToCurrentDbModel(forecastData)
         currentDao.addCurrentWeather(currentDbModel)
     }
 
@@ -92,8 +91,4 @@ class WeatherRepositoryImpl @Inject constructor(
         val byHoursDbModelList = mapper.mapForecastDataToListHoursDbModel(forecastData)
         byHoursDao.addByHoursWeather(byHoursDbModelList)
     }
-
-
-
-
 }

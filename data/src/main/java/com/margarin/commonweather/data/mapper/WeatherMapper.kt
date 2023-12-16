@@ -12,6 +12,7 @@ import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.data.remote.apimodels.search.Search
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
+import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import com.margarin.commonweather.domain.models.SearchModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -20,20 +21,20 @@ import kotlin.math.roundToInt
 
 class WeatherMapper @Inject constructor() {
 
-    fun mapCurrentDataToCurrentDbModel(dto: CurrentData) = CurrentWeatherDbModel(
-        name = dto.location!!.name,
-        condition = dto.current?.condition?.text,
-        icon_url = "https:" + dto.current?.condition?.icon,
-        last_updated = dto.current?.last_updated,
-        wind_kph = dto.current?.wind_kph?.roundToInt(),
-        wind_dir = dto.current?.wind_dir,
-        temp_c = dto.current?.temp_c?.roundToInt(),
-        pressure_mb = dto.current?.pressure_mb?.roundToInt(),
-        humidity = dto.current?.humidity,
-        uv = dto.current?.uv?.roundToInt(),
-        feels_like = dto.current?.feelslike_c?.roundToInt(),
-        latitude = dto.location.lat,
-        longitude = dto.location.lon
+    fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
+        name = forecastData.location!!.name,
+        condition = forecastData.current?.condition?.text,
+        icon_url = "https:" + forecastData.current?.condition?.icon,
+        last_updated = forecastData.current?.last_updated,
+        wind_kph = forecastData.current?.wind_kph?.roundToInt(),
+        wind_dir = forecastData.current?.wind_dir,
+        temp_c = forecastData.current?.temp_c?.roundToInt(),
+        pressure_mb = forecastData.current?.pressure_mb?.roundToInt(),
+        humidity = forecastData.current?.humidity,
+        uv = forecastData.current?.uv?.roundToInt(),
+        feels_like = forecastData.current?.feelslike_c?.roundToInt(),
+        latitude = forecastData.location.lat,
+        longitude = forecastData.location.lon
     )
 
 
@@ -58,8 +59,7 @@ class WeatherMapper @Inject constructor() {
         wind_kph = hour.wind_kph?.roundToInt()
     )
 
-    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) =
-        com.margarin.commonweather.domain.models.CurrentWeatherModel(
+    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) = CurrentWeatherModel(
             name = db.name,
             condition = db.condition,
             icon_url = db.icon_url,

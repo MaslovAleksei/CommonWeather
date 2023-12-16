@@ -79,21 +79,21 @@ class MainFragment : Fragment() {
             result?.let { name -> viewModel.initViewModel(name) }
         }
 
-        viewModel.currentWeather.observe(requireActivity()) {
+        viewModel.currentWeather.observe(viewLifecycleOwner) {
             binding.tvCityname.text = it?.name
             binding.tvCurrentTemp.text = it?.temp_c.toString()
             Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
-        /*
-                viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
-                    binding.tvTomorrowDate.text = it[1].date
-                }
 
-                viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
-                    binding.tvHourDate.text = it[0].time
-                }
+        viewModel.byDaysWeather.observe(viewLifecycleOwner) {
+            binding.textView3.text = "time ${it?.first()?.maxtemp_c}"
+        }
 
-         */
+        viewModel.byHoursWeather.observe(viewLifecycleOwner) {
+            binding.textView5.text = it?.first()?.time
+        }
+
+
     }
 
     private fun initViewModel() {
