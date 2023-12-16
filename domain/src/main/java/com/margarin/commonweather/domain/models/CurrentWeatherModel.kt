@@ -1,7 +1,7 @@
 package com.margarin.commonweather.domain.models
 
 data class CurrentWeatherModel(
-    val id: Int,
+    val name: String,
     val condition: String?,
     val icon_url: String?,
     val last_updated: String?,
@@ -12,7 +12,6 @@ data class CurrentWeatherModel(
     val humidity: Int?,
     val uv: Int?,
     val feels_like: Int?,
-    val location: String?,
     val latitude: Float?,
     val longitude: Float?
 )

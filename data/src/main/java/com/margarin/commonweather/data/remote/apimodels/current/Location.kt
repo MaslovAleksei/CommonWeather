@@ -1,7 +1,7 @@
 package com.margarin.commonweather.data.remote.apimodels.current
 
 data class Location(
-    val name: String?,
+    val name: String,
     val region: String?,
     val country: String?,
     val lat: Float?,

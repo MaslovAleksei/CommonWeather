@@ -74,5 +74,7 @@ dependencies {
 
     implementation ("com.yandex.android:maps.mobile:4.4.0-lite")
 
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
 
 }

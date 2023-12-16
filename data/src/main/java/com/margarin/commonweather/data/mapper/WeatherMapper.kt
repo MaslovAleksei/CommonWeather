@@ -18,6 +18,7 @@ import kotlin.math.roundToInt
 class WeatherMapper @Inject constructor() {
 
     fun mapCurrentDataToCurrentDbModel(dto: CurrentData) = CurrentWeatherDbModel(
+        name = dto.location!!.name,
         condition = dto.current?.condition?.text,
         icon_url = "https:" + dto.current?.condition?.icon,
         last_updated = dto.current?.last_updated,
@@ -28,10 +29,10 @@ class WeatherMapper @Inject constructor() {
         humidity = dto.current?.humidity,
         uv = dto.current?.uv?.roundToInt(),
         feels_like = dto.current?.feelslike_c?.roundToInt(),
-        location = dto.location?.name,
-        latitude = dto.location?.lat,
-        longitude = dto.location?.lon
+        latitude = dto.location.lat,
+        longitude = dto.location.lon
     )
+
 
     fun mapByDayDtoToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
         id = id,
@@ -54,7 +55,7 @@ class WeatherMapper @Inject constructor() {
 
     fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) =
         com.margarin.commonweather.domain.models.CurrentWeatherModel(
-            id = db.id,
+            name = db.name,
             condition = db.condition,
             icon_url = db.icon_url,
             last_updated = db.last_updated,
@@ -65,7 +66,6 @@ class WeatherMapper @Inject constructor() {
             humidity = db.humidity,
             uv = db.uv,
             feels_like = db.feels_like,
-            location = db.location,
             latitude = db.latitude,
             longitude = db.longitude
         )
@@ -123,8 +123,7 @@ class WeatherMapper @Inject constructor() {
             country = search.country,
             lat = search.lat,
             lon = search.lon,
-            url = search.url,
-            isMenuShown = false
+            url = search.url
         )
 
     fun mapSearchModelToSearchDbModel(searchModel: com.margarin.commonweather.domain.models.SearchModel) =
@@ -135,8 +134,7 @@ class WeatherMapper @Inject constructor() {
             country = searchModel.country,
             lat = searchModel.lat,
             lon = searchModel.lon,
-            url = searchModel.url,
-            isMenuShown = searchModel.isMenuShown
+            url = searchModel.url
         )
 
     fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
@@ -147,8 +145,7 @@ class WeatherMapper @Inject constructor() {
             country = searchDb.country,
             lat = searchDb.lat,
             lon = searchDb.lon,
-            url = searchDb.url,
-            isMenuShown = searchDb.isMenuShown
+            url = searchDb.url
         )
 
 

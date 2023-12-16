@@ -5,8 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isGone
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
@@ -17,12 +21,16 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.adapters.setItemTouchHelper
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
-import com.margarin.commonweather.utils.launchFragment
+import com.margarin.commonweather.utils.*
 import com.yandex.mapkit.MapKitFactory
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 
+
+
 class CityListFragment : Fragment() {
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -89,7 +97,8 @@ class CityListFragment : Fragment() {
         with(adapter) {
 
             onItemClickListener = {
-                it.name?.let { name -> viewModel.changeSearchItem(name) }
+                saveToDataStore(it.name.toString())
+                setFragmentResult(it.name.toString())
                 requireActivity().supportFragmentManager.popBackStack()
             }
             onButtonDeleteClickListener = {
@@ -160,6 +169,22 @@ class CityListFragment : Fragment() {
                 viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
             }
         }
+    }
+
+    private fun saveToDataStore(name: String) {
+        val dataStoreKey = stringPreferencesKey(LOCATION)
+        runBlocking {
+            requireContext().dataStore.edit { settings ->
+                settings[dataStoreKey] = name
+            }
+        }
+    }
+
+    private fun setFragmentResult(name: String) {
+        setFragmentResult(
+            REQUEST_KEY,
+            bundleOf(BUNDLE_KEY to name)
+        )
     }
 
     /////////////////////////////////////////////////////////////////////////////

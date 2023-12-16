@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity("weather_current")
 data class CurrentWeatherDbModel(
     @PrimaryKey
-    val id: Int = 0,
+    val name: String,
     val condition: String?,
     val icon_url: String?,
     val last_updated: String?,
@@ -17,7 +17,6 @@ data class CurrentWeatherDbModel(
     val humidity: Int?,
     val uv: Int?,
     val feels_like: Int?,
-    val location: String?,
     val latitude: Float?,
     val longitude: Float?
 )

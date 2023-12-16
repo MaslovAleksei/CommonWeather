@@ -7,11 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.DEFAULT_LOCATION
+import com.margarin.commonweather.utils.LOCATION
+import com.margarin.commonweather.utils.REQUEST_KEY
+import com.margarin.commonweather.utils.UNDEFINED_LOCATION
 import com.margarin.commonweather.utils.launchFragment
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
@@ -56,10 +62,11 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getResultFromChildFragment()
         setOnClickListeners()
         observeViewModel()
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -68,34 +75,40 @@ class MainFragment : Fragment() {
 
     private fun observeViewModel() {
 
-        viewModel.currentWeather?.observe(viewLifecycleOwner) {
-            binding.tvCityname.text = it.location
-            binding.tvCurrentTemp.text = it.temp_c.toString()
-            Picasso.get().load(it.icon_url).into(binding.imageView)
+        viewModel.location.observe(viewLifecycleOwner) { result ->
+            result?.let { name -> viewModel.initViewModel(name) }
         }
 
-        viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
-            binding.tvTommorowDate.text = it[1].date
+        viewModel.currentWeather.observe(requireActivity()) {
+            binding.tvCityname.text = it?.name
+            binding.tvCurrentTemp.text = it?.temp_c.toString()
+            Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
+        /*
+                viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
+                    binding.tvTomorrowDate.text = it[1].date
+                }
 
-        viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
-            binding.tvHourDate.text = it[0].time
-        }
+                viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
+                    binding.tvHourDate.text = it[0].time
+                }
+
+         */
     }
 
     private fun initViewModel() {
-        var location: String
+        var name: String
 
         runBlocking {
             val dataStoreKey = stringPreferencesKey(LOCATION)
             val preferences = (requireContext().dataStore.data.first())
-            location = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
+            name = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
         }
 
-        if (location == UNDEFINED_LOCATION) {
+        if (name == UNDEFINED_LOCATION) {
             viewModel.initViewModel(DEFAULT_LOCATION)
         } else {
-            viewModel.initViewModel(location)
+            viewModel.initViewModel(name)
         }
     }
 
@@ -103,13 +116,19 @@ class MainFragment : Fragment() {
         binding.bSearch.setOnClickListener {
             launchFragment(CityListFragment.newInstance(), "CityListFragment")
         }
+
+        binding.textView5.setOnClickListener {
+            binding.textView5.text = viewModel.currentWeather.value?.name
+        }
+
+        binding.textView3.setOnClickListener {
+
+        }
     }
 
-    ////////////////////////////////////////////////////////////////////
-    companion object {
-
-        const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = ""
-        private const val DEFAULT_LOCATION = "Москва"
+    private fun getResultFromChildFragment() {
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
+            bundle.getString(BUNDLE_KEY)?.let { viewModel.setLocationValue(it) }
+        }
     }
 }

@@ -8,8 +8,6 @@ import android.content.pm.PackageManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +21,6 @@ import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
-import com.margarin.commonweather.ui.screens.dataStore
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -31,7 +28,6 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
@@ -40,12 +36,10 @@ class SearchViewModel @Inject constructor(
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
     private val getSearchListUseCase: GetSearchListUseCase,
-    private val mainViewModel: MainViewModel,
     private val application: Application
 ) : ViewModel() {
 
-    private val _searchLocation =
-        MutableLiveData<List<SearchModel>?>()
+    private val _searchLocation = MutableLiveData<List<SearchModel>?>()
     val searchLocation: LiveData<List<SearchModel>?>
         get() = _searchLocation
 
@@ -54,8 +48,7 @@ class SearchViewModel @Inject constructor(
     val searchList: LiveData<List<SearchModel>>?
         get() = _searchList
 
-    private val _searchItem =
-        MutableLiveData<SearchModel?>()
+    private val _searchItem = MutableLiveData<SearchModel?>()
     val searchItem: LiveData<SearchModel?>
         get() = _searchItem
 
@@ -86,23 +79,6 @@ class SearchViewModel @Inject constructor(
     fun getSearchItem(searchId: Int) {
         viewModelScope.launch(Dispatchers.Main) {
             _searchItem.value = getSearchItemUseCase(searchId)
-        }
-    }
-
-    fun changeSearchItem(city: String) {
-        runBlocking {
-            val dataStoreKey = stringPreferencesKey(LOCATION)
-            application.dataStore.edit { settings ->
-                settings[dataStoreKey] = city
-            }
-        }
-        mainViewModel.loadDataFromApi(city)
-    }
-
-    fun changeIsMenuShown(searchModel: SearchModel) {
-        viewModelScope.launch {
-            val newItem = searchModel.copy(isMenuShown = !searchModel.isMenuShown)
-            addSearchItemUseCase(newItem)
         }
     }
 
@@ -144,7 +120,7 @@ class SearchViewModel @Inject constructor(
             .addOnCompleteListener {
                 if (isMapGone) {
                     val locationLatLon = "${it.result.latitude}, ${it.result.longitude}"
-                    changeSearchItem(locationLatLon)
+                    //TODO
                 } else {
                     map.move(
                         CameraPosition(
@@ -183,9 +159,6 @@ class SearchViewModel @Inject constructor(
     }
 
     companion object {
-
-        private const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = "undefined_location"
 
         private val LINEAR_ANIMATION = Animation(Animation.Type.LINEAR, 1f)
         private val SMOOTH_ANIMATION = Animation(Animation.Type.SMOOTH, 0.4f)

@@ -12,6 +12,5 @@ data class SearchDbModel(
     val country: String?,
     val lat: Float?,
     val lon: Float?,
-    val url: String?,
-    val isMenuShown: Boolean
+    val url: String?
 )
