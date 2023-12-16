@@ -1,10 +1,8 @@
 package com.margarin.commonweather.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
 import com.margarin.commonweather.domain.models.ByHoursWeatherModel
@@ -14,9 +12,7 @@ import com.margarin.commonweather.domain.usecases.GetByHoursWeatherUseCase
 import com.margarin.commonweather.domain.usecases.GetCurrentWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadDataUseCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -26,7 +22,7 @@ class MainViewModel @Inject constructor(
     private val getByHoursWeatherUseCase: GetByHoursWeatherUseCase,
 ) : ViewModel() {
 
-    val _currentWeather = MutableLiveData<CurrentWeatherModel?>()
+    private val _currentWeather = MutableLiveData<CurrentWeatherModel?>()
     val currentWeather: LiveData<CurrentWeatherModel?>
         get() = _currentWeather
 
@@ -38,22 +34,20 @@ class MainViewModel @Inject constructor(
     val byHoursWeather: LiveData<List<ByHoursWeatherModel>>?
         get() = _byHoursWeather
 
+    private val _location = MutableLiveData<String?>()
+    val location: LiveData<String?>
+        get() = _location
 
     fun initViewModel(name: String) {
-        viewModelScope.launch {
-            loadDataUseCase(name)
-                 delay(1000)  //TODO throw away that delay
+        viewModelScope.launch(Dispatchers.Main) {
+            viewModelScope.launch(Dispatchers.IO) {
+                loadDataUseCase(name)
+            }.join()
             _currentWeather.value = getCurrentWeatherUseCase(name)
-            _byDaysWeather = getByDaysWeatherUseCase()
-            _byHoursWeather = getByHoursWeatherUseCase()
         }
     }
 
-    fun loadDataFromApi(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            loadDataUseCase(name)
-            getCurrentWeatherUseCase(name)
-        }
-
+    fun setLocationValue(result: String) {
+        _location.value = result
     }
 }

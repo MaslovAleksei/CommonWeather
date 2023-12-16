@@ -8,5 +8,4 @@ data class SearchModel(
     val lat: Float?,
     val lon: Float?,
     val url: String?,
-    var isMenuShown: Boolean
 )

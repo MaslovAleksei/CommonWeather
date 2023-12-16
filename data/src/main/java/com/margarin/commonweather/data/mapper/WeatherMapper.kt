@@ -29,8 +29,8 @@ class WeatherMapper @Inject constructor() {
         humidity = dto.current?.humidity,
         uv = dto.current?.uv?.roundToInt(),
         feels_like = dto.current?.feelslike_c?.roundToInt(),
-        latitude = dto.location?.lat,
-        longitude = dto.location?.lon
+        latitude = dto.location.lat,
+        longitude = dto.location.lon
     )
 
 
@@ -123,8 +123,7 @@ class WeatherMapper @Inject constructor() {
             country = search.country,
             lat = search.lat,
             lon = search.lon,
-            url = search.url,
-            isMenuShown = false
+            url = search.url
         )
 
     fun mapSearchModelToSearchDbModel(searchModel: com.margarin.commonweather.domain.models.SearchModel) =
@@ -135,8 +134,7 @@ class WeatherMapper @Inject constructor() {
             country = searchModel.country,
             lat = searchModel.lat,
             lon = searchModel.lon,
-            url = searchModel.url,
-            isMenuShown = searchModel.isMenuShown
+            url = searchModel.url
         )
 
     fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
@@ -147,8 +145,7 @@ class WeatherMapper @Inject constructor() {
             country = searchDb.country,
             lat = searchDb.lat,
             lon = searchDb.lon,
-            url = searchDb.url,
-            isMenuShown = searchDb.isMenuShown
+            url = searchDb.url
         )
 
 

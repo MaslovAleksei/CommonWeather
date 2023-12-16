@@ -8,8 +8,6 @@ import android.content.pm.PackageManager
 import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +21,6 @@ import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
-import com.margarin.commonweather.ui.screens.dataStore
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -31,7 +28,6 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
@@ -40,7 +36,6 @@ class SearchViewModel @Inject constructor(
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
     private val getSearchListUseCase: GetSearchListUseCase,
-    private val mainViewModel: MainViewModel,
     private val application: Application
 ) : ViewModel() {
 
@@ -87,23 +82,6 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun changeSearchItem(name: String) {
-        runBlocking {
-            val dataStoreKey = stringPreferencesKey(LOCATION)
-            application.dataStore.edit { settings ->
-                settings[dataStoreKey] = name
-            }
-        }
-        mainViewModel.loadDataFromApi(name)
-    }
-
-    fun changeIsMenuShown(searchModel: SearchModel) {
-        viewModelScope.launch {
-            val newItem = searchModel.copy(isMenuShown = !searchModel.isMenuShown)
-            addSearchItemUseCase(newItem)
-        }
-    }
-
     fun isGpsEnabled(
         fusedLocationClient: FusedLocationProviderClient,
         isMapGone: Boolean,
@@ -142,7 +120,7 @@ class SearchViewModel @Inject constructor(
             .addOnCompleteListener {
                 if (isMapGone) {
                     val locationLatLon = "${it.result.latitude}, ${it.result.longitude}"
-                    changeSearchItem(locationLatLon)
+                    //TODO
                 } else {
                     map.move(
                         CameraPosition(
@@ -181,9 +159,6 @@ class SearchViewModel @Inject constructor(
     }
 
     companion object {
-
-        private const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = "undefined_location"
 
         private val LINEAR_ANIMATION = Animation(Animation.Type.LINEAR, 1f)
         private val SMOOTH_ANIMATION = Animation(Animation.Type.SMOOTH, 0.4f)

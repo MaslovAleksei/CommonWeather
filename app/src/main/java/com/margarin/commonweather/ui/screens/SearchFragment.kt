@@ -7,7 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.core.os.bundleOf
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.R
@@ -16,6 +20,10 @@ import com.margarin.commonweather.databinding.FragmentSearchBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.LOCATION
+import com.margarin.commonweather.utils.REQUEST_KEY
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -100,7 +108,8 @@ class SearchFragment : Fragment() {
     private fun setOnClickListeners() {
         adapter.apply {
             onItemClickListener = {
-                it.name?.let { name -> viewModel.changeSearchItem(name) }
+                saveToDataStore(it.name.toString())
+                setFragmentResult(it.name.toString())
                 requireActivity().supportFragmentManager.popBackStack(
                     "CityListFragment",
                     -1
@@ -155,10 +164,27 @@ class SearchFragment : Fragment() {
     }
 
     private fun clickOnPopularCity(city: View) {
-        viewModel.changeSearchItem((city as TextView).text.toString())
+        saveToDataStore((city as TextView).text.toString())
+        setFragmentResult((city).text.toString())
         requireActivity().supportFragmentManager.popBackStack(
             "CityListFragment",
             -1
+        )
+    }
+
+    private fun saveToDataStore(name: String) {
+        val dataStoreKey = stringPreferencesKey(LOCATION)
+        runBlocking {
+            requireContext().dataStore.edit { settings ->
+                settings[dataStoreKey] = name
+            }
+        }
+    }
+
+    private fun setFragmentResult(name: String) {
+        setFragmentResult(
+            REQUEST_KEY,
+            bundleOf(BUNDLE_KEY to name)
         )
     }
 

@@ -1,20 +1,23 @@
 package com.margarin.commonweather.ui.screens
 
-import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.DEFAULT_LOCATION
+import com.margarin.commonweather.utils.LOCATION
+import com.margarin.commonweather.utils.REQUEST_KEY
+import com.margarin.commonweather.utils.UNDEFINED_LOCATION
 import com.margarin.commonweather.utils.launchFragment
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
@@ -59,11 +62,11 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        getResultFromChildFragment()
         setOnClickListeners()
         observeViewModel()
-        Log.d("tag", "onViewCreated ${viewModel.currentWeather.value?.name}")
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -72,35 +75,40 @@ class MainFragment : Fragment() {
 
     private fun observeViewModel() {
 
+        viewModel.location.observe(viewLifecycleOwner) { result ->
+            result?.let { name -> viewModel.initViewModel(name) }
+        }
+
         viewModel.currentWeather.observe(requireActivity()) {
-            Log.d("tag", "observe ${it?.name}")
             binding.tvCityname.text = it?.name
             binding.tvCurrentTemp.text = it?.temp_c.toString()
             Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
+        /*
+                viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
+                    binding.tvTomorrowDate.text = it[1].date
+                }
 
-        viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
-            binding.tvTommorowDate.text = it[1].date
-        }
+                viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
+                    binding.tvHourDate.text = it[0].time
+                }
 
-        viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
-            binding.tvHourDate.text = it[0].time
-        }
+         */
     }
 
     private fun initViewModel() {
-        var latLon: String
+        var name: String
 
         runBlocking {
             val dataStoreKey = stringPreferencesKey(LOCATION)
             val preferences = (requireContext().dataStore.data.first())
-            latLon = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
+            name = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
         }
 
-        if (latLon == UNDEFINED_LOCATION) {
+        if (name == UNDEFINED_LOCATION) {
             viewModel.initViewModel(DEFAULT_LOCATION)
         } else {
-            viewModel.initViewModel(latLon)
+            viewModel.initViewModel(name)
         }
     }
 
@@ -114,15 +122,13 @@ class MainFragment : Fragment() {
         }
 
         binding.textView3.setOnClickListener {
-            binding.textView3.text = viewModel.test()
+
         }
     }
 
-    ////////////////////////////////////////////////////////////////////
-    companion object {
-
-        const val LOCATION = "location"
-        private const val UNDEFINED_LOCATION = ""
-        private const val DEFAULT_LOCATION = "Москва"
+    private fun getResultFromChildFragment() {
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
+            bundle.getString(BUNDLE_KEY)?.let { viewModel.setLocationValue(it) }
+        }
     }
 }
