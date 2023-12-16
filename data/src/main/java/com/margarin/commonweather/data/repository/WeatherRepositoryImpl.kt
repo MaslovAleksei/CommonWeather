@@ -37,27 +37,15 @@ class WeatherRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentWeather(name: String) : CurrentWeatherModel {
-        val currentWeatherModel = currentDao.getCurrentWeather(name = name)
-        return mapper.mapCurrentDbToEntity(currentWeatherModel)
-    }
+    override suspend fun getCurrentWeather(name: String) =
+        mapper.mapCurrentDbToEntity(currentDao.getCurrentWeather(name))
+
+    override suspend fun getByDaysWeather(name: String) =
+        byDaysDao.getByDaysWeather(name).map { mapper.mapByDaysDbModelToEntity(it) }
 
 
-    override fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>> {
-        return byDaysDao.getByDaysWeather().map { list ->
-            list.map {
-                mapper.mapByDaysDbModelToEntity(it)
-            }
-        }
-    }
-
-    override fun getByHoursWeather(): LiveData<List<ByHoursWeatherModel>> {
-        return byHoursDao.getByHoursWeather().map { list ->
-            list.map {
-                mapper.mapByHoursDbModelToEntity(it)
-            }
-        }
-    }
+    override suspend fun getByHoursWeather(name: String) =
+        byHoursDao.getByHoursWeather(name).map { mapper.mapByHoursDbModelToEntity(it) }
 
     override suspend fun getSearchLocation(query: String): List<SearchModel> {
         var result: List<SearchModel> = mutableListOf()

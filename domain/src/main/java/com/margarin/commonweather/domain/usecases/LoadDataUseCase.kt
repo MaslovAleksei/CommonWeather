@@ -7,5 +7,4 @@ class LoadDataUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
     suspend operator fun invoke(location: String) = weatherRepository.loadData(location)
-
 }

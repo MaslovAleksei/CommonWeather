@@ -7,7 +7,6 @@ import javax.inject.Inject
 class AddSearchItemUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
-    suspend operator fun invoke(
-        searchModel: SearchModel
-    ) = weatherRepository.addSearchItem(searchModel)
+    suspend operator fun invoke(searchModel: SearchModel) =
+        weatherRepository.addSearchItem(searchModel)
 }

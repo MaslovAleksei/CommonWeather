@@ -10,6 +10,9 @@ import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.data.remote.apimodels.search.Search
+import com.margarin.commonweather.domain.models.ByDaysWeatherModel
+import com.margarin.commonweather.domain.models.ByHoursWeatherModel
+import com.margarin.commonweather.domain.models.SearchModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -34,9 +37,10 @@ class WeatherMapper @Inject constructor() {
     )
 
 
-    fun mapByDayDtoToByDaysDbModel(day: Day, id: Int) = ByDaysWeatherDbModel(
+    fun mapByDayDtoToByDaysDbModel(id: Int, name: String, day: Day) = ByDaysWeatherDbModel(
+        name = name,
         id = id,
-        date = "date",
+        date = id.toString(),
         maxtemp_c = day.maxtemp_c?.roundToInt(),
         mintemp_c = day.mintemp_c?.roundToInt(),
         condition = day.condition?.text,
@@ -45,7 +49,8 @@ class WeatherMapper @Inject constructor() {
         chance_of_rain = day.daily_chance_of_rain,
     )
 
-    fun mapByHourDtoToByHoursDbModel(hour: Hour, id: Int) = ByHoursWeatherDbModel(
+    fun mapByHourDtoToByHoursDbModel(id: Int, name: String, hour: Hour) = ByHoursWeatherDbModel(
+        name = name,
         id = id,
         time = hour.time,
         temp_c = hour.temp_c?.roundToInt(),
@@ -70,32 +75,36 @@ class WeatherMapper @Inject constructor() {
             longitude = db.longitude
         )
 
-    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) =
-        com.margarin.commonweather.domain.models.ByDaysWeatherModel(
-            id = db.id,
-            date = db.date,
-            maxtemp_c = db.maxtemp_c,
-            mintemp_c = db.mintemp_c,
-            condition = db.condition,
-            icon_url = db.icon_url,
-            maxwind_kph = db.maxwind_kph,
-            chance_of_rain = db.chance_of_rain,
-            day_of_week = db.date
-        )
+    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
+        name = db.name,
+        id = db.id,
+        date = db.date,
+        maxtemp_c = db.maxtemp_c,
+        mintemp_c = db.mintemp_c,
+        condition = db.condition,
+        icon_url = db.icon_url,
+        maxwind_kph = db.maxwind_kph,
+        chance_of_rain = db.chance_of_rain,
+        day_of_week = db.date
+    )
 
-    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) =
-        com.margarin.commonweather.domain.models.ByHoursWeatherModel(
-            id = db.id,
-            time = db.time,
-            temp_c = db.temp_c,
-            icon_url = db.icon_url,
-            wind_kph = db.wind_kph
-        )
+    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) = ByHoursWeatherModel(
+        name = db.name,
+        id = db.id,
+        time = db.time,
+        temp_c = db.temp_c,
+        icon_url = db.icon_url,
+        wind_kph = db.wind_kph
+    )
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
         val dayList = mutableListOf<ByDaysWeatherDbModel>()
         for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
-            val day = mapByDayDtoToByDaysDbModel(forecastData.forecast.forecastday[i].day!!, i)
+            val day = mapByDayDtoToByDaysDbModel(
+                i,
+                forecastData.location!!.name,
+                forecastData.forecast.forecastday[i].day!!,
+            )
             dayList.add(day)
         }
         return dayList
@@ -103,42 +112,40 @@ class WeatherMapper @Inject constructor() {
 
     fun mapForecastDataToListHoursDbModel(forecastData: ForecastData): List<ByHoursWeatherDbModel> {
         val hourList = mutableListOf<ByHoursWeatherDbModel>()
-        for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
-            for (j in 0 until forecastData.forecast.forecastday[i].hour?.size!!) {
+        for (i in 0 until forecastData.forecast?.forecastday?.first()?.hour?.size!!) {
                 val hour = mapByHourDtoToByHoursDbModel(
-                    forecastData.forecast.forecastday[i].hour!![j],
-                    "$i$i$j".toInt()
+                    i,
+                    forecastData.location!!.name,
+                    forecastData.forecast.forecastday.first().hour!![i]
+
                 )
                 hourList.add(hour)
             }
-        }
+
         return hourList
     }
 
-    fun mapSearchDtoToSearchModel(search: Search) =
-        com.margarin.commonweather.domain.models.SearchModel(
-            id = search.id,
-            name = search.name,
-            region = search.region,
-            country = search.country,
-            lat = search.lat,
-            lon = search.lon,
-            url = search.url
-        )
+    fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
+        id = search.id,
+        name = search.name,
+        region = search.region,
+        country = search.country,
+        lat = search.lat,
+        lon = search.lon,
+        url = search.url
+    )
 
-    fun mapSearchModelToSearchDbModel(searchModel: com.margarin.commonweather.domain.models.SearchModel) =
-        SearchDbModel(
-            id = searchModel.id,
-            name = searchModel.name,
-            region = searchModel.region,
-            country = searchModel.country,
-            lat = searchModel.lat,
-            lon = searchModel.lon,
-            url = searchModel.url
-        )
+    fun mapSearchModelToSearchDbModel(searchModel: SearchModel) = SearchDbModel(
+        id = searchModel.id,
+        name = searchModel.name,
+        region = searchModel.region,
+        country = searchModel.country,
+        lat = searchModel.lat,
+        lon = searchModel.lon,
+        url = searchModel.url
+    )
 
-    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
-        com.margarin.commonweather.domain.models.SearchModel(
+    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) = SearchModel(
             id = searchDb.id,
             name = searchDb.name,
             region = searchDb.region,
@@ -202,7 +209,6 @@ class WeatherMapper @Inject constructor() {
     private fun getCurrentDate() = SimpleDateFormat(TIME_FORMAT).format(Date())
 
     companion object {
-        private const val UNDEFINED_ID = 0
         private const val TIME_FORMAT = "dd-MM-yyyy"
     }
 }
