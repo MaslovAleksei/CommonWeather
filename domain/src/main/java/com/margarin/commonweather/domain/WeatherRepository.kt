@@ -26,8 +26,4 @@ interface WeatherRepository {
 
     suspend fun deleteSearchItem(searchModel: SearchModel)
 
-    suspend fun getSearchItem(searchId: Int): SearchModel
-
-
-
 }

@@ -7,13 +7,9 @@ import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
 import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
 import com.margarin.commonweather.data.mapper.WeatherMapper
-
 import com.margarin.commonweather.data.remote.ApiService
-import com.margarin.commonweather.data.remote.apimodels.current.CurrentData
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
-import com.margarin.commonweather.domain.models.ByDaysWeatherModel
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
-import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.SearchModel
 import javax.inject.Inject
 
@@ -24,7 +20,7 @@ class WeatherRepositoryImpl @Inject constructor(
     private val byHoursDao: ByHoursWeatherDao,
     private val currentDao: CurrentWeatherDao,
     private val searchDao: SearchDao
-) : com.margarin.commonweather.domain.WeatherRepository {
+) : WeatherRepository {
 
     override suspend fun loadData(query: String) {
         try {
@@ -41,7 +37,6 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun getByDaysWeather(name: String) =
         byDaysDao.getByDaysWeather(name).map { mapper.mapByDaysDbModelToEntity(it) }
-
 
     override suspend fun getByHoursWeather(name: String) =
         byHoursDao.getByHoursWeather(name).map { mapper.mapByHoursDbModelToEntity(it) }
@@ -70,11 +65,6 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun deleteSearchItem(searchModel: SearchModel) {
         searchDao.deleteSearchItem(searchModel.id)
-    }
-
-    override suspend fun getSearchItem(searchId: Int): SearchModel {
-        val searchModel = searchDao.getSearchItem(searchId)
-        return mapper.mapSearchDbModelToSearchModel(searchModel)
     }
 
     private suspend fun addCurrentData(forecastData: ForecastData) {

@@ -14,10 +14,11 @@ import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.DEFAULT_LOCATION
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
-import com.margarin.commonweather.utils.UNDEFINED_LOCATION
+import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.launchFragment
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
@@ -102,10 +103,10 @@ class MainFragment : Fragment() {
         runBlocking {
             val dataStoreKey = stringPreferencesKey(LOCATION)
             val preferences = (requireContext().dataStore.data.first())
-            name = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
+            name = preferences[dataStoreKey] ?: EMPTY_STRING
         }
 
-        if (name == UNDEFINED_LOCATION) {
+        if (name == EMPTY_STRING) {
             viewModel.initViewModel(DEFAULT_LOCATION)
         } else {
             viewModel.initViewModel(name)
@@ -114,7 +115,7 @@ class MainFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.bSearch.setOnClickListener {
-            launchFragment(CityListFragment.newInstance(), "CityListFragment")
+            launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
         }
 
         binding.textView5.setOnClickListener {

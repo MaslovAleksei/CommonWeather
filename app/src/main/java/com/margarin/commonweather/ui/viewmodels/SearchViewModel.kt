@@ -3,11 +3,11 @@ package com.margarin.commonweather.ui.viewmodels
 import android.Manifest
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,9 +18,10 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.domain.models.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.GetSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
+import com.margarin.commonweather.ui.screens.dataStore
+import com.margarin.commonweather.utils.LOCATION
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -28,35 +29,28 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
     private val getSearchLocationUseCase: GetSearchLocationUseCase,
-    private val getSearchItemUseCase: GetSearchItemUseCase,
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
     private val getSearchListUseCase: GetSearchListUseCase,
     private val application: Application
 ) : ViewModel() {
 
-    private val _searchLocation = MutableLiveData<List<SearchModel>?>()
-    val searchLocation: LiveData<List<SearchModel>?>
-        get() = _searchLocation
+    private val _definiteLocation = MutableLiveData<List<SearchModel>?>()
+    val definiteLocation: LiveData<List<SearchModel>?>
+        get() = _definiteLocation
 
-    private var _searchList: LiveData<List<SearchModel>>? =
-        null
+    private val _savedLocation = MutableLiveData<List<SearchModel>?>()
+    val savedLocation: LiveData<List<SearchModel>?>
+        get() = _savedLocation
+
+    private var _searchList: LiveData<List<SearchModel>>? = null
     val searchList: LiveData<List<SearchModel>>?
         get() = _searchList
-
-    private val _searchItem = MutableLiveData<SearchModel?>()
-    val searchItem: LiveData<SearchModel?>
-        get() = _searchItem
-
-    fun getSearchLocation(query: String) {
-        viewModelScope.launch {
-            _searchLocation.value = getSearchLocationUseCase(query)
-        }
-    }
 
     fun loadSearchList() {
         viewModelScope.launch {
@@ -76,35 +70,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun getSearchItem(searchId: Int) {
-        viewModelScope.launch(Dispatchers.Main) {
-            _searchItem.value = getSearchItemUseCase(searchId)
-        }
-    }
-
-    fun isGpsEnabled(
-        fusedLocationClient: FusedLocationProviderClient,
-        isMapGone: Boolean,
-        map: Map
-    ) {
+    fun isGpsEnabled(): Boolean {
         val locationManager =
             application
                 .getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
-        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
-            getLocation(fusedLocationClient, isMapGone, map)
-        } else {
-            application.startActivity(
-                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-        }
+        return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
-    private fun getLocation(
-        fusedLocationClient: FusedLocationProviderClient,
-        isMapGone: Boolean,
-        map: Map
-    ) {
+    fun getLocationLatLon(fusedLocationClient: FusedLocationProviderClient) {
         if (ActivityCompat.checkSelfPermission(
                 application,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -112,27 +85,25 @@ class SearchViewModel @Inject constructor(
                 application,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+        ) { }
         fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
             .addOnCompleteListener {
-                if (isMapGone) {
-                    val locationLatLon = "${it.result.latitude}, ${it.result.longitude}"
-                    //TODO
-                } else {
-                    map.move(
-                        CameraPosition(
-                            Point(it.result.latitude, it.result.longitude),
-                            6.0f,
-                            0.0f,
-                            0.0f
-                        ),
-                        LINEAR_ANIMATION
-                    ) {}
-                }
+                changeDefiniteLocation("${it.result.latitude}, ${it.result.longitude}")
             }
+
+    }
+
+    fun mapMoveToPosition(map: Map, lat: String, lon: String) {
+            map.move(
+                CameraPosition(
+                    Point(lat.toDouble(), lon.toDouble()),
+                    6.0f,
+                    0.0f,
+                    0.0f
+                ),
+                LINEAR_ANIMATION
+            ) {}
 
     }
 
@@ -157,6 +128,28 @@ class SearchViewModel @Inject constructor(
             ).show()
         }
     }
+
+    fun saveToDataStore(name: String) {
+        val dataStoreKey = stringPreferencesKey(LOCATION)
+        runBlocking {
+            application.dataStore.edit { settings ->
+                settings[dataStoreKey] = name
+            }
+        }
+    }
+
+    fun changeDefiniteLocation(query: String) {
+        viewModelScope.launch {
+            _definiteLocation.value = getSearchLocationUseCase(query)
+        }
+    }
+
+    fun changeSavedLocation(query: String) {
+        viewModelScope.launch {
+            _savedLocation.value = getSearchLocationUseCase(query)
+        }
+    }
+
 
     companion object {
 

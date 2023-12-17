@@ -1,18 +1,19 @@
 package com.margarin.commonweather.ui.screens
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
@@ -21,12 +22,14 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.adapters.setItemTouchHelper
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
-import com.margarin.commonweather.utils.*
+import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.REQUEST_KEY
+import com.margarin.commonweather.utils.SEARCH_FRAGMENT
+import com.margarin.commonweather.utils.launchFragment
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
-
-
 
 
 class CityListFragment : Fragment() {
@@ -64,12 +67,12 @@ class CityListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.loadSearchList()
-        observeViewModel()
-        configureRecyclerView()
-        setOnClickListeners()
-        setItemTouchHelper(requireContext(), binding.rvCityList, adapter)
+            super.onViewCreated(view, savedInstanceState)
+            viewModel.loadSearchList()
+            observeViewModel()
+            configureRecyclerView()
+            setOnClickListeners()
+            setItemTouchHelper(requireContext(), binding.rvCityList, adapter)
     }
 
     override fun onDestroyView() {
@@ -97,7 +100,7 @@ class CityListFragment : Fragment() {
         with(adapter) {
 
             onItemClickListener = {
-                saveToDataStore(it.name.toString())
+                viewModel.saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
                 requireActivity().supportFragmentManager.popBackStack()
             }
@@ -108,7 +111,7 @@ class CityListFragment : Fragment() {
         with(binding) {
 
             bInputLocation.setOnClickListener {
-                launchFragment(SearchFragment.newInstance(), "SearchFragment")
+                launchFragment(SearchFragment.newInstance(), SEARCH_FRAGMENT)
             }
 
             bBack.setOnClickListener {
@@ -116,12 +119,7 @@ class CityListFragment : Fragment() {
             }
 
             bDefineLoc.setOnClickListener {
-                if (mapContainer.isGone) {
-                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
-                    requireActivity().supportFragmentManager.popBackStack()
-                } else {
-                    viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
-                }
+                interactWithLocation(fusedLocationClient, map)
             }
 
             bMap.setOnClickListener {
@@ -146,12 +144,11 @@ class CityListFragment : Fragment() {
             bSavePoint.setOnClickListener {
                 val latLonString =
                     "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
-                viewModel.getSearchLocation(latLonString)
-                viewModel.searchLocation.observe(requireActivity()) {
+                viewModel.changeSavedLocation(latLonString)
+                viewModel.savedLocation.observe(viewLifecycleOwner) {
                     viewModel.addSearchItem(it?.first() ?: return@observe)
                 }
                 MapKitFactory.getInstance().onStop()
-
                 mapContainer.visibility = View.GONE
                 rvCityList.visibility = View.VISIBLE
                 bMap.text = "Point at map"
@@ -166,16 +163,7 @@ class CityListFragment : Fragment() {
             }
 
             bCurrentLoc.setOnClickListener {
-                viewModel.isGpsEnabled(fusedLocationClient, mapContainer.isGone, map)
-            }
-        }
-    }
-
-    private fun saveToDataStore(name: String) {
-        val dataStoreKey = stringPreferencesKey(LOCATION)
-        runBlocking {
-            requireContext().dataStore.edit { settings ->
-                settings[dataStoreKey] = name
+                interactWithLocation(fusedLocationClient, map)
             }
         }
     }
@@ -185,6 +173,30 @@ class CityListFragment : Fragment() {
             REQUEST_KEY,
             bundleOf(BUNDLE_KEY to name)
         )
+    }
+
+    private fun interactWithLocation(fusedLocationClient: FusedLocationProviderClient, map: Map) {
+        if (viewModel.isGpsEnabled()) {
+            runBlocking {viewModel.getLocationLatLon(fusedLocationClient)}
+            viewModel.definiteLocation.observe(viewLifecycleOwner) {
+                if (binding.mapContainer.isGone) {
+                    viewModel.saveToDataStore(it?.first()?.name.toString())
+                    setFragmentResult(it?.first()?.name.toString())
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    viewModel.mapMoveToPosition(
+                        map,
+                        it?.first()?.lat.toString(),
+                        it?.first()?.lon.toString()
+                    )
+                }
+            }
+        } else {
+            requireContext().startActivity(
+                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            )
+        }
     }
 
     /////////////////////////////////////////////////////////////////////////////
