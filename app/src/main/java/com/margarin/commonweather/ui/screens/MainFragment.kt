@@ -14,10 +14,11 @@ import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.DEFAULT_LOCATION
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
-import com.margarin.commonweather.utils.UNDEFINED_LOCATION
+import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.launchFragment
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.first
@@ -79,21 +80,21 @@ class MainFragment : Fragment() {
             result?.let { name -> viewModel.initViewModel(name) }
         }
 
-        viewModel.currentWeather.observe(requireActivity()) {
+        viewModel.currentWeather.observe(viewLifecycleOwner) {
             binding.tvCityname.text = it?.name
             binding.tvCurrentTemp.text = it?.temp_c.toString()
             Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
-        /*
-                viewModel.byDaysWeather?.observe(viewLifecycleOwner) {
-                    binding.tvTomorrowDate.text = it[1].date
-                }
 
-                viewModel.byHoursWeather?.observe(viewLifecycleOwner) {
-                    binding.tvHourDate.text = it[0].time
-                }
+        viewModel.byDaysWeather.observe(viewLifecycleOwner) {
+            binding.textView3.text = "time ${it?.first()?.maxtemp_c}"
+        }
 
-         */
+        viewModel.byHoursWeather.observe(viewLifecycleOwner) {
+            binding.textView5.text = it?.first()?.time
+        }
+
+
     }
 
     private fun initViewModel() {
@@ -102,10 +103,10 @@ class MainFragment : Fragment() {
         runBlocking {
             val dataStoreKey = stringPreferencesKey(LOCATION)
             val preferences = (requireContext().dataStore.data.first())
-            name = preferences[dataStoreKey] ?: UNDEFINED_LOCATION
+            name = preferences[dataStoreKey] ?: EMPTY_STRING
         }
 
-        if (name == UNDEFINED_LOCATION) {
+        if (name == EMPTY_STRING) {
             viewModel.initViewModel(DEFAULT_LOCATION)
         } else {
             viewModel.initViewModel(name)
@@ -114,7 +115,7 @@ class MainFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.bSearch.setOnClickListener {
-            launchFragment(CityListFragment.newInstance(), "CityListFragment")
+            launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
         }
 
         binding.textView5.setOnClickListener {

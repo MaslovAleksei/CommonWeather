@@ -7,13 +7,9 @@ import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
 import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
 import com.margarin.commonweather.data.mapper.WeatherMapper
-
 import com.margarin.commonweather.data.remote.ApiService
-import com.margarin.commonweather.data.remote.apimodels.current.CurrentData
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
-import com.margarin.commonweather.domain.models.ByDaysWeatherModel
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
-import com.margarin.commonweather.domain.models.CurrentWeatherModel
+import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.SearchModel
 import javax.inject.Inject
 
@@ -24,40 +20,26 @@ class WeatherRepositoryImpl @Inject constructor(
     private val byHoursDao: ByHoursWeatherDao,
     private val currentDao: CurrentWeatherDao,
     private val searchDao: SearchDao
-) : com.margarin.commonweather.domain.WeatherRepository {
+) : WeatherRepository {
 
     override suspend fun loadData(query: String) {
         try {
-            val currentData = apiService.getCurrentWeather(city = query)
             val forecastData = apiService.getForecastWeather(city = query)
-            addCurrentData(currentData)
+            addCurrentData(forecastData)
             addByDayData(forecastData)
             addByHourData(forecastData)
         } catch (_: Exception) {
         }
     }
 
-    override suspend fun getCurrentWeather(name: String) : CurrentWeatherModel {
-        val currentWeatherModel = currentDao.getCurrentWeather(name = name)
-        return mapper.mapCurrentDbToEntity(currentWeatherModel)
-    }
+    override suspend fun getCurrentWeather(name: String) =
+        mapper.mapCurrentDbToEntity(currentDao.getCurrentWeather(name))
 
+    override suspend fun getByDaysWeather(name: String) =
+        byDaysDao.getByDaysWeather(name).map { mapper.mapByDaysDbModelToEntity(it) }
 
-    override fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>> {
-        return byDaysDao.getByDaysWeather().map { list ->
-            list.map {
-                mapper.mapByDaysDbModelToEntity(it)
-            }
-        }
-    }
-
-    override fun getByHoursWeather(): LiveData<List<ByHoursWeatherModel>> {
-        return byHoursDao.getByHoursWeather().map { list ->
-            list.map {
-                mapper.mapByHoursDbModelToEntity(it)
-            }
-        }
-    }
+    override suspend fun getByHoursWeather(name: String) =
+        byHoursDao.getByHoursWeather(name).map { mapper.mapByHoursDbModelToEntity(it) }
 
     override suspend fun getSearchLocation(query: String): List<SearchModel> {
         var result: List<SearchModel> = mutableListOf()
@@ -85,13 +67,8 @@ class WeatherRepositoryImpl @Inject constructor(
         searchDao.deleteSearchItem(searchModel.id)
     }
 
-    override suspend fun getSearchItem(searchId: Int): SearchModel {
-        val searchModel = searchDao.getSearchItem(searchId)
-        return mapper.mapSearchDbModelToSearchModel(searchModel)
-    }
-
-    private suspend fun addCurrentData(currentData: CurrentData) {
-        val currentDbModel = mapper.mapCurrentDataToCurrentDbModel(currentData)
+    private suspend fun addCurrentData(forecastData: ForecastData) {
+        val currentDbModel = mapper.mapForecastDataToCurrentDbModel(forecastData)
         currentDao.addCurrentWeather(currentDbModel)
     }
 
@@ -104,8 +81,4 @@ class WeatherRepositoryImpl @Inject constructor(
         val byHoursDbModelList = mapper.mapForecastDataToListHoursDbModel(forecastData)
         byHoursDao.addByHoursWeather(byHoursDbModelList)
     }
-
-
-
-
 }

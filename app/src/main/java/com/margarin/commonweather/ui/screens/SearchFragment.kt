@@ -21,6 +21,7 @@ import com.margarin.commonweather.ui.adapters.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
+import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
 import kotlinx.coroutines.runBlocking
@@ -73,7 +74,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.searchLocation.observe(viewLifecycleOwner) {
+        viewModel.definiteLocation.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
     }
@@ -92,8 +93,8 @@ class SearchFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.getSearchLocation(it) }
-                if (newText != "") {
+                newText?.let { viewModel.changeDefiniteLocation(it) }
+                if (newText?.isNotBlank() == true) {
                     binding.svPopularCities.visibility = View.GONE
                     binding.rvSearch.visibility = View.VISIBLE
                 } else {
@@ -111,14 +112,14 @@ class SearchFragment : Fragment() {
                 saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
                 requireActivity().supportFragmentManager.popBackStack(
-                    "CityListFragment",
+                    CITY_LIST_FRAGMENT,
                     -1
                 )
             }
             onButtonAddToFavClickListener = {
                 viewModel.addSearchItem(it)
                 requireActivity().supportFragmentManager.popBackStack(
-                    "CityListFragment",
+                    CITY_LIST_FRAGMENT,
                     0
                 )
             }
@@ -167,7 +168,7 @@ class SearchFragment : Fragment() {
         saveToDataStore((city as TextView).text.toString())
         setFragmentResult((city).text.toString())
         requireActivity().supportFragmentManager.popBackStack(
-            "CityListFragment",
+            CITY_LIST_FRAGMENT,
             -1
         )
     }

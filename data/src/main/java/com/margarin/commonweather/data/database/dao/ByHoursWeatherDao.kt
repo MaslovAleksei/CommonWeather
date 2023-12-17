@@ -13,7 +13,7 @@ interface ByHoursWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addByHoursWeather(byHoursWeatherDbModel: List<ByHoursWeatherDbModel>)
 
-    @Query("SELECT * FROM weather_by_hours")
-    fun getByHoursWeather(): LiveData<List<ByHoursWeatherDbModel>>
+    @Query("SELECT * FROM weather_by_hours WHERE name=:name")
+    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherDbModel>
 
 }

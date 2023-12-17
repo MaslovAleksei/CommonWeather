@@ -13,7 +13,7 @@ interface ByDaysWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addByDaysWeather(byDaysWeatherDbModel: List<ByDaysWeatherDbModel>)
 
-    @Query("SELECT * FROM weather_by_days")
-    fun getByDaysWeather(): LiveData<List<ByDaysWeatherDbModel>>
+    @Query("SELECT * FROM weather_by_days WHERE name=:name")
+    suspend fun getByDaysWeather(name: String): List<ByDaysWeatherDbModel>
 
 }

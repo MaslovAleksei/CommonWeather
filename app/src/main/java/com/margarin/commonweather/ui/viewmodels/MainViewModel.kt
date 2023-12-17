@@ -26,12 +26,12 @@ class MainViewModel @Inject constructor(
     val currentWeather: LiveData<CurrentWeatherModel?>
         get() = _currentWeather
 
-    private var _byDaysWeather: LiveData<List<ByDaysWeatherModel>>? = null
-    val byDaysWeather: LiveData<List<ByDaysWeatherModel>>?
+    private val _byDaysWeather = MutableLiveData<List<ByDaysWeatherModel>?>()
+    val byDaysWeather: LiveData<List<ByDaysWeatherModel>?>
         get() = _byDaysWeather
 
-    private var _byHoursWeather: LiveData<List<ByHoursWeatherModel>>? = null
-    val byHoursWeather: LiveData<List<ByHoursWeatherModel>>?
+    private val _byHoursWeather = MutableLiveData<List<ByHoursWeatherModel>?>()
+    val byHoursWeather: LiveData<List<ByHoursWeatherModel>?>
         get() = _byHoursWeather
 
     private val _location = MutableLiveData<String?>()
@@ -44,6 +44,8 @@ class MainViewModel @Inject constructor(
                 loadDataUseCase(name)
             }.join()
             _currentWeather.value = getCurrentWeatherUseCase(name)
+            _byDaysWeather.value = getByDaysWeatherUseCase(name)
+            _byHoursWeather.value = getByHoursWeatherUseCase(name)
         }
     }
 

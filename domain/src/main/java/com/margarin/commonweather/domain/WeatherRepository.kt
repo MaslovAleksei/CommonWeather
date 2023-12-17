@@ -13,9 +13,9 @@ interface WeatherRepository {
 
     suspend fun getCurrentWeather(name: String): CurrentWeatherModel
 
-    fun getByDaysWeather(): LiveData<List<ByDaysWeatherModel>>
+    suspend fun getByDaysWeather(name: String): List<ByDaysWeatherModel>
 
-    fun getByHoursWeather(): LiveData<List<ByHoursWeatherModel>>
+    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherModel>
 
     //Search functions
     suspend fun getSearchLocation(query: String): List<SearchModel>
@@ -25,9 +25,5 @@ interface WeatherRepository {
     fun getSearchList(): LiveData<List<SearchModel>>
 
     suspend fun deleteSearchItem(searchModel: SearchModel)
-
-    suspend fun getSearchItem(searchId: Int): SearchModel
-
-
 
 }
