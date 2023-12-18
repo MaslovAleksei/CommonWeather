@@ -59,21 +59,27 @@ class WeatherMapper @Inject constructor() {
         wind_kph = hour.wind_kph?.roundToInt()
     )
 
-    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel) = CurrentWeatherModel(
-            name = db.name,
-            condition = db.condition,
-            icon_url = db.icon_url,
-            last_updated = db.last_updated,
-            wind_kph = db.wind_kph,
-            wind_dir = db.wind_dir,
-            temp_c = db.temp_c,
-            pressure_mb = db.pressure_mb,
-            humidity = db.humidity,
-            uv = db.uv,
-            feels_like = db.feels_like,
-            latitude = db.latitude,
-            longitude = db.longitude
-        )
+    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel?): CurrentWeatherModel? {
+        return if (db != null) {
+            CurrentWeatherModel(
+                name = db.name,
+                condition = db.condition,
+                icon_url = db.icon_url,
+                last_updated = db.last_updated,
+                wind_kph = db.wind_kph,
+                wind_dir = db.wind_dir,
+                temp_c = db.temp_c,
+                pressure_mb = db.pressure_mb,
+                humidity = db.humidity,
+                uv = db.uv,
+                feels_like = db.feels_like,
+                latitude = db.latitude,
+                longitude = db.longitude
+            )
+        } else {
+            null
+        }
+    }
 
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         name = db.name,
@@ -97,6 +103,7 @@ class WeatherMapper @Inject constructor() {
         wind_kph = db.wind_kph
     )
 
+
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
         val dayList = mutableListOf<ByDaysWeatherDbModel>()
         for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
@@ -113,14 +120,14 @@ class WeatherMapper @Inject constructor() {
     fun mapForecastDataToListHoursDbModel(forecastData: ForecastData): List<ByHoursWeatherDbModel> {
         val hourList = mutableListOf<ByHoursWeatherDbModel>()
         for (i in 0 until forecastData.forecast?.forecastday?.first()?.hour?.size!!) {
-                val hour = mapByHourDtoToByHoursDbModel(
-                    i,
-                    forecastData.location!!.name,
-                    forecastData.forecast.forecastday.first().hour!![i]
+            val hour = mapByHourDtoToByHoursDbModel(
+                i,
+                forecastData.location!!.name,
+                forecastData.forecast.forecastday.first().hour!![i]
 
-                )
-                hourList.add(hour)
-            }
+            )
+            hourList.add(hour)
+        }
 
         return hourList
     }
@@ -146,14 +153,14 @@ class WeatherMapper @Inject constructor() {
     )
 
     fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) = SearchModel(
-            id = searchDb.id,
-            name = searchDb.name,
-            region = searchDb.region,
-            country = searchDb.country,
-            lat = searchDb.lat,
-            lon = searchDb.lon,
-            url = searchDb.url
-        )
+        id = searchDb.id,
+        name = searchDb.name,
+        region = searchDb.region,
+        country = searchDb.country,
+        lat = searchDb.lat,
+        lon = searchDb.lon,
+        url = searchDb.url
+    )
 
 
     private fun convertDateToDayOfWeek(date: String): String {

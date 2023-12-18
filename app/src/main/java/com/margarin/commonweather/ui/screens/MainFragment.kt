@@ -84,12 +84,12 @@ class MainFragment : Fragment() {
         viewModel.currentWeather.observe(viewLifecycleOwner) {
             binding.tvCityname.text = it?.name
             binding.tvCurrentTemp.text = it?.temp_c.toString()
-            binding.textView5.text = it?.last_updated
+            binding.textView3.text = it?.last_updated
             Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
 
         viewModel.byDaysWeather.observe(viewLifecycleOwner) {
-            binding.textView3.text = "time ${it?.first()?.maxtemp_c}"
+
         }
 
         viewModel.byHoursWeather.observe(viewLifecycleOwner) {

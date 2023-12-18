@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
@@ -153,7 +154,12 @@ class CityListFragment : Fragment() {
                     "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
                 viewModel.changeSavedLocation(latLonString)
                 viewModel.savedLocation.observe(viewLifecycleOwner) {
-                    viewModel.addSearchItem(it?.first() ?: return@observe)
+                    if (it?.isNotEmpty() == true) {
+                        viewModel.addSearchItem(it.first())
+                    } else {
+                        Toast.makeText(requireContext(), "No city detected", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
                 MapKitFactory.getInstance().onStop()
                 mapContainer.visibility = View.GONE

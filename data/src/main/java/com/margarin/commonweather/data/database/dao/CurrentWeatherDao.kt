@@ -15,6 +15,6 @@ interface CurrentWeatherDao {
     suspend fun addCurrentWeather(currentWeatherDbModel: CurrentWeatherDbModel)
 
     @Query("SELECT * FROM weather_current WHERE name=:name")
-    suspend fun getCurrentWeather(name: String): CurrentWeatherDbModel
+    suspend fun getCurrentWeather(name: String): CurrentWeatherDbModel?
 
 }

@@ -11,14 +11,14 @@ interface WeatherRepository {
     //Weather functions
     suspend fun loadData(query: String)
 
-    suspend fun getCurrentWeather(name: String): CurrentWeatherModel
+    suspend fun getCurrentWeather(name: String): CurrentWeatherModel?
 
-    suspend fun getByDaysWeather(name: String): List<ByDaysWeatherModel>
+    suspend fun getByDaysWeather(name: String): List<ByDaysWeatherModel>?
 
-    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherModel>
+    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherModel>?
 
     //Search functions
-    suspend fun requestSearchLocation(query: String): List<SearchModel>
+    suspend fun requestSearchLocation(query: String): List<SearchModel>?
 
     suspend fun addSearchItem(searchModel: SearchModel)
 
