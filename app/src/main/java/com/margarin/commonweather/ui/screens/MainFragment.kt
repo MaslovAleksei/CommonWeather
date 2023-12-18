@@ -66,6 +66,7 @@ class MainFragment : Fragment() {
         getResultFromChildFragment()
         setOnClickListeners()
         observeViewModel()
+        setOnRefreshListener()
     }
 
 
@@ -83,6 +84,7 @@ class MainFragment : Fragment() {
         viewModel.currentWeather.observe(viewLifecycleOwner) {
             binding.tvCityname.text = it?.name
             binding.tvCurrentTemp.text = it?.temp_c.toString()
+            binding.textView5.text = it?.last_updated
             Picasso.get().load(it?.icon_url).into(binding.imageView)
         }
 
@@ -124,6 +126,13 @@ class MainFragment : Fragment() {
 
         binding.textView3.setOnClickListener {
 
+        }
+    }
+
+    private fun setOnRefreshListener() {
+        binding.swipeRefresh.setOnRefreshListener {
+            initViewModel()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 

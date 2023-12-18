@@ -19,7 +19,7 @@ import com.margarin.commonweather.domain.models.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
-import com.margarin.commonweather.domain.usecases.GetSearchLocationUseCase
+import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
 import com.margarin.commonweather.ui.screens.dataStore
 import com.margarin.commonweather.utils.LOCATION
 import com.yandex.mapkit.Animation
@@ -33,7 +33,7 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-    private val getSearchLocationUseCase: GetSearchLocationUseCase,
+    private val requestSearchLocationUseCase: RequestSearchLocationUseCase,
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
     private val getSearchListUseCase: GetSearchListUseCase,
@@ -52,7 +52,7 @@ class SearchViewModel @Inject constructor(
     val searchList: LiveData<List<SearchModel>>?
         get() = _searchList
 
-    fun loadSearchList() {
+    fun getSearchList() {
         viewModelScope.launch {
             _searchList = getSearchListUseCase()
         }
@@ -85,7 +85,8 @@ class SearchViewModel @Inject constructor(
                 application,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
-        ) { }
+        ) {
+        }
         fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
             .addOnCompleteListener {
@@ -95,15 +96,15 @@ class SearchViewModel @Inject constructor(
     }
 
     fun mapMoveToPosition(map: Map, lat: String, lon: String) {
-            map.move(
-                CameraPosition(
-                    Point(lat.toDouble(), lon.toDouble()),
-                    6.0f,
-                    0.0f,
-                    0.0f
-                ),
-                LINEAR_ANIMATION
-            ) {}
+        map.move(
+            CameraPosition(
+                Point(lat.toDouble(), lon.toDouble()),
+                6.0f,
+                0.0f,
+                0.0f
+            ),
+            LINEAR_ANIMATION
+        ) {}
 
     }
 
@@ -140,13 +141,13 @@ class SearchViewModel @Inject constructor(
 
     fun changeDefiniteLocation(query: String) {
         viewModelScope.launch {
-            _definiteLocation.value = getSearchLocationUseCase(query)
+            _definiteLocation.value = requestSearchLocationUseCase(query)
         }
     }
 
     fun changeSavedLocation(query: String) {
         viewModelScope.launch {
-            _savedLocation.value = getSearchLocationUseCase(query)
+            _savedLocation.value = requestSearchLocationUseCase(query)
         }
     }
 
