@@ -1,7 +1,9 @@
 package com.margarin.commonweather.ui.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.recyclerview.widget.ListAdapter
 import com.margarin.commonweather.R
 import com.margarin.commonweather.databinding.CityItemBinding
@@ -57,8 +59,17 @@ class SearchAdapter(private var layout: Int) :
                 holder.binding.root.setOnClickListener {
                     onItemClickListener?.invoke(item)
                 }
+                holder.binding.root.setOnLongClickListener {
+                    if (holder.binding.bDelete.isGone) {
+                        holder.binding.bDelete.visibility = View.VISIBLE
+                    } else {
+                        holder.binding.bDelete.visibility = View.GONE
+                    }
+                    true
+                }
                 holder.binding.bDelete.setOnClickListener {
                     onButtonDeleteClickListener?.invoke(item)
+                    holder.binding.bDelete.visibility = View.GONE
                 }
 
 

@@ -1,6 +1,5 @@
 package com.margarin.commonweather.data.repository
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
 import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
@@ -41,7 +40,7 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun getByHoursWeather(name: String) =
         byHoursDao.getByHoursWeather(name).map { mapper.mapByHoursDbModelToEntity(it) }
 
-    override suspend fun getSearchLocation(query: String): List<SearchModel> {
+    override suspend fun requestSearchLocation(query: String): List<SearchModel> {
         var result: List<SearchModel> = mutableListOf()
         try {
             result = apiService.getSearchWeather(query = query).map {
@@ -57,7 +56,7 @@ class WeatherRepositoryImpl @Inject constructor(
         searchDao.addSearchItem(searchDbModel)
     }
 
-    override fun getSearchList(): LiveData<List<SearchModel>> = searchDao.getSearchList().map {
+    override fun getSearchList() = searchDao.getSearchList().map {
         it.map { searchDbModel ->
             mapper.mapSearchDbModelToSearchModel(searchDbModel)
         }

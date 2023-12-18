@@ -18,7 +18,7 @@ interface WeatherRepository {
     suspend fun getByHoursWeather(name: String): List<ByHoursWeatherModel>
 
     //Search functions
-    suspend fun getSearchLocation(query: String): List<SearchModel>
+    suspend fun requestSearchLocation(query: String): List<SearchModel>
 
     suspend fun addSearchItem(searchModel: SearchModel)
 

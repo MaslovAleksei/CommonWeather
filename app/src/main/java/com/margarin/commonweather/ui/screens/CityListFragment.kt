@@ -15,11 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
 import com.margarin.commonweather.ui.adapters.SearchAdapter
-import com.margarin.commonweather.ui.adapters.setItemTouchHelper
 import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
@@ -68,11 +68,11 @@ class CityListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
             super.onViewCreated(view, savedInstanceState)
-            viewModel.loadSearchList()
+            viewModel.getSearchList()
             observeViewModel()
             configureRecyclerView()
             setOnClickListeners()
-            setItemTouchHelper(requireContext(), binding.rvCityList, adapter)
+
     }
 
     override fun onDestroyView() {
@@ -104,8 +104,15 @@ class CityListFragment : Fragment() {
                 setFragmentResult(it.name.toString())
                 requireActivity().supportFragmentManager.popBackStack()
             }
+
             onButtonDeleteClickListener = {
+                val searchModel = it
                 viewModel.deleteSearchItem(it)
+                Snackbar.make(requireView(), "delete", Snackbar.LENGTH_LONG)
+                    .setAction("undo"){
+                        viewModel.addSearchItem(searchModel)
+                    }
+                    .show()
             }
         }
         with(binding) {
