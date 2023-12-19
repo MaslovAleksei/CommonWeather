@@ -22,9 +22,9 @@ import kotlin.math.roundToInt
 class WeatherMapper @Inject constructor() {
 
     fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
-        name = forecastData.location!!.name,
+        name = forecastData.location?.name.toString(),
         condition = forecastData.current?.condition?.text,
-        icon_url = "https:" + forecastData.current?.condition?.icon,
+        icon_url = HTTPS + forecastData.current?.condition?.icon,
         last_updated = forecastData.current?.last_updated,
         wind_kph = forecastData.current?.wind_kph?.roundToInt(),
         wind_dir = forecastData.current?.wind_dir,
@@ -33,8 +33,8 @@ class WeatherMapper @Inject constructor() {
         humidity = forecastData.current?.humidity,
         uv = forecastData.current?.uv?.roundToInt(),
         feels_like = forecastData.current?.feelslike_c?.roundToInt(),
-        latitude = forecastData.location.lat,
-        longitude = forecastData.location.lon
+        latitude = forecastData.location?.lat,
+        longitude = forecastData.location?.lon
     )
 
 
@@ -45,7 +45,7 @@ class WeatherMapper @Inject constructor() {
         maxtemp_c = day.maxtemp_c?.roundToInt(),
         mintemp_c = day.mintemp_c?.roundToInt(),
         condition = day.condition?.text,
-        icon_url = "https:" + day.condition?.icon,
+        icon_url = HTTPS + day.condition?.icon,
         maxwind_kph = day.maxwind_kph?.roundToInt(),
         chance_of_rain = day.daily_chance_of_rain,
     )
@@ -55,7 +55,7 @@ class WeatherMapper @Inject constructor() {
         id = id,
         time = hour.time,
         temp_c = hour.temp_c?.roundToInt(),
-        icon_url = "https:" + hour.condition?.icon,
+        icon_url = HTTPS + hour.condition?.icon,
         wind_kph = hour.wind_kph?.roundToInt()
     )
 
@@ -196,26 +196,11 @@ class WeatherMapper @Inject constructor() {
         }
     }
 
-    private fun bindDate(date: String) = when (
-        date.substring(5, 7).toInt()) {
-        1 -> "January"
-        2 -> "February"
-        3 -> "March"
-        4 -> "April"
-        5 -> "May"
-        6 -> "June"
-        7 -> "July"
-        8 -> "August"
-        9 -> "September"
-        10 -> "October"
-        11 -> "November"
-        else -> "December"
-    }.plus(" " + date.drop(8).toInt())
-
     @SuppressLint("SimpleDateFormat")
     private fun getCurrentDate() = SimpleDateFormat(TIME_FORMAT).format(Date())
 
     companion object {
         private const val TIME_FORMAT = "dd-MM-yyyy"
+        private const val HTTPS = "https:"
     }
 }

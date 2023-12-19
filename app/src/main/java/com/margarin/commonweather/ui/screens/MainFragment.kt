@@ -2,6 +2,7 @@ package com.margarin.commonweather.ui.screens
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
@@ -21,7 +23,9 @@ import com.margarin.commonweather.utils.REQUEST_KEY
 import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.launchFragment
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -81,22 +85,43 @@ class MainFragment : Fragment() {
             result?.let { name -> viewModel.initViewModel(name) }
         }
 
-        viewModel.currentWeather.observe(viewLifecycleOwner) {
-            binding.tvCityname.text = it?.name
-            binding.tvCurrentTemp.text = it?.temp_c.toString()
-            binding.textView3.text = it?.last_updated
-            Picasso.get().load(it?.icon_url).into(binding.imageView)
+        binding.apply {
+            viewModel.currentWeather.observe(viewLifecycleOwner) {
+                tvCityName.text = it?.name
+                tvLastUpdate.text = it?.last_updated
+                Picasso.get().load(it?.icon_url).into(ivCurrentCondition)
+                tvCurrentTemp.text = it?.temp_c.toString()
+                tvCurrentCondition.text = it?.condition
+
+
+            }
+
+            viewModel.byDaysWeather.observe(viewLifecycleOwner) {
+                if (it?.isNotEmpty() == true) {
+                    var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
+                    tvMainMaxmin.text = tempMaxMin
+                    Picasso.get().load(it[0].icon_url).into(cardViewForecast.iv1dayCondition)
+                    Picasso.get().load(it[1].icon_url).into(cardViewForecast.iv2dayCondition)
+                    Picasso.get().load(it[2].icon_url).into(cardViewForecast.iv3dayCondition)
+                    cardViewForecast.tv1dayName.text = "Today"
+                    cardViewForecast.tv2dayName.text = it[1].day_of_week
+                    cardViewForecast.tv3dayName.text = it[2].day_of_week
+                    cardViewForecast.tv1dayCondition.text = it[0].condition
+                    cardViewForecast.tv2dayCondition.text = it[1].condition
+                    cardViewForecast.tv3dayCondition.text = it[2].condition
+                    cardViewForecast.tv1dayMaxmin.text = tempMaxMin
+                    tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
+                    cardViewForecast.tv2dayMaxmin.text = tempMaxMin
+                    tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
+                    cardViewForecast.tv3dayMaxmin.text = tempMaxMin
+                }
+
+            }
+
+            viewModel.byHoursWeather.observe(viewLifecycleOwner) {
+
+            }
         }
-
-        viewModel.byDaysWeather.observe(viewLifecycleOwner) {
-
-        }
-
-        viewModel.byHoursWeather.observe(viewLifecycleOwner) {
-            binding.textView5.text = it?.first()?.time
-        }
-
-
     }
 
     private fun initViewModel() {
@@ -119,20 +144,21 @@ class MainFragment : Fragment() {
         binding.bSearch.setOnClickListener {
             launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
         }
-
-        binding.textView5.setOnClickListener {
-            binding.textView5.text = viewModel.currentWeather.value?.name
+        binding.bRefresh.setOnClickListener {
+                binding.swipeRefresh.isRefreshing = true
+                initViewModel()
+                binding.swipeRefresh.isRefreshing = false
         }
 
-        binding.textView3.setOnClickListener {
 
-        }
     }
 
     private fun setOnRefreshListener() {
         binding.swipeRefresh.setOnRefreshListener {
-            initViewModel()
-            binding.swipeRefresh.isRefreshing = false
+            lifecycleScope.launch {
+                initViewModel()
+                binding.swipeRefresh.isRefreshing = false
+            }
         }
     }
 
