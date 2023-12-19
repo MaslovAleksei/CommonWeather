@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardViewForecastByDays"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:backgroundTint="?attr/colorPrimary"
+    app:cardCornerRadius="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Forecast for a 3 days"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_calendar"
+            app:layout_constraintStart_toEndOf="@+id/iv_calendar"
+            app:layout_constraintTop_toTopOf="@+id/iv_calendar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="Details >"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_calendar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_calendar" />
+
+        <Button
+            android:id="@+id/b_detail_forecast"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="?attr/colorPrimaryContainer"
+            android:elevation="2dp"
+            android:text="Forecast for a 3 days"
+            android:textColor="?attr/colorOnPrimaryContainer"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_calendar" />
+
+
+        <ImageView
+            android:id="@+id/iv_1day_condition"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/iv_calendar"
+            app:layout_constraintStart_toStartOf="@+id/iv_calendar"
+            app:layout_constraintTop_toBottomOf="@+id/iv_calendar"
+            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+
+        <ImageView
+            android:id="@+id/iv_2day_condition"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/iv_1day_condition"
+            app:layout_constraintStart_toStartOf="@+id/iv_1day_condition"
+            app:layout_constraintTop_toBottomOf="@+id/iv_1day_condition"
+            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+
+        <ImageView
+            android:id="@+id/iv_3day_condition"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/iv_2day_condition"
+            app:layout_constraintStart_toStartOf="@+id/iv_2day_condition"
+            app:layout_constraintTop_toBottomOf="@+id/iv_2day_condition"
+            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+
+        <TextView
+            android:id="@+id/tv_1day_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_1day_condition"
+            app:layout_constraintStart_toEndOf="@+id/iv_1day_condition"
+            app:layout_constraintTop_toTopOf="@+id/iv_1day_condition" />
+
+        <TextView
+            android:id="@+id/tv_2day_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Day"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_2day_condition"
+            app:layout_constraintStart_toStartOf="@+id/tv_1day_name"
+            app:layout_constraintTop_toTopOf="@+id/iv_2day_condition" />
+
+        <TextView
+            android:id="@+id/tv_3day_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Day"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_3day_condition"
+            app:layout_constraintStart_toEndOf="@+id/iv_3day_condition"
+            app:layout_constraintTop_toTopOf="@+id/iv_3day_condition" />
+
+        <TextView
+            android:id="@+id/tv_1day_condition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:text="Condition"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_1day_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_1day_maxmin"
+            app:layout_constraintStart_toEndOf="@+id/tv_1day_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_1day_name" />
+
+        <TextView
+            android:id="@+id/tv_2day_condition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Condition"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_2day_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_2day_maxmin"
+            app:layout_constraintStart_toStartOf="@+id/tv_1day_condition"
+            app:layout_constraintTop_toTopOf="@+id/tv_2day_name" />
+
+        <TextView
+            android:id="@+id/tv_3day_condition"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Condition"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_3day_name"
+            app:layout_constraintEnd_toStartOf="@+id/tv_3day_maxmin"
+            app:layout_constraintStart_toStartOf="@+id/tv_1day_condition"
+            app:layout_constraintTop_toTopOf="@+id/tv_3day_name" />
+
+        <TextView
+            android:id="@+id/tv_1day_maxmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="max/min"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_1day_condition"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_1day_condition" />
+
+        <TextView
+            android:id="@+id/tv_2day_maxmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="max/min"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_2day_condition"
+            app:layout_constraintEnd_toEndOf="@+id/tv_1day_maxmin"
+            app:layout_constraintTop_toTopOf="@+id/tv_2day_condition" />
+
+        <TextView
+            android:id="@+id/tv_3day_maxmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="max/min"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_3day_condition"
+            app:layout_constraintEnd_toEndOf="@+id/tv_2day_maxmin"
+            app:layout_constraintTop_toTopOf="@+id/tv_3day_condition" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

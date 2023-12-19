@@ -87,11 +87,17 @@ class MainFragment : Fragment() {
 
         binding.apply {
             viewModel.currentWeather.observe(viewLifecycleOwner) {
-                tvCityName.text = it?.name
-                tvLastUpdate.text = it?.last_updated
-                Picasso.get().load(it?.icon_url).into(ivCurrentCondition)
-                tvCurrentTemp.text = it?.temp_c.toString()
-                tvCurrentCondition.text = it?.condition
+                mainToolbar.tvCityName.text = it?.name
+                mainToolbar.tvLastUpdate.text = it?.last_updated
+                Picasso.get().load(it?.icon_url).into(currentCondition.ivCurrentCondition)
+                currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
+                currentCondition.tvCurrentCondition.text = it?.condition
+                cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
+                cardViewWind.tvWindSpeed.text = it?.wind_kph.toString()
+                cardViewDetails.tvHumidityValue.text = it?.humidity.toString()
+                cardViewDetails.tvFeelsLikeValue.text = it?.feels_like.toString()
+                cardViewDetails.tvUvValue.text = it?.uv.toString()
+                cardViewDetails.tvPressureValue.text = it?.pressure_mb.toString()
 
 
             }
@@ -99,23 +105,23 @@ class MainFragment : Fragment() {
             viewModel.byDaysWeather.observe(viewLifecycleOwner) {
                 if (it?.isNotEmpty() == true) {
                     var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
-                    tvMainMaxmin.text = tempMaxMin
-                    Picasso.get().load(it[0].icon_url).into(cardViewForecast.iv1dayCondition)
-                    Picasso.get().load(it[1].icon_url).into(cardViewForecast.iv2dayCondition)
-                    Picasso.get().load(it[2].icon_url).into(cardViewForecast.iv3dayCondition)
-                    cardViewForecast.tv1dayName.text = "Today"
-                    cardViewForecast.tv2dayName.text = it[1].day_of_week
-                    cardViewForecast.tv3dayName.text = it[2].day_of_week
-                    cardViewForecast.tv1dayCondition.text = it[0].condition
-                    cardViewForecast.tv2dayCondition.text = it[1].condition
-                    cardViewForecast.tv3dayCondition.text = it[2].condition
-                    cardViewForecast.tv1dayMaxmin.text = tempMaxMin
+                    currentCondition.tvMainMaxmin.text = tempMaxMin
+                    cardViewForecastByDays.tv1dayMaxmin.text = tempMaxMin
                     tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
-                    cardViewForecast.tv2dayMaxmin.text = tempMaxMin
+                    cardViewForecastByDays.tv2dayMaxmin.text = tempMaxMin
                     tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
-                    cardViewForecast.tv3dayMaxmin.text = tempMaxMin
+                    cardViewForecastByDays.tv3dayMaxmin.text = tempMaxMin
+                    Picasso.get().load(it[0].icon_url).into(cardViewForecastByDays.iv1dayCondition)
+                    Picasso.get().load(it[1].icon_url).into(cardViewForecastByDays.iv2dayCondition)
+                    Picasso.get().load(it[2].icon_url).into(cardViewForecastByDays.iv3dayCondition)
+                    cardViewForecastByDays.tv1dayName.text = "Today"
+                    cardViewForecastByDays.tv2dayName.text = it[1].day_of_week
+                    cardViewForecastByDays.tv3dayName.text = it[2].day_of_week
+                    cardViewForecastByDays.tv1dayCondition.text = it[0].condition
+                    cardViewForecastByDays.tv2dayCondition.text = it[1].condition
+                    cardViewForecastByDays.tv3dayCondition.text = it[2].condition
+                    cardViewDetails.tvChanceOfRainValue.text = it[0].chance_of_rain.toString()
                 }
-
             }
 
             viewModel.byHoursWeather.observe(viewLifecycleOwner) {
@@ -141,10 +147,10 @@ class MainFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
-        binding.bSearch.setOnClickListener {
+        binding.mainToolbar.bSearch.setOnClickListener {
             launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
         }
-        binding.bRefresh.setOnClickListener {
+        binding.mainToolbar.bRefresh.setOnClickListener {
                 binding.swipeRefresh.isRefreshing = true
                 initViewModel()
                 binding.swipeRefresh.isRefreshing = false
