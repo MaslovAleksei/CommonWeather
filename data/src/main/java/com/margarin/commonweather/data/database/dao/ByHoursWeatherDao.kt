@@ -14,6 +14,6 @@ interface ByHoursWeatherDao {
     suspend fun addByHoursWeather(byHoursWeatherDbModel: List<ByHoursWeatherDbModel>)
 
     @Query("SELECT * FROM weather_by_hours WHERE name=:name")
-    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherDbModel>
+    suspend fun getByHoursWeather(name: String): List<ByHoursWeatherDbModel>?
 
 }

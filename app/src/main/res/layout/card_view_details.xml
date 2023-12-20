@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:backgroundTint="?attr/colorPrimary"
+    android:paddingBottom="16dp"
+    app:cardCornerRadius="20dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/tv_pressure_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="1014mbar"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_pressure"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_pressure" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/colorOnPrimary"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pressure"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_pressure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Pressure"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_uv" />
+
+        <TextView
+            android:id="@+id/tv_chance_of_rain_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="80%"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_chance_of_rain"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_chance_of_rain" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/colorOnPrimary"
+            android:orientation="horizontal"
+            android:paddingBottom="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_chance_of_rain"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_chance_of_rain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Chance of rain"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
+
+        <TextView
+            android:id="@+id/tv_feels_like_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="30"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_feels_like"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_feels_like" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/colorOnPrimary"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_feels_like"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_uv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="UV"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_feels_like" />
+
+        <TextView
+            android:id="@+id/tv_feels_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Real feel"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_humidity" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/colorOnPrimary"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_uv"></LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_uv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="0"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_uv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_uv" />
+
+        <TextView
+            android:id="@+id/tv_humidity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Humidity"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_humidity_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="0%"
+            android:textColor="?attr/colorOnPrimary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_humidity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_humidity" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="2dp"
+            android:background="?attr/colorOnPrimary"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_humidity"></LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

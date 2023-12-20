@@ -9,6 +9,6 @@ data class ByHoursWeatherDbModel(
     val id: Int,
     val time: String?,
     val temp_c: Int?,
-    val icon_url: String?,
+    val icon_url: Int?,
     val wind_kph: Int?,
 )

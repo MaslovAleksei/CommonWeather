@@ -24,30 +24,30 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun loadData(query: String) {
         try {
             val forecastData = apiService.getForecastWeather(city = query)
-            addCurrentData(forecastData)
-            addByDayData(forecastData)
-            addByHourData(forecastData)
-        } catch (_: Exception) {
-        }
+            if (forecastData != null) {
+                addCurrentData(forecastData)
+                addByDayData(forecastData)
+                addByHourData(forecastData)
+            }
+        } catch (_: Exception) { }
     }
 
     override suspend fun getCurrentWeather(name: String) =
         mapper.mapCurrentDbToEntity(currentDao.getCurrentWeather(name))
 
     override suspend fun getByDaysWeather(name: String) =
-        byDaysDao.getByDaysWeather(name).map { mapper.mapByDaysDbModelToEntity(it) }
+        byDaysDao.getByDaysWeather(name)?.map { mapper.mapByDaysDbModelToEntity(it) }
 
     override suspend fun getByHoursWeather(name: String) =
-        byHoursDao.getByHoursWeather(name).map { mapper.mapByHoursDbModelToEntity(it) }
+        byHoursDao.getByHoursWeather(name)?.map { mapper.mapByHoursDbModelToEntity(it) }
 
-    override suspend fun requestSearchLocation(query: String): List<SearchModel> {
-        var result: List<SearchModel> = mutableListOf()
+    override suspend fun requestSearchLocation(query: String): List<SearchModel>? {
+        var result: List<SearchModel>? = mutableListOf()
         try {
-            result = apiService.getSearchWeather(query = query).map {
+            result = apiService.getSearchWeather(query = query)?.map {
                 mapper.mapSearchDtoToSearchModel(it)
             }
-        } catch (_: Exception) {
-        }
+        } catch (_: Exception) { }
         return result
     }
 
