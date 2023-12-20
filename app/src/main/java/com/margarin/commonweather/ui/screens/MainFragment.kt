@@ -2,7 +2,6 @@ package com.margarin.commonweather.ui.screens
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.viewmodels.MainViewModel
@@ -18,12 +18,10 @@ import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.DEFAULT_LOCATION
+import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
-import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.launchFragment
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -73,7 +71,6 @@ class MainFragment : Fragment() {
         setOnRefreshListener()
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -89,7 +86,8 @@ class MainFragment : Fragment() {
             viewModel.currentWeather.observe(viewLifecycleOwner) {
                 mainToolbar.tvCityName.text = it?.name
                 mainToolbar.tvLastUpdate.text = it?.last_updated
-                Picasso.get().load(it?.icon_url).into(currentCondition.ivCurrentCondition)
+                currentCondition.ivCurrentCondition
+                    .setImageResource(it?.icon_url ?: R.drawable.ic_time)
                 currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
                 currentCondition.tvCurrentCondition.text = it?.condition
                 cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
@@ -98,34 +96,32 @@ class MainFragment : Fragment() {
                 cardViewDetails.tvFeelsLikeValue.text = it?.feels_like.toString()
                 cardViewDetails.tvUvValue.text = it?.uv.toString()
                 cardViewDetails.tvPressureValue.text = it?.pressure_mb.toString()
-
-
             }
 
             viewModel.byDaysWeather.observe(viewLifecycleOwner) {
-                if (it?.isNotEmpty() == true) {
-                    var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
-                    currentCondition.tvMainMaxmin.text = tempMaxMin
-                    cardViewForecastByDays.tv1dayMaxmin.text = tempMaxMin
-                    tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
-                    cardViewForecastByDays.tv2dayMaxmin.text = tempMaxMin
-                    tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
-                    cardViewForecastByDays.tv3dayMaxmin.text = tempMaxMin
-                    Picasso.get().load(it[0].icon_url).into(cardViewForecastByDays.iv1dayCondition)
-                    Picasso.get().load(it[1].icon_url).into(cardViewForecastByDays.iv2dayCondition)
-                    Picasso.get().load(it[2].icon_url).into(cardViewForecastByDays.iv3dayCondition)
-                    cardViewForecastByDays.tv1dayName.text = "Today"
-                    cardViewForecastByDays.tv2dayName.text = it[1].day_of_week
-                    cardViewForecastByDays.tv3dayName.text = it[2].day_of_week
-                    cardViewForecastByDays.tv1dayCondition.text = it[0].condition
-                    cardViewForecastByDays.tv2dayCondition.text = it[1].condition
-                    cardViewForecastByDays.tv3dayCondition.text = it[2].condition
-                    cardViewDetails.tvChanceOfRainValue.text = it[0].chance_of_rain.toString()
+                cardViewForecastByDays.apply {
+                    if (it?.isNotEmpty() == true) {
+                        var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
+                        currentCondition.tvMainMaxmin.text = tempMaxMin
+                        tv1dayMaxmin.text = tempMaxMin
+                        tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
+                        tv2dayMaxmin.text = tempMaxMin
+                        tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
+                        tv3dayMaxmin.text = tempMaxMin
+                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
+                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
+                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        tv1dayName.text = "Today"
+                        tv2dayName.text = it[1].day_of_week
+                        tv3dayName.text = it[2].day_of_week
+                        tv1dayCondition.text = it[0].condition
+                        tv2dayCondition.text = it[1].condition
+                        tv3dayCondition.text = it[2].condition
+                        cardViewDetails.tvChanceOfRainValue.text = it[0].chance_of_rain.toString()
+                    }
                 }
             }
-
             viewModel.byHoursWeather.observe(viewLifecycleOwner) {
-
             }
         }
     }
@@ -155,8 +151,6 @@ class MainFragment : Fragment() {
                 initViewModel()
                 binding.swipeRefresh.isRefreshing = false
         }
-
-
     }
 
     private fun setOnRefreshListener() {

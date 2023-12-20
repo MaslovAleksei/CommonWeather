@@ -3,7 +3,7 @@ package com.margarin.commonweather.domain.models
 data class CurrentWeatherModel(
     val name: String,
     val condition: String?,
-    val icon_url: String?,
+    val icon_url: Int?,
     val last_updated: String?,
     val wind_kph: Int?,
     val wind_dir: String?,

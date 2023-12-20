@@ -11,7 +11,7 @@ data class ByDaysWeatherDbModel(
     val maxtemp_c: Int?,
     val mintemp_c: Int?,
     val condition: String?,
-    val icon_url: String?,
+    val icon_url: Int?,
     val maxwind_kph: Int?,
     val chance_of_rain: Int?
 )
