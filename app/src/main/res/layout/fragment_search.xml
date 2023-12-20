@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorSurface"
     android:focusable="auto"
-    tools:context=".ui.screens.MainFragment">
+    tools:context=".ui.mainscreen.MainFragment">
 
     <androidx.appcompat.widget.SearchView
         android:id="@+id/search_view"
@@ -14,26 +15,24 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:focusable="auto"
-        android:focusedByDefault="true"
         android:inputType="text|textCapWords"
         app:iconifiedByDefault="false"
         app:layout_constraintBottom_toBottomOf="@+id/b_cancel"
         app:layout_constraintEnd_toStartOf="@+id/b_cancel"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@id/b_cancel" />
 
-    <Button
+    <TextView
         android:id="@+id/b_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="Cancel"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@null" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search"
@@ -67,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="16dp"
                 android:text="Popular cities"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -86,11 +85,11 @@
                 tv_perm, tv_samara, tv_tallinn, tv_tbilisi, tv_tyumen, tv_volgograd, tv_voronezh,
                 tv_ufa, tv_vilnius, tv_krasnoyarsk, tv_riga, tv_dushanbe, tv_bishkek, tv_astana,
                 tv_baku ,tv_erevan"
-                app:flow_horizontalGap="24dp"
-                app:flow_horizontalStyle="spread_inside"
+                app:flow_horizontalGap="16dp"
+                app:flow_horizontalStyle="spread"
                 app:flow_verticalGap="8dp"
                 app:flow_verticalStyle="spread"
-                app:flow_wrapMode="aligned"
+                app:flow_wrapMode="chain2"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -111,9 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Saint Petersburg"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="280dp"
-                tools:layout_editor_absoluteY="43dp" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_tashkent"
@@ -129,9 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kyiv"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="162dp"
-                tools:layout_editor_absoluteY="95dp" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_kazan"
@@ -187,9 +182,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tallinn"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="298dp"
-                tools:layout_editor_absoluteY="251dp" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_erevan"
@@ -285,9 +278,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vilnius"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="298dp"
-                tools:layout_editor_absoluteY="354dp" />
+                tools:ignore="MissingConstraints" />
 
             <TextView
                 android:id="@+id/tv_krasnoyarsk"

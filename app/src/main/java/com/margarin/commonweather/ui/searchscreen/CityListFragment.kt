@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui.searchscreen
 
 import android.content.Context
 import android.content.Intent
@@ -20,9 +20,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
-import com.margarin.commonweather.ui.adapters.SearchAdapter
-import com.margarin.commonweather.ui.viewmodels.SearchViewModel
-import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
+import com.margarin.commonweather.ui.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.REQUEST_KEY
 import com.margarin.commonweather.utils.SEARCH_FRAGMENT
@@ -138,14 +137,14 @@ class CityListFragment : Fragment() {
 
                     mapContainer.visibility = View.VISIBLE
                     rvCityList.visibility = View.GONE
-                    bMap.text = "Close Map"
+                    bMap.text = "Close map"
 
                 } else {
                     MapKitFactory.getInstance().onStop()
 
                     mapContainer.visibility = View.GONE
                     rvCityList.visibility = View.VISIBLE
-                    bMap.text = "Point at map"
+                    bMap.text = "Open map"
                 }
             }
 
@@ -164,7 +163,7 @@ class CityListFragment : Fragment() {
                 MapKitFactory.getInstance().onStop()
                 mapContainer.visibility = View.GONE
                 rvCityList.visibility = View.VISIBLE
-                bMap.text = "Point at map"
+                bMap.text = "Open map"
             }
 
             bZoomIn.setOnClickListener {

@@ -4,35 +4,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.screens.CityListFragment">
+    android:background="?attr/colorSurface"
+    tools:context=".ui.searchscreen.CityListFragment">
 
-    <Button
+    <ImageButton
         android:id="@+id/b_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:background="@null"
         android:text="Back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_back"
+        app:tint="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Управление городами"
+        android:layout_marginTop="16dp"
+        android:text="Manage cities"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/b_back"
         app:layout_constraintTop_toBottomOf="@+id/b_back" />
 
     <Button
         android:id="@+id/b_input_location"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Введите местоположение"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:text="Enter location"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -56,7 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="define location"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:text="Locate"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/b_input_location" />
 
@@ -65,7 +75,9 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:text="point at map"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        android:text="Open map"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_define_loc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/b_define_loc" />
@@ -144,7 +156,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:layout_width="100dp"
@@ -155,8 +167,42 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@null"
+        android:src="@drawable/ic_search"
+        android:tint="?attr/colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/b_input_location"
+        app:layout_constraintStart_toStartOf="@+id/b_input_location"
+        app:layout_constraintTop_toTopOf="@+id/b_input_location" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_place"
+        android:tint="?attr/colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/b_define_loc"
+        app:layout_constraintStart_toStartOf="@+id/b_define_loc"
+        app:layout_constraintTop_toTopOf="@+id/b_define_loc" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_map"
+        android:tint="?attr/colorOnSecondary"
+        app:layout_constraintBottom_toBottomOf="@+id/b_map"
+        app:layout_constraintStart_toStartOf="@+id/b_map"
+        app:layout_constraintTop_toTopOf="@+id/b_map" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

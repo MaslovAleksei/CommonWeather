@@ -173,7 +173,7 @@ class WeatherMapper @Inject constructor() {
                 URL + "116.png" -> R.drawable.ic_icons_sun_behind_clouds
                 URL + "119.png" -> R.drawable.ic_cloud_icons2
                 URL + "122.png" -> R.drawable.ic_cloud_icons2
-                URL + "143.png" -> R.drawable.ic_wsymbol_0006_mist
+                URL + "143.png" -> R.drawable.ic_cloud_icons2 //TODO
                 URL + "176.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
                 URL + "179.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
                 URL + "182.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
@@ -181,8 +181,8 @@ class WeatherMapper @Inject constructor() {
                 URL + "200.png" -> R.drawable.ic_thunderclouds_icons
                 URL + "227.png" -> R.drawable.ic_snow_cloud_icons
                 URL + "230.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "248.png" -> R.drawable.ic_wsymbol_0006_mist
-                URL + "260.png" -> R.drawable.ic_wsymbol_0006_mist
+                URL + "248.png" -> R.drawable.ic_cloud_icons2 //TODO
+                URL + "260.png" -> R.drawable.ic_cloud_icons2 //TODO
                 URL + "263.png" -> R.drawable.ic_rainy_cloud_icons2
                 URL + "266.png" -> R.drawable.ic_rainy_cloud_icons2
                 URL + "281.png" -> R.drawable.ic_rain_and_snow_icons
@@ -225,7 +225,7 @@ class WeatherMapper @Inject constructor() {
                 URL + "116.png" -> R.drawable.ic_icons_of_the_moon_behind_the_cloud
                 URL + "119.png" -> R.drawable.ic_icons_of_the_moon_behind_the_cloud
                 URL + "122.png" -> R.drawable.ic_cloud_icons2
-                URL + "143.png" -> R.drawable.ic_wsymbol_0006_mist
+                URL + "143.png" -> R.drawable.ic_cloud_icons2 //TODO
                 URL + "176.png" -> R.drawable.ic_rainy_cloud_icons2
                 URL + "179.png" -> R.drawable.ic_snow_cloud_icons
                 URL + "182.png" -> R.drawable.ic_rain_and_snow_icons
@@ -233,8 +233,8 @@ class WeatherMapper @Inject constructor() {
                 URL + "200.png" -> R.drawable.ic_thunderclouds_icons
                 URL + "227.png" -> R.drawable.ic_snow_cloud_icons
                 URL + "230.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "248.png" -> R.drawable.ic_wsymbol_0006_mist
-                URL + "260.png" -> R.drawable.ic_wsymbol_0006_mist
+                URL + "248.png" -> R.drawable.ic_cloud_icons2 //TODO
+                URL + "260.png" -> R.drawable.ic_cloud_icons2 //TODO
                 URL + "263.png" -> R.drawable.ic_rainy_cloud_icons2
                 URL + "266.png" -> R.drawable.ic_rainy_cloud_icons2
                 URL + "281.png" -> R.drawable.ic_rain_and_snow_icons

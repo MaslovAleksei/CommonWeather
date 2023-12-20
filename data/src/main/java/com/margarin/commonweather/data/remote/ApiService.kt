@@ -14,7 +14,7 @@ interface ApiService {
         @Query(QUERY_PARAM_QUANTITY_OF_DAYS) days: Int = 5,
         @Query(QUERY_PARAM_AQI) aqi: String = "no",
         @Query(QUERY_PARAM_ALERTS) alerts: String = "no",
-        @Query(QUERY_PARAM_LANG) lang: String = "ru"
+        @Query(QUERY_PARAM_LANG) lang: String = "en"
     ): ForecastData?
 
     @GET("search.json")

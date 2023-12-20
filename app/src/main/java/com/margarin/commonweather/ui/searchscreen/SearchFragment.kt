@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui.searchscreen
 
 import android.content.Context
 import android.os.Bundle
@@ -17,9 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentSearchBinding
-import com.margarin.commonweather.ui.adapters.SearchAdapter
-import com.margarin.commonweather.ui.viewmodels.SearchViewModel
-import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
+import com.margarin.commonweather.ui.dataStore
+import com.margarin.commonweather.ui.ViewModelFactory
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.LOCATION

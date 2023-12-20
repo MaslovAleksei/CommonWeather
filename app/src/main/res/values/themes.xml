@@ -6,13 +6,15 @@
         <item name="colorOnPrimary">@color/white</item>
 
         <item name="colorSecondary">@color/polo_blue</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/boulder</item>
 
-        <item name="colorPrimaryContainer">@color/seagull</item>
-        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorPrimaryContainer">@color/mercury</item>
+        <item name="colorOnPrimaryContainer">@color/boulder</item>
 
-        <item name="colorSurface">@color/boulder</item>
-        <item name="colorOnSurface">@color/dove_gray</item>
+        <item name="colorPrimaryVariant">@color/seagull</item>
+
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/boulder</item>
 
         <item name="android:colorBackground">@color/curious_blue</item>
 

@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.viewmodels
+package com.margarin.commonweather.ui.searchscreen
 
 import android.Manifest
 import android.app.Application
@@ -20,7 +20,7 @@ import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
 import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
-import com.margarin.commonweather.ui.screens.dataStore
+import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.utils.LOCATION
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory

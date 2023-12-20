@@ -4,7 +4,7 @@
     <style name="City">
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
         <item name="android:background">@drawable/city_bgr</item>
-        <item name="android:textColor">?android:textColorPrimaryInverse</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">12dp</item>
         <item name="android:minWidth">80dp</item>

@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.viewmodels
+package com.margarin.commonweather.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

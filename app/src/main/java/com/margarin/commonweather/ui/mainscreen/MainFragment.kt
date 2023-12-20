@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui.mainscreen
 
 import android.content.Context
 import android.os.Bundle
@@ -13,8 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
-import com.margarin.commonweather.ui.viewmodels.MainViewModel
-import com.margarin.commonweather.ui.viewmodels.ViewModelFactory
+import com.margarin.commonweather.ui.ViewModelFactory
+import com.margarin.commonweather.ui.dataStore
+import com.margarin.commonweather.ui.searchscreen.CityListFragment
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.DEFAULT_LOCATION
@@ -86,8 +87,8 @@ class MainFragment : Fragment() {
             viewModel.currentWeather.observe(viewLifecycleOwner) {
                 mainToolbar.tvCityName.text = it?.name
                 mainToolbar.tvLastUpdate.text = it?.last_updated
-                currentCondition.ivCurrentCondition
-                    .setImageResource(it?.icon_url ?: R.drawable.ic_time)
+                //currentCondition.ivCurrentCondition
+                    //.setImageResource(it?.icon_url ?: R.drawable.ic_time)
                 currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
                 currentCondition.tvCurrentCondition.text = it?.condition
                 cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
@@ -108,9 +109,9 @@ class MainFragment : Fragment() {
                         tv2dayMaxmin.text = tempMaxMin
                         tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
                         tv3dayMaxmin.text = tempMaxMin
-                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
-                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
-                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        //iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
+                        //iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
+                       // iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
                         tv1dayName.text = "Today"
                         tv2dayName.text = it[1].day_of_week
                         tv3dayName.text = it[2].day_of_week
@@ -147,9 +148,9 @@ class MainFragment : Fragment() {
             launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
         }
         binding.mainToolbar.bRefresh.setOnClickListener {
-                binding.swipeRefresh.isRefreshing = true
-                initViewModel()
-                binding.swipeRefresh.isRefreshing = false
+            binding.swipeRefresh.isRefreshing = true
+            initViewModel()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 

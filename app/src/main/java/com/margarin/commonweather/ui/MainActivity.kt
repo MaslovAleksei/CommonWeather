@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui
 
 import android.Manifest
 import android.content.Context
