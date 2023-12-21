@@ -1,6 +1,8 @@
 package com.margarin.commonweather.ui.mainscreen
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +18,9 @@ import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.ViewModelFactory
 import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.ui.searchscreen.CityListFragment
+import com.margarin.commonweather.utils.BINDING_NULL
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
-import com.margarin.commonweather.utils.DEFAULT_LOCATION
 import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
@@ -43,7 +45,7 @@ class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
-        get() = _binding ?: throw RuntimeException("binding == null")
+        get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     //////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
@@ -80,7 +82,7 @@ class MainFragment : Fragment() {
     private fun observeViewModel() {
 
         viewModel.location.observe(viewLifecycleOwner) { result ->
-            result?.let { name -> viewModel.initViewModel(name) }
+            result?.let { name -> viewModel.initViewModel(name, getString(R.string.lang)) }
         }
 
         binding.apply {
@@ -88,7 +90,7 @@ class MainFragment : Fragment() {
                 mainToolbar.tvCityName.text = it?.name
                 mainToolbar.tvLastUpdate.text = it?.last_updated
                 //currentCondition.ivCurrentCondition
-                    //.setImageResource(it?.icon_url ?: R.drawable.ic_time)
+                //.setImageResource(it?.icon_url ?: R.drawable.ic_time)
                 currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
                 currentCondition.tvCurrentCondition.text = it?.condition
                 cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
@@ -111,8 +113,8 @@ class MainFragment : Fragment() {
                         tv3dayMaxmin.text = tempMaxMin
                         //iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
                         //iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
-                       // iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
-                        tv1dayName.text = "Today"
+                        // iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        tv1dayName.text = getString(R.string.today)
                         tv2dayName.text = it[1].day_of_week
                         tv3dayName.text = it[2].day_of_week
                         tv1dayCondition.text = it[0].condition
@@ -137,9 +139,9 @@ class MainFragment : Fragment() {
         }
 
         if (name == EMPTY_STRING) {
-            viewModel.initViewModel(DEFAULT_LOCATION)
+            viewModel.initViewModel(getString(R.string.moscow), getString(R.string.lang))
         } else {
-            viewModel.initViewModel(name)
+            viewModel.initViewModel(name, getString(R.string.lang))
         }
     }
 
@@ -151,6 +153,12 @@ class MainFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = true
             initViewModel()
             binding.swipeRefresh.isRefreshing = false
+        }
+        binding.tvWeatherApi.setOnClickListener {
+            startActivity(Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://www.weatherapi.com/")
+            ))
         }
     }
 

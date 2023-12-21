@@ -20,6 +20,7 @@ import com.margarin.commonweather.databinding.FragmentSearchBinding
 import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
 import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.ui.ViewModelFactory
+import com.margarin.commonweather.utils.BINDING_NULL
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
 import com.margarin.commonweather.utils.LOCATION
@@ -42,7 +43,7 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding: FragmentSearchBinding
-        get() = _binding ?: throw RuntimeException("binding == null")
+        get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     private lateinit var adapter: SearchAdapter
 
@@ -134,7 +135,6 @@ class SearchFragment : Fragment() {
             tvVoronezh.setOnClickListener { clickOnPopularCity(it) }
             tvVolgograd.setOnClickListener { clickOnPopularCity(it) }
             tvVilnius.setOnClickListener { clickOnPopularCity(it) }
-            tvUfa.setOnClickListener { clickOnPopularCity(it) }
             tvTyumen.setOnClickListener { clickOnPopularCity(it) }
             tvTbilisi.setOnClickListener { clickOnPopularCity(it) }
             tvTashkent.setOnClickListener { clickOnPopularCity(it) }
@@ -152,16 +152,13 @@ class SearchFragment : Fragment() {
             tvKazan.setOnClickListener { clickOnPopularCity(it) }
             tvErevan.setOnClickListener { clickOnPopularCity(it) }
             tvEkaterinburg.setOnClickListener { clickOnPopularCity(it) }
-            tvDushanbe.setOnClickListener { clickOnPopularCity(it) }
+            tvBucharest.setOnClickListener { clickOnPopularCity(it) }
             tvChelyabinsk.setOnClickListener { clickOnPopularCity(it) }
             tvBishkek.setOnClickListener { clickOnPopularCity(it) }
             tvBaku.setOnClickListener { clickOnPopularCity(it) }
             tvAstana.setOnClickListener { clickOnPopularCity(it) }
             tvAshkhabad.setOnClickListener { clickOnPopularCity(it) }
-
-
         }
-
     }
 
     private fun clickOnPopularCity(city: View) {

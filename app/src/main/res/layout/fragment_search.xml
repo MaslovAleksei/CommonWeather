@@ -8,31 +8,42 @@
     android:focusable="auto"
     tools:context=".ui.mainscreen.MainFragment">
 
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/search_view"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:inputType="text|textCapWords"
-        app:iconifiedByDefault="false"
+        android:background="?attr/colorPrimaryContainer"
+        android:backgroundTint="?attr/colorPrimaryContainer"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/b_cancel"
         app:layout_constraintEnd_toStartOf="@+id/b_cancel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/b_cancel" />
+        app:layout_constraintTop_toTopOf="@id/b_cancel">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text|textCapWords"
+            app:iconifiedByDefault="false" />
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/b_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:textColor="?attr/colorPrimary"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:strokeColor="@null" />
+        tools:ignore="TextContrastCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_search"
@@ -67,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
-                android:text="Popular cities"
+                android:text="@string/popular_cities"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,15 +93,13 @@
                 app:constraint_referenced_ids="
                 tv_kazan,tv_moscow, tv_petersburg, tv_tashkent, tv_kyiv, tv_ekaterinburg,
                 tv_novosibirsk, tv_minsk, tv_almaty, tv_ashkhabad, tv_omsk, tv_chelyabinsk,
-                tv_perm, tv_samara, tv_tallinn, tv_tbilisi, tv_tyumen, tv_volgograd, tv_voronezh,
-                tv_ufa, tv_vilnius, tv_krasnoyarsk, tv_riga, tv_dushanbe, tv_bishkek, tv_astana,
+                tv_perm, tv_samara, tv_tallinn, tv_tbilisi, tv_tyumen, tv_volgograd, tv_voronezh, tv_vilnius, tv_krasnoyarsk, tv_riga, tv_bucharest, tv_bishkek, tv_astana,
                 tv_baku ,tv_erevan"
                 app:flow_horizontalGap="16dp"
-                app:flow_horizontalStyle="spread"
+                app:flow_horizontalStyle="packed"
                 app:flow_verticalGap="8dp"
                 app:flow_verticalStyle="spread"
                 app:flow_wrapMode="chain2"
-                app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,224 +110,262 @@
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Moscow"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/moscow"
+                tools:ignore="MissingConstraints,TextContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_petersburg"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Saint Petersburg"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/saint_petersburg"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="234dp"
+                tools:layout_editor_absoluteY="51dp" />
 
             <TextView
                 android:id="@+id/tv_tashkent"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tashkent"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/tashkent"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="53dp"
+                tools:layout_editor_absoluteY="103dp" />
 
             <TextView
                 android:id="@+id/tv_kyiv"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kyiv"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/kyiv"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="154dp"
+                tools:layout_editor_absoluteY="103dp" />
 
             <TextView
                 android:id="@+id/tv_kazan"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kazan"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/kazan"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="42dp"
+                tools:layout_editor_absoluteY="51dp" />
 
             <TextView
                 android:id="@+id/tv_ekaterinburg"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ekaterinburg"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/ekaterinburg"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="250dp"
+                tools:layout_editor_absoluteY="103dp" />
 
             <TextView
                 android:id="@+id/tv_novosibirsk"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Novosibirsk"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/novosibirsk"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="58dp"
+                tools:layout_editor_absoluteY="155dp" />
 
             <TextView
                 android:id="@+id/tv_minsk"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minsk"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/minsk"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="178dp"
+                tools:layout_editor_absoluteY="155dp" />
 
             <TextView
                 android:id="@+id/tv_almaty"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Almaty"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/almaty"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="274dp"
+                tools:layout_editor_absoluteY="155dp" />
 
             <TextView
                 android:id="@+id/tv_perm"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Perm"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/perm"
+                tools:ignore="MissingConstraints,TextContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_tallinn"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tallinn"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/tallinn"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="214dp"
+                tools:layout_editor_absoluteY="258dp" />
 
             <TextView
                 android:id="@+id/tv_erevan"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Erevan"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/erevan"
+                tools:ignore="MissingConstraints,TextContrastCheck" />
 
             <TextView
                 android:id="@+id/tv_ashkhabad"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ashkhabad"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/ashkhabad"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="48dp"
+                tools:layout_editor_absoluteY="207dp" />
 
             <TextView
-                android:id="@+id/tv_dushanbe"
+                android:id="@+id/tv_bucharest"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dushanbe"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/bucharest"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="414dp" />
 
             <TextView
                 android:id="@+id/tv_voronezh"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Voronezh"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/voronezh"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="264dp"
+                tools:layout_editor_absoluteY="310dp" />
 
             <TextView
                 android:id="@+id/tv_volgograd"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Volgograd"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/volgograd"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="155dp"
+                tools:layout_editor_absoluteY="310dp" />
 
             <TextView
                 android:id="@+id/tv_tbilisi"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tbilisi"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/tbilisi"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="310dp"
+                tools:layout_editor_absoluteY="258dp" />
 
             <TextView
                 android:id="@+id/tv_astana"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Astana"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/astana"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="219dp"
+                tools:layout_editor_absoluteY="414dp" />
 
             <TextView
                 android:id="@+id/tv_baku"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Baku"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/baku"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="315dp"
+                tools:layout_editor_absoluteY="414dp" />
 
             <TextView
                 android:id="@+id/tv_omsk"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Omsk"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/omsk"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="162dp"
+                tools:layout_editor_absoluteY="207dp" />
 
             <TextView
                 android:id="@+id/tv_bishkek"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bishkek"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/bishkek"
+                tools:ignore="MissingConstraints,TextContrastCheck"/>
 
             <TextView
                 android:id="@+id/tv_riga"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Riga"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/riga"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="275dp"
+                tools:layout_editor_absoluteY="362dp" />
 
             <TextView
                 android:id="@+id/tv_vilnius"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vilnius"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/vilnius"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="56dp"
+                tools:layout_editor_absoluteY="362dp" />
 
             <TextView
                 android:id="@+id/tv_krasnoyarsk"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Krasnoyarsk"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/krasnoyarsk"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="152dp"
+                tools:layout_editor_absoluteY="362dp" />
 
             <TextView
                 android:id="@+id/tv_chelyabinsk"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chelyabinsk"
-                tools:ignore="MissingConstraints" />
-
-            <TextView
-                android:id="@+id/tv_ufa"
-                style="@style/City"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ufa"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/chelyabinsk"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="258dp"
+                tools:layout_editor_absoluteY="207dp" />
 
             <TextView
                 android:id="@+id/tv_samara"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Samara"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/samara"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="118dp"
+                tools:layout_editor_absoluteY="258dp" />
 
             <TextView
                 android:id="@+id/tv_tyumen"
                 style="@style/City"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tyumen"
-                tools:ignore="MissingConstraints" />
+                android:text="@string/tyumen"
+                tools:ignore="MissingConstraints,TextContrastCheck"
+                tools:layout_editor_absoluteX="59dp"
+                tools:layout_editor_absoluteY="310dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

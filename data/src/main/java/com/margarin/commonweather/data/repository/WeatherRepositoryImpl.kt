@@ -21,9 +21,9 @@ class WeatherRepositoryImpl @Inject constructor(
     private val searchDao: SearchDao
 ) : WeatherRepository {
 
-    override suspend fun loadData(query: String) {
+    override suspend fun loadData(query: String, lang: String) {
         try {
-            val forecastData = apiService.getForecastWeather(city = query)
+            val forecastData = apiService.getForecastWeather(city = query, lang = lang)
             if (forecastData != null) {
                 addCurrentData(forecastData)
                 addByDayData(forecastData)
