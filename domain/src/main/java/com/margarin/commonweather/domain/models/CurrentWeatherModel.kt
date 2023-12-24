@@ -5,13 +5,13 @@ data class CurrentWeatherModel(
     val condition: String?,
     val icon_url: Int?,
     val last_updated: String?,
-    val wind_kph: Int?,
+    val wind_kph: String?,
     val wind_dir: String?,
-    val temp_c: Int?,
-    val pressure_mb: Int?,
-    val humidity: Int?,
+    val temp_c: String?,
+    val pressure_mb: String?,
+    val humidity: String?,
     val uv: Int?,
-    val feels_like: Int?,
+    val feels_like: String?,
     val latitude: Float?,
     val longitude: Float?
 )

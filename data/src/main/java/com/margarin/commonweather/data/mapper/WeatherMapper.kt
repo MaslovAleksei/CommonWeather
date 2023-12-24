@@ -1,12 +1,13 @@
 package com.margarin.commonweather.data.mapper
 
 import android.annotation.SuppressLint
+import android.app.Application
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.SearchDbModel
-import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
+import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastDay
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.data.remote.apimodels.search.Search
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
@@ -19,7 +20,9 @@ import java.util.Date
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class WeatherMapper @Inject constructor() {
+class WeatherMapper @Inject constructor(
+    val application: Application
+) {
 
     fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
         name = forecastData.location?.name.toString(),
@@ -41,17 +44,18 @@ class WeatherMapper @Inject constructor() {
     )
 
 
-    private fun mapByDayDtoToByDaysDbModel(id: Int, name: String, day: Day) = ByDaysWeatherDbModel(
-        name = name,
-        id = id,
-        date = id.toString(),
-        maxtemp_c = day.maxtemp_c?.roundToInt(),
-        mintemp_c = day.mintemp_c?.roundToInt(),
-        condition = day.condition?.text,
-        icon_url = mapConditionImage(day.condition?.icon.toString(), IS_DAY),
-        maxwind_kph = day.maxwind_kph?.roundToInt(),
-        chance_of_rain = day.daily_chance_of_rain,
-    )
+    private fun mapByDayDtoToByDaysDbModel(id: Int, name: String, forecastDay: ForecastDay) =
+        ByDaysWeatherDbModel(
+            name = name,
+            id = id,
+            date = forecastDay.date,
+            maxtemp_c = forecastDay.day?.maxtemp_c?.roundToInt(),
+            mintemp_c = forecastDay.day?.mintemp_c?.roundToInt(),
+            condition = forecastDay.day?.condition?.text,
+            icon_url = mapConditionImage(forecastDay.day?.condition?.icon.toString(), IS_DAY),
+            maxwind_kph = forecastDay.day?.maxwind_kph?.roundToInt(),
+            chance_of_rain = forecastDay.day?.daily_chance_of_rain,
+        )
 
     private fun mapByHourDtoToByHoursDbModel(id: Int, name: String, hour: Hour) =
         ByHoursWeatherDbModel(
@@ -70,13 +74,13 @@ class WeatherMapper @Inject constructor() {
                 condition = db.condition,
                 icon_url = db.icon_url,
                 last_updated = db.last_updated,
-                wind_kph = db.wind_kph,
+                wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
                 wind_dir = db.wind_dir,
-                temp_c = db.temp_c,
-                pressure_mb = db.pressure_mb,
-                humidity = db.humidity,
+                temp_c = "${db.temp_c}°C",
+                pressure_mb = "${db.pressure_mb}${application.getString(R.string.mbar)}",
+                humidity = "${db.wind_kph}%",
                 uv = db.uv,
-                feels_like = db.feels_like,
+                feels_like = "${db.feels_like}°C",
                 latitude = db.latitude,
                 longitude = db.longitude
             )
@@ -88,13 +92,13 @@ class WeatherMapper @Inject constructor() {
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         name = db.name,
         id = db.id,
-        date = db.date,
-        maxtemp_c = db.maxtemp_c,
-        mintemp_c = db.mintemp_c,
+        date = convertDateToDdMm(db.date!!),
+        maxtemp_c = "${db.maxtemp_c}°",
+        mintemp_c = "${db.mintemp_c}°",
         condition = db.condition,
         icon_url = db.icon_url,
-        maxwind_kph = db.maxwind_kph,
-        chance_of_rain = db.chance_of_rain,
+        maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
+        chance_of_rain = "${db.chance_of_rain}%",
         day_of_week = db.date
     )
 
@@ -102,9 +106,9 @@ class WeatherMapper @Inject constructor() {
         name = db.name,
         id = db.id,
         time = db.time,
-        temp_c = db.temp_c,
+        temp_c = "${db.temp_c}°",
         icon_url = db.icon_url,
-        wind_kph = db.wind_kph
+        wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
     )
 
 
@@ -114,7 +118,7 @@ class WeatherMapper @Inject constructor() {
             val day = mapByDayDtoToByDaysDbModel(
                 i,
                 forecastData.location!!.name,
-                forecastData.forecast.forecastday[i].day!!,
+                forecastData.forecast.forecastday[i],
             )
             dayList.add(day)
         }
@@ -274,37 +278,10 @@ class WeatherMapper @Inject constructor() {
         }
     }
 
-    private fun convertDateToDayOfWeek(date: String): String {
-        if (date == getCurrentDate()) {
-            return "Today"
-        }
-        val day = date.takeLast(2).toInt()
-        val yearLastTwo = date.substring(2, 4).toInt()
-        val month = date.substring(5, 7).toInt()
-        val yearCode = (6 + yearLastTwo + yearLastTwo / 4) % 7
-        val monthCode = when (month) {
-            1, 10 -> 1
-            12, 9 -> 6
-            5 -> 2
-            8 -> 3
-            2, 3, 11 -> 4
-            6 -> 5
-            4, 7 -> 0
-            else -> 10
-        }
+    private fun convertDateToDdMm(date: String): String {
+        val currentFormat = SimpleDateFormat("yyyy-MM-dd").parse(date)
+        return SimpleDateFormat("dd-MM-yyyy").format(currentFormat)
 
-        var result = (day + monthCode + yearCode) % 7
-        if (yearLastTwo % 4 == 0 && (month == 1 || month == 2)) result -= 1
-        return when (result) {
-            0 -> "Saturday"
-            1 -> "Sunday"
-            2 -> "Monday"
-            3 -> "Tuesday"
-            4 -> "Wednesday"
-            5 -> "Thursday"
-            6 -> "Friday"
-            else -> "Unknown"
-        }
     }
 
     @SuppressLint("SimpleDateFormat")

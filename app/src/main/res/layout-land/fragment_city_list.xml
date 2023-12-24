@@ -22,12 +22,14 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/manage_cities"
         android:textColor="?attr/colorOnSurface"
         android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/b_back"
         app:layout_constraintTop_toBottomOf="@+id/b_back" />
 
@@ -41,49 +43,48 @@
         android:backgroundTint="?attr/colorPrimaryContainer"
         android:text="@string/enter_location"
         android:textColor="?attr/colorOnSecondary"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:ignore="VisualLintButtonSize" />
+        tools:ignore="VisualLintButtonSize,TextContrastCheck" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_city_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b_define_loc" />
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/b_define_loc"
-        android:layout_width="180dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="?attr/colorPrimaryContainer"
         android:text="@string/locate"
         android:textColor="?attr/colorOnSecondary"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintEnd_toEndOf="@+id/b_input_location"
         app:layout_constraintStart_toStartOf="@+id/b_input_location"
-        app:layout_constraintTop_toBottomOf="@+id/b_input_location" />
+        app:layout_constraintTop_toBottomOf="@+id/b_input_location"
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/b_map"
-        android:layout_width="180dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="?attr/colorPrimaryContainer"
         android:text="@string/open_map"
         android:textColor="?attr/colorOnSecondary"
-        app:layout_constraintBottom_toBottomOf="@+id/b_define_loc"
-        app:layout_constraintEnd_toEndOf="@+id/b_input_location"
-        app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="@+id/b_define_loc" />
+        app:layout_constraintEnd_toEndOf="@id/b_define_loc"
+        app:layout_constraintStart_toStartOf="@id/b_define_loc"
+        app:layout_constraintTop_toBottomOf="@+id/b_define_loc"
+        tools:ignore="TextContrastCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/map_container"
@@ -93,8 +94,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b_define_loc">
+        app:layout_constraintStart_toStartOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageButton
             android:id="@+id/b_zoom_in"
@@ -194,37 +195,37 @@
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:background="@null"
         android:src="@drawable/ic_search"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_input_location"
         app:layout_constraintStart_toStartOf="@+id/b_input_location"
         app:layout_constraintTop_toTopOf="@+id/b_input_location"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_place"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_define_loc"
         app:layout_constraintStart_toStartOf="@+id/b_define_loc"
         app:layout_constraintTop_toTopOf="@+id/b_define_loc"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_map"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_map"
         app:layout_constraintStart_toStartOf="@+id/b_map"
         app:layout_constraintTop_toTopOf="@+id/b_map"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -232,6 +233,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintGuide_percent="0.3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

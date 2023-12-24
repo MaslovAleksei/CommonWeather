@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="km_h" tools:ignore="MissingTranslation">km/h</string>
+    <string name="mbar" tools:ignore="MissingTranslation">mbar</string>
+</resources>

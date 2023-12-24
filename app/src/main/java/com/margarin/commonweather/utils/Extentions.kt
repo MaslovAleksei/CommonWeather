@@ -1,7 +1,5 @@
 package com.margarin.commonweather.utils
 
-import android.content.Context
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.margarin.commonweather.R
 
