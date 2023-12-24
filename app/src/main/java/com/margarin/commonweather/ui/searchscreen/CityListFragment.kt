@@ -22,6 +22,7 @@ import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
 import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
 import com.margarin.commonweather.ui.ViewModelFactory
+import com.margarin.commonweather.utils.BINDING_NULL
 import com.margarin.commonweather.utils.BUNDLE_KEY
 import com.margarin.commonweather.utils.REQUEST_KEY
 import com.margarin.commonweather.utils.SEARCH_FRAGMENT
@@ -48,7 +49,7 @@ class CityListFragment : Fragment() {
 
     private var _binding: FragmentCityListBinding? = null
     private val binding: FragmentCityListBinding
-        get() = _binding ?: throw RuntimeException("binding == null")
+        get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     private lateinit var adapter: SearchAdapter
 
@@ -108,8 +109,9 @@ class CityListFragment : Fragment() {
             onButtonDeleteClickListener = {
                 val searchModel = it
                 viewModel.deleteSearchItem(it)
-                Snackbar.make(requireView(), "delete", Snackbar.LENGTH_LONG)
-                    .setAction("undo"){
+                Snackbar.make(requireView(),
+                    getString(R.string.data_has_been_deleted), Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.undo)){
                         viewModel.addSearchItem(searchModel)
                     }
                     .show()
@@ -137,14 +139,14 @@ class CityListFragment : Fragment() {
 
                     mapContainer.visibility = View.VISIBLE
                     rvCityList.visibility = View.GONE
-                    bMap.text = "Close map"
+                    bMap.text = getString(R.string.close_map)
 
                 } else {
                     MapKitFactory.getInstance().onStop()
 
                     mapContainer.visibility = View.GONE
                     rvCityList.visibility = View.VISIBLE
-                    bMap.text = "Open map"
+                    bMap.text = getString(R.string.open_map)
                 }
             }
 
@@ -156,14 +158,15 @@ class CityListFragment : Fragment() {
                     if (it?.isNotEmpty() == true) {
                         viewModel.addSearchItem(it.first())
                     } else {
-                        Toast.makeText(requireContext(), "No city detected", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(),
+                            getString(R.string.settlement_not_found), Toast.LENGTH_SHORT)
                             .show()
                     }
                 }
                 MapKitFactory.getInstance().onStop()
                 mapContainer.visibility = View.GONE
                 rvCityList.visibility = View.VISIBLE
-                bMap.text = "Open map"
+                bMap.text = getString(R.string.open_map)
             }
 
             bZoomIn.setOnClickListener {
@@ -215,10 +218,6 @@ class CityListFragment : Fragment() {
     companion object {
         private const val ZOOM_STEP = 1f
 
-        fun newInstance() =
-            CityListFragment().apply {
-                arguments = Bundle().apply {
-                }
-            }
+        fun newInstance() = CityListFragment()
     }
 }

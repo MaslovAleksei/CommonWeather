@@ -6,7 +6,8 @@
     android:layout_height="220dp"
     android:backgroundTint="?attr/colorPrimary"
     android:paddingBottom="16dp"
-    app:cardCornerRadius="20dp">
+    app:cardCornerRadius="20dp"
+    tools:ignore="TextSizeCheck">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,13 +19,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="1014mbar"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_pressure"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_pressure" />
+            app:layout_constraintTop_toTopOf="@+id/tv_pressure"
+            tools:text="1014mbar" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -33,34 +34,34 @@
             android:background="?attr/colorOnPrimary"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pressure"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
 
         <TextView
             android:id="@+id/tv_pressure"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Pressure"
+            android:text="@string/pressure"
             android:textColor="?attr/colorOnPrimary"
-            app:layout_constraintEnd_toEndOf="@+id/tv_humidity"
+            app:layout_constraintEnd_toStartOf="@+id/tv_pressure_value"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_uv" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_uv"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/tv_chance_of_rain_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="80%"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_chance_of_rain"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_chance_of_rain" />
+            app:layout_constraintTop_toTopOf="@+id/tv_chance_of_rain"
+            tools:text="80%" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -72,30 +73,32 @@
             app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_chance_of_rain"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tv_chance_of_rain" />
 
         <TextView
             android:id="@+id/tv_chance_of_rain"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Chance of rain"
+            android:text="@string/chance_of_rain"
             android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/tv_chance_of_rain_value"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_pressure" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_pressure"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/tv_feels_like_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="30"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_feels_like"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_feels_like" />
+            app:layout_constraintTop_toTopOf="@+id/tv_feels_like"
+            tools:text="30" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -104,29 +107,32 @@
             android:background="?attr/colorOnPrimary"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_feels_like"></LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_uv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="UV"
-            android:textColor="?attr/colorOnPrimary"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
             app:layout_constraintTop_toBottomOf="@+id/tv_feels_like" />
 
         <TextView
-            android:id="@+id/tv_feels_like"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_uv"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Real feel"
+            android:text="@string/uv"
             android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/tv_uv_value"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_humidity" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_feels_like"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/tv_feels_like"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/real_feel"
+            android:textColor="?attr/colorOnPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/tv_feels_like_value"
+            app:layout_constraintStart_toStartOf="@+id/tv_humidity"
+            app:layout_constraintTop_toBottomOf="@+id/tv_humidity"
+            tools:ignore="TextContrastCheck" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -135,46 +141,46 @@
             android:background="?attr/colorOnPrimary"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_uv"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tv_uv" />
 
         <TextView
             android:id="@+id/tv_uv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="0"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_uv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_uv" />
+            app:layout_constraintTop_toTopOf="@+id/tv_uv"
+            tools:text="2" />
 
         <TextView
             android:id="@+id/tv_humidity"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Humidity"
+            android:text="@string/humidity"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/tv_humidity_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="0%"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_humidity"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_humidity" />
+            app:layout_constraintTop_toTopOf="@+id/tv_humidity"
+            tools:text="60%" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -184,6 +190,6 @@
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/tv_humidity_value"
             app:layout_constraintStart_toStartOf="@+id/tv_humidity"
-            app:layout_constraintTop_toBottomOf="@+id/tv_humidity"></LinearLayout>
+            app:layout_constraintTop_toBottomOf="@+id/tv_humidity" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

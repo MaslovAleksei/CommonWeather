@@ -3,60 +3,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:foregroundGravity="center">
 
     <TextView
         android:id="@+id/tv_current_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="-30°C"
         android:textColor="?attr/colorOnPrimary"
-        android:textSize="70sp"
+        android:textSize="96sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_current_condition" />
+        app:layout_constraintTop_toBottomOf="@+id/iv_current_condition"
+        tools:text="-30" />
 
-    <LinearLayout
-        android:id="@+id/linear"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@null"
-        android:orientation="horizontal"
-        android:padding="8dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="60sp"
+        android:text="@string/celsius"
+        app:layout_constraintStart_toEndOf="@id/tv_current_temp"
+        app:layout_constraintTop_toTopOf="@id/tv_current_temp"/>
+
+    <TextView
+        android:id="@+id/tv_current_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_current_temp"
+        tools:text="Condition" />
+
+    <TextView
+        android:id="@+id/tv_main_maxmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/tv_current_temp"
         app:layout_constraintStart_toStartOf="@+id/tv_current_temp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_current_temp">
-
-        <TextView
-            android:id="@+id/tv_current_condition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:text="Condition"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tv_main_maxmin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:text="max/min"
-            android:textColor="?attr/colorOnPrimary"
-            android:textSize="16sp" />
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tv_current_condition"
+        tools:text="max/min" />
 
     <ImageView
         android:id="@+id/iv_current_condition"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:foregroundGravity="center"
         app:layout_constraintEnd_toEndOf="@+id/tv_current_temp"
         app:layout_constraintStart_toStartOf="@+id/tv_current_temp"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+        app:srcCompat="@drawable/ic_loading"
+        tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,5 +6,8 @@ import javax.inject.Inject
 class LoadDataUseCase @Inject constructor(
     private val weatherRepository: WeatherRepository
 ) {
-    suspend operator fun invoke(location: String) = weatherRepository.loadData(location)
+    suspend operator fun invoke(
+        location: String,
+        lang: String
+    ) = weatherRepository.loadData(location, lang)
 }

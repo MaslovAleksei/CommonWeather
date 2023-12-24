@@ -38,10 +38,10 @@ class MainViewModel @Inject constructor(
     val location: LiveData<String?>
         get() = _location
 
-    fun initViewModel(name: String) {
+    fun initViewModel(name: String, lang: String) {
         viewModelScope.launch(Dispatchers.Main) {
             viewModelScope.launch(Dispatchers.IO) {
-                loadDataUseCase(name)
+                loadDataUseCase(name, lang)
             }.join()
             _currentWeather.value = getCurrentWeatherUseCase(name)
             _byDaysWeather.value = getByDaysWeatherUseCase(name)

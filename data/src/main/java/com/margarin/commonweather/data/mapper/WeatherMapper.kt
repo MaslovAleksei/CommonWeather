@@ -1,12 +1,13 @@
 package com.margarin.commonweather.data.mapper
 
-import android.annotation.SuppressLint
+import android.app.Application
+import android.util.Log
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.SearchDbModel
-import com.margarin.commonweather.data.remote.apimodels.forecast.Day
 import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
+import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastDay
 import com.margarin.commonweather.data.remote.apimodels.forecast.Hour
 import com.margarin.commonweather.data.remote.apimodels.search.Search
 import com.margarin.commonweather.domain.models.ByDaysWeatherModel
@@ -15,11 +16,13 @@ import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import com.margarin.commonweather.domain.models.SearchModel
 import com.margarin.data.R
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-class WeatherMapper @Inject constructor() {
+class WeatherMapper @Inject constructor(
+    val application: Application
+) {
 
     fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
         name = forecastData.location?.name.toString(),
@@ -41,17 +44,21 @@ class WeatherMapper @Inject constructor() {
     )
 
 
-    private fun mapByDayDtoToByDaysDbModel(id: Int, name: String, day: Day) = ByDaysWeatherDbModel(
-        name = name,
-        id = id,
-        date = id.toString(),
-        maxtemp_c = day.maxtemp_c?.roundToInt(),
-        mintemp_c = day.mintemp_c?.roundToInt(),
-        condition = day.condition?.text,
-        icon_url = mapConditionImage(day.condition?.icon.toString(), IS_DAY),
-        maxwind_kph = day.maxwind_kph?.roundToInt(),
-        chance_of_rain = day.daily_chance_of_rain,
-    )
+    private fun mapByDayDtoToByDaysDbModel(id: Int, name: String, forecastDay: ForecastDay) =
+        ByDaysWeatherDbModel(
+            name = name,
+            id = id,
+            date = forecastDay.date,
+            maxtemp_c = forecastDay.day?.maxtemp_c?.roundToInt(),
+            mintemp_c = forecastDay.day?.mintemp_c?.roundToInt(),
+            condition = forecastDay.day?.condition?.text,
+            icon_url = mapConditionImage(
+                forecastDay.toString(),
+                forecastDay.toString()
+            ),
+            maxwind_kph = forecastDay.day?.maxwind_kph?.roundToInt(),
+            chance_of_rain = forecastDay.day?.daily_chance_of_rain,
+        )
 
     private fun mapByHourDtoToByHoursDbModel(id: Int, name: String, hour: Hour) =
         ByHoursWeatherDbModel(
@@ -59,7 +66,10 @@ class WeatherMapper @Inject constructor() {
             id = id,
             time = hour.time,
             temp_c = hour.temp_c?.roundToInt(),
-            icon_url = mapConditionImage(hour.condition?.icon.toString(), hour.is_day.toString()),
+            icon_url = mapConditionImage(
+                hour.toString(),
+                hour.toString()
+            ),
             wind_kph = hour.wind_kph?.roundToInt()
         )
 
@@ -68,15 +78,17 @@ class WeatherMapper @Inject constructor() {
             CurrentWeatherModel(
                 name = db.name,
                 condition = db.condition,
-                icon_url = db.icon_url,
-                last_updated = db.last_updated,
-                wind_kph = db.wind_kph,
-                wind_dir = db.wind_dir,
-                temp_c = db.temp_c,
-                pressure_mb = db.pressure_mb,
-                humidity = db.humidity,
+                icon_url = R.drawable.clear_day,
+                last_updated = application.getString(R.string.updated) +
+                        convertDate(db.last_updated, DATE_WITH_TIME_DEFAULT, DATE_LAST_UPD),
+                wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
+                wind_dir = convertWindDirections(db.wind_dir),
+                wind_dir_img = bindWindImage(db.wind_dir),
+                temp_c = db.temp_c.toString(),
+                pressure_mb = "${db.pressure_mb}${application.getString(R.string.mbar)}",
+                humidity = "${db.wind_kph}%",
                 uv = db.uv,
-                feels_like = db.feels_like,
+                feels_like = "${db.feels_like}°C",
                 latitude = db.latitude,
                 longitude = db.longitude
             )
@@ -88,13 +100,13 @@ class WeatherMapper @Inject constructor() {
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         name = db.name,
         id = db.id,
-        date = db.date,
-        maxtemp_c = db.maxtemp_c,
-        mintemp_c = db.mintemp_c,
+        date = convertDate(db.date, DATE_DEFAULT, DATE_DAILY),
+        maxtemp_c = "${db.maxtemp_c}°",
+        mintemp_c = "${db.mintemp_c}°",
         condition = db.condition,
         icon_url = db.icon_url,
-        maxwind_kph = db.maxwind_kph,
-        chance_of_rain = db.chance_of_rain,
+        maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
+        chance_of_rain = "${db.chance_of_rain}%",
         day_of_week = db.date
     )
 
@@ -102,9 +114,9 @@ class WeatherMapper @Inject constructor() {
         name = db.name,
         id = db.id,
         time = db.time,
-        temp_c = db.temp_c,
+        temp_c = "${db.temp_c}°",
         icon_url = db.icon_url,
-        wind_kph = db.wind_kph
+        wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
     )
 
 
@@ -114,7 +126,7 @@ class WeatherMapper @Inject constructor() {
             val day = mapByDayDtoToByDaysDbModel(
                 i,
                 forecastData.location!!.name,
-                forecastData.forecast.forecastday[i].day!!,
+                forecastData.forecast.forecastday[i],
             )
             dayList.add(day)
         }
@@ -166,7 +178,11 @@ class WeatherMapper @Inject constructor() {
         url = searchDb.url
     )
 
+
     private fun mapConditionImage(url: String, isDay: String): Int {
+        return R.drawable.ic_dir_south
+    }
+        /*
         if (isDay == IS_DAY) {
             return when (url) {
                 URL + "113.png" -> R.drawable.ic_sun_icons2
@@ -274,45 +290,73 @@ class WeatherMapper @Inject constructor() {
         }
     }
 
-    private fun convertDateToDayOfWeek(date: String): String {
-        if (date == getCurrentDate()) {
-            return "Today"
-        }
-        val day = date.takeLast(2).toInt()
-        val yearLastTwo = date.substring(2, 4).toInt()
-        val month = date.substring(5, 7).toInt()
-        val yearCode = (6 + yearLastTwo + yearLastTwo / 4) % 7
-        val monthCode = when (month) {
-            1, 10 -> 1
-            12, 9 -> 6
-            5 -> 2
-            8 -> 3
-            2, 3, 11 -> 4
-            6 -> 5
-            4, 7 -> 0
-            else -> 10
-        }
-
-        var result = (day + monthCode + yearCode) % 7
-        if (yearLastTwo % 4 == 0 && (month == 1 || month == 2)) result -= 1
-        return when (result) {
-            0 -> "Saturday"
-            1 -> "Sunday"
-            2 -> "Monday"
-            3 -> "Tuesday"
-            4 -> "Wednesday"
-            5 -> "Thursday"
-            6 -> "Friday"
-            else -> "Unknown"
+     */
+    
+    private fun convertWindDirections(dir: String?): String? {
+        return when (dir) {
+            "S" -> application.getString(R.string.south)
+            "N" -> application.getString(R.string.north)
+            "W" -> application.getString(R.string.west)
+            "E" -> application.getString(R.string.east)
+            "SE" -> application.getString(R.string.south_east)
+            "ESE" -> application.getString(R.string.south_east)
+            "SSE" -> application.getString(R.string.south_east)
+            "SW" -> application.getString(R.string.south_west)
+            "WSW" -> application.getString(R.string.south_west)
+            "SSW" -> application.getString(R.string.south_west)
+            "NE" -> application.getString(R.string.north_east)
+            "NNE" -> application.getString(R.string.north_east)
+            "ENE" -> application.getString(R.string.north_east)
+            "NW" -> application.getString(R.string.north_west)
+            "WNW" -> application.getString(R.string.north_west)
+            "NNW" -> application.getString(R.string.north_west)
+            else -> null
         }
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun getCurrentDate() = SimpleDateFormat(TIME_FORMAT).format(Date())
+    private fun bindWindImage(dir: String?): Int? {
+        return when (dir) {
+            "S" -> R.drawable.ic_dir_south
+            "N" -> R.drawable.ic_dir_north
+            "W" -> R.drawable.ic_dir_north_west
+            "E" -> R.drawable.ic_dir_east
+            "SE" -> R.drawable.ic_dir_south_east
+            "ESE" -> R.drawable.ic_dir_south_east
+            "SSE" -> R.drawable.ic_dir_south_east
+            "SW" -> R.drawable.ic_dir_south_west
+            "WSW" -> R.drawable.ic_dir_south_west
+            "SSW" -> R.drawable.ic_dir_south_west
+            "NE" -> R.drawable.ic_dir_north_east
+            "NNE" -> R.drawable.ic_dir_north_east
+            "ENE" -> R.drawable.ic_dir_north_east
+            "NW" -> R.drawable.ic_dir_north_west
+            "WNW" -> R.drawable.ic_dir_north_west
+            "NNW" -> R.drawable.ic_dir_north_west
+            else -> null
+        }
+    }
+
+    private fun convertDate(
+        serverDate: String?,
+        formatIn: String,
+        formatOut: String
+    ): String? {
+        Log.d("tag", serverDate + formatIn + formatOut)
+        val originalFormat = SimpleDateFormat(formatIn, Locale.getDefault())
+        val targetFormat = SimpleDateFormat(formatOut, Locale.getDefault())
+        val date = originalFormat.parse(serverDate.toString())
+        return date?.let { targetFormat.format(it) }
+    }
 
     companion object {
         private const val URL = "//cdn.weatherapi.com/weather/64x64/day/"
         private const val IS_DAY = "1"
-        private const val TIME_FORMAT = "dd-MM-yyyy"
+        private const val DATE_DEFAULT = "yyyy-MM-dd"
+        private const val DATE_WITH_TIME_DEFAULT = "yyyy-MM-dd HH:mm"
+        private const val DATE_DAILY  = "dd.MM"
+        private const val DATE_HOURLY  = "dd.MM"
+        private const val DATE_LAST_UPD  = "dd.MM HH:mm"
+
+
     }
 }

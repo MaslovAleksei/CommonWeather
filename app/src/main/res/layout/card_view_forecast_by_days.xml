@@ -5,11 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardViewForecastByDays"
     android:layout_width="match_parent"
-    android:layout_height="300dp"
+    android:layout_height="match_parent"
     android:layout_marginStart="8dp"
     android:layout_marginEnd="8dp"
     android:backgroundTint="?attr/colorPrimary"
-    app:cardCornerRadius="20dp">
+    app:cardCornerRadius="20dp"
+    tools:ignore="TextSizeCheck">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -19,37 +20,43 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="3-day forecast"
+            android:text="@string/_3_day_forecast"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/iv_calendar"
             app:layout_constraintStart_toEndOf="@+id/iv_calendar"
-            app:layout_constraintTop_toTopOf="@+id/iv_calendar" />
+            app:layout_constraintTop_toTopOf="@+id/iv_calendar"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="More details >"
+            android:text="@string/more_details"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/iv_calendar"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/iv_calendar" />
+            app:layout_constraintTop_toTopOf="@+id/iv_calendar"
+            tools:ignore="TextContrastCheck" />
 
         <Button
             android:id="@+id/b_detail_forecast"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:backgroundTint="?attr/colorPrimaryVariant"
             android:elevation="2dp"
-            android:text="3-day forecast"
+            android:text="@string/_3_day_forecast"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_3day_condition"
+            app:layout_constraintWidth_max="320dp"
+            tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
 
         <ImageView
             android:id="@+id/iv_calendar"
@@ -57,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
             app:cardCornerRadius="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -68,143 +76,155 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
             app:layout_constraintEnd_toEndOf="@+id/iv_calendar"
             app:layout_constraintStart_toStartOf="@+id/iv_calendar"
             app:layout_constraintTop_toBottomOf="@+id/iv_calendar"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+            app:srcCompat="@drawable/ic_loading"
+            tools:ignore="ImageContrastCheck" />
 
         <ImageView
             android:id="@+id/iv_2day_condition"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
             app:layout_constraintEnd_toEndOf="@+id/iv_1day_condition"
             app:layout_constraintStart_toStartOf="@+id/iv_1day_condition"
             app:layout_constraintTop_toBottomOf="@+id/iv_1day_condition"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+            app:srcCompat="@drawable/ic_loading"
+            tools:ignore="ImageContrastCheck" />
 
         <ImageView
             android:id="@+id/iv_3day_condition"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
+            android:importantForAccessibility="no"
             app:layout_constraintEnd_toEndOf="@+id/iv_2day_condition"
             app:layout_constraintStart_toStartOf="@+id/iv_2day_condition"
             app:layout_constraintTop_toBottomOf="@+id/iv_2day_condition"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2" />
+            app:srcCompat="@drawable/ic_loading"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tv_1day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today"
+            android:gravity="start"
+            android:text="@string/today"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_1day_condition"
+            app:layout_constraintEnd_toStartOf="@+id/tv_1day_condition"
             app:layout_constraintStart_toEndOf="@+id/iv_1day_condition"
-            app:layout_constraintTop_toTopOf="@+id/iv_1day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/iv_1day_condition"
+            tools:ignore="TextContrastCheck" />
 
         <TextView
             android:id="@+id/tv_2day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day"
+            android:gravity="start"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_2day_condition"
+            app:layout_constraintEnd_toStartOf="@+id/tv_2day_condition"
             app:layout_constraintStart_toStartOf="@+id/tv_1day_name"
-            app:layout_constraintTop_toTopOf="@+id/iv_2day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/iv_2day_condition"
+            tools:ignore="TextContrastCheck"
+            tools:text="03.12" />
 
         <TextView
             android:id="@+id/tv_3day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Day"
+            android:gravity="start"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/iv_3day_condition"
+            app:layout_constraintEnd_toStartOf="@+id/tv_3day_condition"
             app:layout_constraintStart_toEndOf="@+id/iv_3day_condition"
-            app:layout_constraintTop_toTopOf="@+id/iv_3day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/iv_3day_condition"
+            tools:ignore="TextContrastCheck"
+            tools:text="03.12" />
 
         <TextView
             android:id="@+id/tv_1day_condition"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:text="Condition"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_1day_name"
             app:layout_constraintEnd_toStartOf="@+id/tv_1day_maxmin"
             app:layout_constraintStart_toEndOf="@+id/tv_1day_name"
-            app:layout_constraintTop_toTopOf="@+id/tv_1day_name" />
+            app:layout_constraintTop_toTopOf="@+id/tv_1day_name"
+            tools:ignore="TextContrastCheck"
+            tools:text="Condition" />
 
         <TextView
             android:id="@+id/tv_2day_condition"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Condition"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_2day_name"
             app:layout_constraintEnd_toStartOf="@+id/tv_2day_maxmin"
             app:layout_constraintStart_toStartOf="@+id/tv_1day_condition"
-            app:layout_constraintTop_toTopOf="@+id/tv_2day_name" />
+            app:layout_constraintTop_toTopOf="@+id/tv_2day_name"
+            tools:ignore="TextContrastCheck"
+            tools:text="Condition" />
 
         <TextView
             android:id="@+id/tv_3day_condition"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Condition"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_3day_name"
             app:layout_constraintEnd_toStartOf="@+id/tv_3day_maxmin"
             app:layout_constraintStart_toStartOf="@+id/tv_1day_condition"
-            app:layout_constraintTop_toTopOf="@+id/tv_3day_name" />
+            app:layout_constraintTop_toTopOf="@+id/tv_3day_name"
+            tools:ignore="TextContrastCheck"
+            tools:text="Condition" />
 
         <TextView
             android:id="@+id/tv_1day_maxmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="max/min"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_1day_condition"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_1day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/tv_1day_condition"
+            tools:text="-10/-12" />
 
         <TextView
             android:id="@+id/tv_2day_maxmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="max/min"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_2day_condition"
             app:layout_constraintEnd_toEndOf="@+id/tv_1day_maxmin"
-            app:layout_constraintTop_toTopOf="@+id/tv_2day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/tv_2day_condition"
+            tools:text="-10/-12" />
 
         <TextView
             android:id="@+id/tv_3day_maxmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="max/min"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/tv_3day_condition"
             app:layout_constraintEnd_toEndOf="@+id/tv_2day_maxmin"
-            app:layout_constraintTop_toTopOf="@+id/tv_3day_condition" />
+            app:layout_constraintTop_toTopOf="@+id/tv_3day_condition"
+            tools:text="-10/-12" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

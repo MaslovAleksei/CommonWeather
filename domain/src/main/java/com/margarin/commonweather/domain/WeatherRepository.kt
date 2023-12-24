@@ -9,7 +9,7 @@ import com.margarin.commonweather.domain.models.SearchModel
 interface WeatherRepository {
 
     //Weather functions
-    suspend fun loadData(query: String)
+    suspend fun loadData(query: String, lang: String)
 
     suspend fun getCurrentWeather(name: String): CurrentWeatherModel?
 

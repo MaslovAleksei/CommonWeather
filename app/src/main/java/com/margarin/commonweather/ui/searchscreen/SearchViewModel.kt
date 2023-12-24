@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.getString
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
@@ -15,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.margarin.commonweather.R
 import com.margarin.commonweather.domain.models.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
@@ -91,7 +93,6 @@ class SearchViewModel @Inject constructor(
             .addOnCompleteListener {
                 changeDefiniteLocation("${it.result.latitude}, ${it.result.longitude}")
             }
-
     }
 
     fun mapMoveToPosition(map: Map, lat: String, lon: String) {
@@ -104,7 +105,6 @@ class SearchViewModel @Inject constructor(
             ),
             LINEAR_ANIMATION
         ) {}
-
     }
 
     fun changeZoomByStep(value: Float, map: Map) {
@@ -122,8 +122,8 @@ class SearchViewModel @Inject constructor(
         map.move(START_POSITION, LINEAR_ANIMATION) {
             Toast.makeText(
                 application,
-                "Move the center of the screen to the desired location and click on the " +
-                        "\"save point\" button",
+                getString(application,
+                    R.string.point_the_center_of_the_map_at_the_location_and_press_save_point),
                 Toast.LENGTH_LONG
             ).show()
         }
