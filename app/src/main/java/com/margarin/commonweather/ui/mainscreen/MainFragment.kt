@@ -99,6 +99,7 @@ class MainFragment : Fragment() {
                 cardViewDetails.tvFeelsLikeValue.text = it?.feels_like.toString()
                 cardViewDetails.tvUvValue.text = it?.uv.toString()
                 cardViewDetails.tvPressureValue.text = it?.pressure_mb.toString()
+                cardViewWind.imageView.setImageResource(it?.wind_dir_img ?: R.drawable.ic_loading)
             }
 
             viewModel.byDaysWeather.observe(viewLifecycleOwner) {
@@ -113,10 +114,10 @@ class MainFragment : Fragment() {
                         tv3dayMaxmin.text = tempMaxMin
                         //iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
                         //iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
-                        // iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        //iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
                         tv1dayName.text = getString(R.string.today)
-                        tv2dayName.text = it[1].day_of_week
-                        tv3dayName.text = it[2].day_of_week
+                        tv2dayName.text = it[1].date
+                        tv3dayName.text = it[2].date
                         tv1dayCondition.text = it[0].condition
                         tv2dayCondition.text = it[1].condition
                         tv3dayCondition.text = it[2].condition

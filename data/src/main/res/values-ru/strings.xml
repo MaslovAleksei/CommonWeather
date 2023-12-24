@@ -2,4 +2,13 @@
 <resources>
     <string name="km_h">км/ч</string>
     <string name="mbar">mbar</string>
+    <string name="south">Юг</string>
+    <string name="north">Север</string>
+    <string name="west">Запад</string>
+    <string name="east">Восток</string>
+    <string name="south_east">Юго-восток</string>
+    <string name="south_west">Юго-запад</string>
+    <string name="north_east">Северо-восток</string>
+    <string name="north_west">Северо-запад</string>
+    <string name="updated">"обновлено: "</string>
 </resources>

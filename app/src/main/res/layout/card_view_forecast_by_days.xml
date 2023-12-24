@@ -80,7 +80,7 @@
             app:layout_constraintEnd_toEndOf="@+id/iv_calendar"
             app:layout_constraintStart_toStartOf="@+id/iv_calendar"
             app:layout_constraintTop_toBottomOf="@+id/iv_calendar"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2"
+            app:srcCompat="@drawable/ic_loading"
             tools:ignore="ImageContrastCheck" />
 
         <ImageView
@@ -92,7 +92,7 @@
             app:layout_constraintEnd_toEndOf="@+id/iv_1day_condition"
             app:layout_constraintStart_toStartOf="@+id/iv_1day_condition"
             app:layout_constraintTop_toBottomOf="@+id/iv_1day_condition"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2"
+            app:srcCompat="@drawable/ic_loading"
             tools:ignore="ImageContrastCheck" />
 
         <ImageView
@@ -104,13 +104,14 @@
             app:layout_constraintEnd_toEndOf="@+id/iv_2day_condition"
             app:layout_constraintStart_toStartOf="@+id/iv_2day_condition"
             app:layout_constraintTop_toBottomOf="@+id/iv_2day_condition"
-            app:srcCompat="@drawable/ic_hot_temperature_icons2"
+            app:srcCompat="@drawable/ic_loading"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/tv_1day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:text="@string/today"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
@@ -124,6 +125,7 @@
             android:id="@+id/tv_2day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_2day_condition"
@@ -137,6 +139,7 @@
             android:id="@+id/tv_3day_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="start"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="@+id/iv_3day_condition"
