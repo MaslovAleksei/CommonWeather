@@ -89,8 +89,8 @@ class MainFragment : Fragment() {
             viewModel.currentWeather.observe(viewLifecycleOwner) {
                 mainToolbar.tvCityName.text = it?.name
                 mainToolbar.tvLastUpdate.text = it?.last_updated
-                //currentCondition.ivCurrentCondition
-                //.setImageResource(it?.icon_url ?: R.drawable.ic_time)
+                currentCondition.ivCurrentCondition
+                .setImageResource(it?.icon_url ?: R.drawable.ic_loading)
                 currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
                 currentCondition.tvCurrentCondition.text = it?.condition
                 cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
@@ -112,9 +112,9 @@ class MainFragment : Fragment() {
                         tv2dayMaxmin.text = tempMaxMin
                         tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
                         tv3dayMaxmin.text = tempMaxMin
-                        //iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
-                        //iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
-                        //iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_loading)
+                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_loading)
+                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_loading)
                         tv1dayName.text = getString(R.string.today)
                         tv2dayName.text = it[1].date
                         tv3dayName.text = it[2].date
