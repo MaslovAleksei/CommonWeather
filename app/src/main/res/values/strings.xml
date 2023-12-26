@@ -50,6 +50,8 @@
     <string name="chelyabinsk" tools:ignore="MissingTranslation">Chelyabinsk</string>
     <string name="samara" tools:ignore="MissingTranslation">Samara</string>
     <string name="tyumen" tools:ignore="MissingTranslation">Tyumen</string>
-    <string name="celsius" translatable="false">°C</string>
+    <string name="celsius" translatable="false">C</string>
+    <string name="degree" translatable="false">°</string>
+    <string name="loading">loading…</string>
 
 </resources>

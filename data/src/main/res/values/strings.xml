@@ -11,4 +11,5 @@
     <string name="north_east">North East</string>
     <string name="north_west">North West</string>
     <string name="updated">"updated: "</string>
+    <string name="now">"Now"</string>
 </resources>

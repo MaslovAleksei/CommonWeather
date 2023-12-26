@@ -27,7 +27,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/manage_cities"
         android:textColor="?attr/colorOnSurface"
-        android:textSize="24sp"
+        android:textSize="34sp"
         app:layout_constraintStart_toStartOf="@+id/b_back"
         app:layout_constraintTop_toBottomOf="@+id/b_back" />
 
@@ -36,7 +36,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="?attr/colorPrimaryContainer"
         android:text="@string/enter_location"
@@ -50,7 +50,7 @@
         android:id="@+id/rv_city_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:visibility="visible"
@@ -89,7 +89,7 @@
         android:id="@+id/map_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -105,11 +105,11 @@
             android:elevation="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_zoom_in"
-            app:tint="@color/boulder"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.40"
+            app:tint="@color/boulder"
             tools:ignore="ContentDescription" />
 
         <ImageButton
@@ -121,10 +121,10 @@
             android:elevation="2dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_zoom_out"
-            app:tint="@color/boulder"
             app:layout_constraintEnd_toEndOf="@+id/b_zoom_in"
             app:layout_constraintStart_toStartOf="@+id/b_zoom_in"
             app:layout_constraintTop_toBottomOf="@+id/b_zoom_in"
+            app:tint="@color/boulder"
             tools:ignore="ContentDescription" />
 
         <com.yandex.mapkit.mapview.MapView
@@ -145,11 +145,11 @@
             android:background="@null"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_near"
-            app:tint="@color/boulder"
             app:layout_constraintBottom_toTopOf="@+id/b_save_point"
             app:layout_constraintEnd_toEndOf="@+id/b_zoom_out"
             app:layout_constraintStart_toStartOf="@+id/b_zoom_out"
             app:layout_constraintTop_toBottomOf="@+id/b_zoom_out"
+            app:tint="@color/boulder"
             tools:ignore="ContentDescription" />
 
         <Button
@@ -194,37 +194,37 @@
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:background="@null"
         android:src="@drawable/ic_search"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_input_location"
         app:layout_constraintStart_toStartOf="@+id/b_input_location"
         app:layout_constraintTop_toTopOf="@+id/b_input_location"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_place"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_define_loc"
         app:layout_constraintStart_toStartOf="@+id/b_define_loc"
         app:layout_constraintTop_toTopOf="@+id/b_define_loc"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:src="@drawable/ic_map"
-        app:tint="?attr/colorOnSecondary"
         app:layout_constraintBottom_toBottomOf="@+id/b_map"
         app:layout_constraintStart_toStartOf="@+id/b_map"
         app:layout_constraintTop_toTopOf="@+id/b_map"
+        app:tint="?attr/colorOnSecondary"
         tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.widget.Guideline

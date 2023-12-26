@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:textSize="16sp"
-            android:textStyle="bold"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,8 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
+            android:textSize="18sp"
             android:textColor="?attr/colorOnPrimary"
             app:layout_constraintEnd_toEndOf="@+id/tv_wind_direction"
             app:layout_constraintStart_toStartOf="@+id/tv_wind_direction"
@@ -48,6 +46,17 @@
             app:layout_constraintStart_toStartOf="@+id/tv_wind_speed"
             app:layout_constraintTop_toBottomOf="@+id/tv_wind_speed"
             app:srcCompat="@drawable/ic_time"
+            android:importantForAccessibility="no" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_wind"
             android:importantForAccessibility="no" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

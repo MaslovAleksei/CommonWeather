@@ -54,11 +54,16 @@ class WeatherMapper @Inject constructor(
             chance_of_rain = forecastDay.day?.daily_chance_of_rain,
         )
 
-    private fun mapByHourDtoToByHoursDbModel(id: Int, name: String, hour: Hour) =
-        ByHoursWeatherDbModel(
+    private fun mapByHourDtoToByHoursDbModel(
+        id: Int,
+        name: String,
+        currentTime: String,
+        hour: Hour
+    ) = ByHoursWeatherDbModel(
             name = name,
             id = id,
             time = hour.time,
+            currentTime = currentTime,
             temp_c = hour.temp_c?.roundToInt(),
             icon_url = hour.condition?.icon,
             wind_kph = hour.wind_kph?.roundToInt()
@@ -71,12 +76,12 @@ class WeatherMapper @Inject constructor(
                 condition = db.condition,
                 icon_url = mapConditionImage(db.icon_url.toString()),
                 last_updated = application.getString(R.string.updated) +
-                        convertDate(db.last_updated, DATE_WITH_TIME_DEFAULT, DATE_LAST_UPD),
+                        convertDate(db.last_updated, DATE_FULL_DEFAULT, DATE_LAST_UPD),
                 wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
                 wind_dir = convertWindDirections(db.wind_dir),
                 wind_dir_img = bindWindImage(db.wind_dir),
                 temp_c = db.temp_c.toString(),
-                pressure_mb = "${db.pressure_mb}${application.getString(R.string.mbar)}",
+                pressure_mb = "${db.pressure_mb}",
                 humidity = "${db.wind_kph}%",
                 uv = db.uv,
                 feels_like = "${db.feels_like}°C",
@@ -91,7 +96,7 @@ class WeatherMapper @Inject constructor(
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         name = db.name,
         id = db.id,
-        date = convertDate(db.date, DATE_DEFAULT, DATE_DAILY),
+        date = convertDate(db.date, DATE_DEFAULT, DAY_MONTH),
         maxtemp_c = "${db.maxtemp_c}°",
         mintemp_c = "${db.mintemp_c}°",
         condition = db.condition,
@@ -101,14 +106,24 @@ class WeatherMapper @Inject constructor(
         day_of_week = db.date
     )
 
-    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) = ByHoursWeatherModel(
-        name = db.name,
-        id = db.id,
-        time = db.time,
-        temp_c = "${db.temp_c}°",
-        icon_url = mapConditionImage(db.icon_url.toString()),
-        wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
-    )
+    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel): ByHoursWeatherModel {
+        val hourLastUpd = convertDate(db.currentTime, DATE_FULL_DEFAULT, HOUR)
+        val hour = convertDate(db.time, DATE_FULL_DEFAULT, HOUR)
+        val time = if (hourLastUpd == hour) {
+            application.getString(R.string.now)
+        } else {
+            convertDate(db.time, DATE_FULL_DEFAULT, TIME)
+        }
+        return ByHoursWeatherModel(
+            name = db.name,
+            id = db.id,
+            time = time,
+            temp_c = "${db.temp_c}°",
+            icon_url = mapConditionImage(db.icon_url.toString()),
+            wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
+        )
+    }
+
 
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
@@ -116,7 +131,7 @@ class WeatherMapper @Inject constructor(
         for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
             val day = mapByDayDtoToByDaysDbModel(
                 i,
-                forecastData.location!!.name,
+                forecastData.location?.name.toString(),
                 forecastData.forecast.forecastday[i],
             )
             dayList.add(day)
@@ -129,7 +144,8 @@ class WeatherMapper @Inject constructor(
         for (i in 0 until forecastData.forecast?.forecastday?.first()?.hour?.size!!) {
             val hour = mapByHourDtoToByHoursDbModel(
                 i,
-                forecastData.location!!.name,
+                forecastData.location?.name.toString(),
+                forecastData.current?.last_updated.toString(),
                 forecastData.forecast.forecastday.first().hour!![i]
             )
             hourList.add(hour)
@@ -330,9 +346,10 @@ class WeatherMapper @Inject constructor(
     companion object {
         private const val URL = "//cdn.weatherapi.com/weather/64x64/"
         private const val DATE_DEFAULT = "yyyy-MM-dd"
-        private const val DATE_WITH_TIME_DEFAULT = "yyyy-MM-dd HH:mm"
-        private const val DATE_DAILY = "dd.MM"
-        private const val DATE_HOURLY = "dd.MM"
+        private const val DATE_FULL_DEFAULT = "yyyy-MM-dd HH:mm"
+        private const val DAY_MONTH = "dd.MM"
+        private const val TIME = "HH:mm"
+        private const val HOUR = "HH"
         private const val DATE_LAST_UPD = "dd.MM HH:mm"
 
 
