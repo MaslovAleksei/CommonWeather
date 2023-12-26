@@ -50,4 +50,5 @@
     <string name="chelyabinsk">Челябинск</string>
     <string name="samara">Самара</string>
     <string name="tyumen">Тюмень</string>
+    <string name="loading">загрузка…</string>
 </resources>

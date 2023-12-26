@@ -27,10 +27,7 @@ class WeatherMapper @Inject constructor(
     fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
         name = forecastData.location?.name.toString(),
         condition = forecastData.current?.condition?.text,
-        icon_url = mapConditionImage(
-            forecastData.current?.condition?.icon.toString(),
-            forecastData.current?.is_day.toString()
-        ),
+        icon_url = forecastData.current?.condition?.icon,
         last_updated = forecastData.current?.last_updated,
         wind_kph = forecastData.current?.wind_kph?.roundToInt(),
         wind_dir = forecastData.current?.wind_dir,
@@ -52,24 +49,23 @@ class WeatherMapper @Inject constructor(
             maxtemp_c = forecastDay.day?.maxtemp_c?.roundToInt(),
             mintemp_c = forecastDay.day?.mintemp_c?.roundToInt(),
             condition = forecastDay.day?.condition?.text,
-            icon_url = mapConditionImage(
-                forecastDay.toString(),
-                forecastDay.toString()
-            ),
+            icon_url = forecastDay.day?.condition?.icon.toString(),
             maxwind_kph = forecastDay.day?.maxwind_kph?.roundToInt(),
             chance_of_rain = forecastDay.day?.daily_chance_of_rain,
         )
 
-    private fun mapByHourDtoToByHoursDbModel(id: Int, name: String, hour: Hour) =
-        ByHoursWeatherDbModel(
+    private fun mapByHourDtoToByHoursDbModel(
+        id: Int,
+        name: String,
+        currentTime: String,
+        hour: Hour
+    ) = ByHoursWeatherDbModel(
             name = name,
             id = id,
             time = hour.time,
+            currentTime = currentTime,
             temp_c = hour.temp_c?.roundToInt(),
-            icon_url = mapConditionImage(
-                hour.toString(),
-                hour.toString()
-            ),
+            icon_url = hour.condition?.icon,
             wind_kph = hour.wind_kph?.roundToInt()
         )
 
@@ -78,14 +74,14 @@ class WeatherMapper @Inject constructor(
             CurrentWeatherModel(
                 name = db.name,
                 condition = db.condition,
-                icon_url = R.drawable.clear_day,
+                icon_url = mapConditionImage(db.icon_url.toString()),
                 last_updated = application.getString(R.string.updated) +
-                        convertDate(db.last_updated, DATE_WITH_TIME_DEFAULT, DATE_LAST_UPD),
+                        convertDate(db.last_updated, DATE_FULL_DEFAULT, DATE_LAST_UPD),
                 wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
                 wind_dir = convertWindDirections(db.wind_dir),
                 wind_dir_img = bindWindImage(db.wind_dir),
                 temp_c = db.temp_c.toString(),
-                pressure_mb = "${db.pressure_mb}${application.getString(R.string.mbar)}",
+                pressure_mb = "${db.pressure_mb}",
                 humidity = "${db.wind_kph}%",
                 uv = db.uv,
                 feels_like = "${db.feels_like}°C",
@@ -100,24 +96,34 @@ class WeatherMapper @Inject constructor(
     fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
         name = db.name,
         id = db.id,
-        date = convertDate(db.date, DATE_DEFAULT, DATE_DAILY),
+        date = convertDate(db.date, DATE_DEFAULT, DAY_MONTH),
         maxtemp_c = "${db.maxtemp_c}°",
         mintemp_c = "${db.mintemp_c}°",
         condition = db.condition,
-        icon_url = db.icon_url,
+        icon_url = mapConditionImage(db.icon_url.toString()),
         maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
         chance_of_rain = "${db.chance_of_rain}%",
         day_of_week = db.date
     )
 
-    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel) = ByHoursWeatherModel(
-        name = db.name,
-        id = db.id,
-        time = db.time,
-        temp_c = "${db.temp_c}°",
-        icon_url = db.icon_url,
-        wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
-    )
+    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel): ByHoursWeatherModel {
+        val hourLastUpd = convertDate(db.currentTime, DATE_FULL_DEFAULT, HOUR)
+        val hour = convertDate(db.time, DATE_FULL_DEFAULT, HOUR)
+        val time = if (hourLastUpd == hour) {
+            application.getString(R.string.now)
+        } else {
+            convertDate(db.time, DATE_FULL_DEFAULT, TIME)
+        }
+        return ByHoursWeatherModel(
+            name = db.name,
+            id = db.id,
+            time = time,
+            temp_c = "${db.temp_c}°",
+            icon_url = mapConditionImage(db.icon_url.toString()),
+            wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
+        )
+    }
+
 
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
@@ -125,7 +131,7 @@ class WeatherMapper @Inject constructor(
         for (i in 0 until forecastData.forecast?.forecastday?.size!!) {
             val day = mapByDayDtoToByDaysDbModel(
                 i,
-                forecastData.location!!.name,
+                forecastData.location?.name.toString(),
                 forecastData.forecast.forecastday[i],
             )
             dayList.add(day)
@@ -138,9 +144,9 @@ class WeatherMapper @Inject constructor(
         for (i in 0 until forecastData.forecast?.forecastday?.first()?.hour?.size!!) {
             val hour = mapByHourDtoToByHoursDbModel(
                 i,
-                forecastData.location!!.name,
+                forecastData.location?.name.toString(),
+                forecastData.current?.last_updated.toString(),
                 forecastData.forecast.forecastday.first().hour!![i]
-
             )
             hourList.add(hour)
         }
@@ -179,119 +185,108 @@ class WeatherMapper @Inject constructor(
     )
 
 
-    private fun mapConditionImage(url: String, isDay: String): Int {
-        return R.drawable.ic_dir_south
-    }
-        /*
-        if (isDay == IS_DAY) {
-            return when (url) {
-                URL + "113.png" -> R.drawable.ic_sun_icons2
-                URL + "116.png" -> R.drawable.ic_icons_sun_behind_clouds
-                URL + "119.png" -> R.drawable.ic_cloud_icons2
-                URL + "122.png" -> R.drawable.ic_cloud_icons2
-                URL + "143.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "176.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "179.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "182.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "185.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "200.png" -> R.drawable.ic_thunderclouds_icons
-                URL + "227.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "230.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "248.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "260.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "263.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "266.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "281.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "284.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "293.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "296.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "299.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "302.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "305.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "308.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "311.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "314.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "317.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "320.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "323.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "326.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "329.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "332.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "335.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "338.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "350.png" -> R.drawable.ic_hail2
-                URL + "353.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "356.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "359.png" -> R.drawable.ic_icons_of_the_sun_behind_the_rainy_cloud
-                URL + "362.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "365.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "368.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "371.png" -> R.drawable.ic_icons_of_the_sun_behind_the_snow_cloud2
-                URL + "374.png" -> R.drawable.ic_hail2
-                URL + "377.png" -> R.drawable.ic_hail2
-                URL + "386.png" -> R.drawable.ic_heavy_rain_icons2
-                URL + "389.png" -> R.drawable.ic_heavy_rain_icons2
-                URL + "392.png" -> R.drawable.ic_thunderclouds_icons
-                URL + "395.png" -> R.drawable.ic_thunderclouds_icons
-                else -> R.drawable.ic_hot_temperature_icons2
-            }
-        } else {
-            return when (url) {
-                URL + "113.png" -> R.drawable.ic_moon_and_stars_icons2
-                URL + "116.png" -> R.drawable.ic_icons_of_the_moon_behind_the_cloud
-                URL + "119.png" -> R.drawable.ic_icons_of_the_moon_behind_the_cloud
-                URL + "122.png" -> R.drawable.ic_cloud_icons2
-                URL + "143.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "176.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "179.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "182.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "185.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "200.png" -> R.drawable.ic_thunderclouds_icons
-                URL + "227.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "230.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "248.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "260.png" -> R.drawable.ic_cloud_icons2 //TODO
-                URL + "263.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "266.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "281.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "284.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "293.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "296.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "299.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "302.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "305.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "308.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "311.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "314.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "317.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "320.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "323.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "326.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "329.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "332.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "335.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "338.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "350.png" -> R.drawable.ic_hail2
-                URL + "353.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "356.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "359.png" -> R.drawable.ic_rainy_cloud_icons2
-                URL + "362.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "365.png" -> R.drawable.ic_rain_and_snow_icons
-                URL + "368.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "371.png" -> R.drawable.ic_snow_cloud_icons
-                URL + "374.png" -> R.drawable.ic_hail2
-                URL + "377.png" -> R.drawable.ic_hail2
-                URL + "386.png" -> R.drawable.ic_heavy_rain_icons2
-                URL + "389.png" -> R.drawable.ic_heavy_rain_icons2
-                URL + "392.png" -> R.drawable.ic_thunderclouds_icons
-                URL + "395.png" -> R.drawable.ic_thunderclouds_icons
-                else -> R.drawable.ic_hot_temperature_icons2
-            }
+    private fun mapConditionImage(url: String): Int? {
+        return when (url) {
+            URL + "day/113.png" -> R.drawable.clear_day
+            URL + "day/116.png" -> R.drawable.cloudy_day_1
+            URL + "day/119.png" -> R.drawable.cloudy_day_2
+            URL + "day/122.png" -> R.drawable.cloudy_day_3
+            URL + "day/143.png" -> R.drawable.fog_day
+            URL + "day/176.png" -> R.drawable.rainy_1_day
+            URL + "day/179.png" -> R.drawable.snowy_1_day
+            URL + "day/182.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/185.png" -> R.drawable.snow_and_sleet_mix
+            URL + "day/200.png" -> R.drawable.scattered_thunderstorms_day
+            URL + "day/227.png" -> R.drawable.snowy_2
+            URL + "day/230.png" -> R.drawable.snowy_3
+            URL + "day/248.png" -> R.drawable.fog
+            URL + "day/260.png" -> R.drawable.fog
+            URL + "day/263.png" -> R.drawable.rain_and_sleet_mix
+            URL + "day/266.png" -> R.drawable.rain_and_sleet_mix
+            URL + "day/281.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/284.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/293.png" -> R.drawable.rainy_1_day
+            URL + "day/296.png" -> R.drawable.rainy_1
+            URL + "day/299.png" -> R.drawable.rainy_2_day
+            URL + "day/302.png" -> R.drawable.rainy_2
+            URL + "day/305.png" -> R.drawable.rainy_3_day
+            URL + "day/308.png" -> R.drawable.rainy_3
+            URL + "day/311.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/314.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/317.png" -> R.drawable.rain_and_sleet_mix
+            URL + "day/320.png" -> R.drawable.snow_and_sleet_mix
+            URL + "day/323.png" -> R.drawable.snowy_1_day
+            URL + "day/326.png" -> R.drawable.snowy_1
+            URL + "day/329.png" -> R.drawable.snowy_2_day
+            URL + "day/332.png" -> R.drawable.snowy_2
+            URL + "day/335.png" -> R.drawable.snowy_3_day
+            URL + "day/338.png" -> R.drawable.snowy_3
+            URL + "day/350.png" -> R.drawable.hail
+            URL + "day/353.png" -> R.drawable.rainy_1_day
+            URL + "day/356.png" -> R.drawable.rainy_2_day
+            URL + "day/359.png" -> R.drawable.rainy_3_day
+            URL + "day/362.png" -> R.drawable.rain_and_snow_mix
+            URL + "day/365.png" -> R.drawable.snow_and_sleet_mix
+            URL + "day/368.png" -> R.drawable.snowy_1_day
+            URL + "day/371.png" -> R.drawable.snowy_2_day
+            URL + "day/374.png" -> R.drawable.hail
+            URL + "day/377.png" -> R.drawable.hail
+            URL + "day/386.png" -> R.drawable.isolated_thunderstorms_day
+            URL + "day/389.png" -> R.drawable.scattered_thunderstorms
+            URL + "day/392.png" -> R.drawable.isolated_thunderstorms_day
+            URL + "day/395.png" -> R.drawable.scattered_thunderstorms
+            URL + "night/113.png" -> R.drawable.clear
+            URL + "night/116.png" -> R.drawable.cloudy_night_1
+            URL + "night/119.png" -> R.drawable.cloudy_night_2
+            URL + "night/122.png" -> R.drawable.cloudy_night_3
+            URL + "night/143.png" -> R.drawable.fog_night
+            URL + "night/176.png" -> R.drawable.rainy_1_night
+            URL + "night/179.png" -> R.drawable.snowy_1_night
+            URL + "night/182.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/185.png" -> R.drawable.snow_and_sleet_mix
+            URL + "night/200.png" -> R.drawable.scattered_thunderstorms_night
+            URL + "night/227.png" -> R.drawable.snowy_2
+            URL + "night/230.png" -> R.drawable.snowy_3
+            URL + "night/248.png" -> R.drawable.fog
+            URL + "night/260.png" -> R.drawable.fog
+            URL + "night/263.png" -> R.drawable.rain_and_sleet_mix
+            URL + "night/266.png" -> R.drawable.rain_and_sleet_mix
+            URL + "night/281.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/284.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/293.png" -> R.drawable.rainy_1_night
+            URL + "night/296.png" -> R.drawable.rainy_1
+            URL + "night/299.png" -> R.drawable.rainy_2_night
+            URL + "night/302.png" -> R.drawable.rainy_2
+            URL + "night/305.png" -> R.drawable.rainy_3_night
+            URL + "night/308.png" -> R.drawable.rainy_3
+            URL + "night/311.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/314.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/317.png" -> R.drawable.rain_and_sleet_mix
+            URL + "night/320.png" -> R.drawable.snow_and_sleet_mix
+            URL + "night/323.png" -> R.drawable.snowy_1_night
+            URL + "night/326.png" -> R.drawable.snowy_1
+            URL + "night/329.png" -> R.drawable.snowy_2_night
+            URL + "night/332.png" -> R.drawable.snowy_2
+            URL + "night/335.png" -> R.drawable.snowy_3_night
+            URL + "night/338.png" -> R.drawable.snowy_3
+            URL + "night/350.png" -> R.drawable.hail
+            URL + "night/353.png" -> R.drawable.rainy_1_night
+            URL + "night/356.png" -> R.drawable.rainy_2_night
+            URL + "night/359.png" -> R.drawable.rainy_3_night
+            URL + "night/362.png" -> R.drawable.rain_and_snow_mix
+            URL + "night/365.png" -> R.drawable.snow_and_sleet_mix
+            URL + "night/368.png" -> R.drawable.snowy_1_night
+            URL + "night/371.png" -> R.drawable.snowy_2_night
+            URL + "night/374.png" -> R.drawable.hail
+            URL + "night/377.png" -> R.drawable.hail
+            URL + "night/386.png" -> R.drawable.isolated_thunderstorms_night
+            URL + "night/389.png" -> R.drawable.scattered_thunderstorms
+            URL + "night/392.png" -> R.drawable.isolated_thunderstorms_night
+            URL + "night/395.png" -> R.drawable.scattered_thunderstorms
+            else -> null
         }
     }
 
-     */
-    
     private fun convertWindDirections(dir: String?): String? {
         return when (dir) {
             "S" -> application.getString(R.string.south)
@@ -318,7 +313,7 @@ class WeatherMapper @Inject constructor(
         return when (dir) {
             "S" -> R.drawable.ic_dir_south
             "N" -> R.drawable.ic_dir_north
-            "W" -> R.drawable.ic_dir_north_west
+            "W" -> R.drawable.ic_dir_west
             "E" -> R.drawable.ic_dir_east
             "SE" -> R.drawable.ic_dir_south_east
             "ESE" -> R.drawable.ic_dir_south_east
@@ -349,13 +344,13 @@ class WeatherMapper @Inject constructor(
     }
 
     companion object {
-        private const val URL = "//cdn.weatherapi.com/weather/64x64/day/"
-        private const val IS_DAY = "1"
+        private const val URL = "//cdn.weatherapi.com/weather/64x64/"
         private const val DATE_DEFAULT = "yyyy-MM-dd"
-        private const val DATE_WITH_TIME_DEFAULT = "yyyy-MM-dd HH:mm"
-        private const val DATE_DAILY  = "dd.MM"
-        private const val DATE_HOURLY  = "dd.MM"
-        private const val DATE_LAST_UPD  = "dd.MM HH:mm"
+        private const val DATE_FULL_DEFAULT = "yyyy-MM-dd HH:mm"
+        private const val DAY_MONTH = "dd.MM"
+        private const val TIME = "HH:mm"
+        private const val HOUR = "HH"
+        private const val DATE_LAST_UPD = "dd.MM HH:mm"
 
 
     }

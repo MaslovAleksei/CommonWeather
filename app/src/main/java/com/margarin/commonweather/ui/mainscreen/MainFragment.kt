@@ -12,11 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.R
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.ViewModelFactory
 import com.margarin.commonweather.ui.dataStore
+import com.margarin.commonweather.ui.mainscreen.adapter.WeatherAdapter
 import com.margarin.commonweather.ui.searchscreen.CityListFragment
 import com.margarin.commonweather.utils.BINDING_NULL
 import com.margarin.commonweather.utils.BUNDLE_KEY
@@ -25,9 +27,10 @@ import com.margarin.commonweather.utils.EMPTY_STRING
 import com.margarin.commonweather.utils.LOCATION
 import com.margarin.commonweather.utils.REQUEST_KEY
 import com.margarin.commonweather.utils.launchFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class MainFragment : Fragment() {
@@ -42,6 +45,8 @@ class MainFragment : Fragment() {
     private val component by lazy {
         (requireActivity().application as WeatherApp).component
     }
+
+    private lateinit var adapter: WeatherAdapter
 
     private var _binding: FragmentMainBinding? = null
     private val binding: FragmentMainBinding
@@ -72,11 +77,22 @@ class MainFragment : Fragment() {
         setOnClickListeners()
         observeViewModel()
         setOnRefreshListener()
+        configureRecyclerView()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun configureRecyclerView() {
+        binding.cardViewForecastByHours.recyclerView.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        adapter = WeatherAdapter()
+        binding.cardViewForecastByHours.recyclerView.adapter = adapter
     }
 
     private fun observeViewModel() {
@@ -89,8 +105,6 @@ class MainFragment : Fragment() {
             viewModel.currentWeather.observe(viewLifecycleOwner) {
                 mainToolbar.tvCityName.text = it?.name
                 mainToolbar.tvLastUpdate.text = it?.last_updated
-                //currentCondition.ivCurrentCondition
-                //.setImageResource(it?.icon_url ?: R.drawable.ic_time)
                 currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
                 currentCondition.tvCurrentCondition.text = it?.condition
                 cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
@@ -112,9 +126,9 @@ class MainFragment : Fragment() {
                         tv2dayMaxmin.text = tempMaxMin
                         tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
                         tv3dayMaxmin.text = tempMaxMin
-                        //iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_time)
-                        //iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_time)
-                        //iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_time)
+                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_loading)
+                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_loading)
+                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_loading)
                         tv1dayName.text = getString(R.string.today)
                         tv2dayName.text = it[1].date
                         tv3dayName.text = it[2].date
@@ -126,23 +140,39 @@ class MainFragment : Fragment() {
                 }
             }
             viewModel.byHoursWeather.observe(viewLifecycleOwner) {
+                adapter.submitList(it)
             }
         }
     }
 
     private fun initViewModel() {
-        var name: String
+        lifecycleScope.launch(Dispatchers.Main) {
+            with(binding.mainToolbar) {
+                var name = EMPTY_STRING
+                tvStatus.visibility = View.VISIBLE
+                tvStatus.text = getString(R.string.loading)
+                bSearch.isEnabled = false
+                binding.swipeRefresh.isRefreshing = true
 
-        runBlocking {
-            val dataStoreKey = stringPreferencesKey(LOCATION)
-            val preferences = (requireContext().dataStore.data.first())
-            name = preferences[dataStoreKey] ?: EMPTY_STRING
-        }
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val dataStoreKey = stringPreferencesKey(LOCATION)
+                    val preferences = (requireContext().dataStore.data.first())
+                    name = preferences[dataStoreKey] ?: EMPTY_STRING
+                }.join()
 
-        if (name == EMPTY_STRING) {
-            viewModel.initViewModel(getString(R.string.moscow), getString(R.string.lang))
-        } else {
-            viewModel.initViewModel(name, getString(R.string.lang))
+                if (name == EMPTY_STRING) {
+                    viewModel.initViewModel(getString(R.string.moscow), getString(R.string.lang))
+                } else {
+                    viewModel.initViewModel(name, getString(R.string.lang))
+                }
+                delay(500)
+                binding.swipeRefresh.isRefreshing = false
+                tvStatus.visibility = View.GONE
+                tvLastUpdate.visibility = View.VISIBLE
+                delay(1000)
+                tvLastUpdate.visibility = View.GONE
+                bSearch.isEnabled = true
+            }
         }
     }
 
@@ -156,10 +186,12 @@ class MainFragment : Fragment() {
             binding.swipeRefresh.isRefreshing = false
         }
         binding.tvWeatherApi.setOnClickListener {
-            startActivity(Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://www.weatherapi.com/")
-            ))
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(WEATHER_API)
+                )
+            )
         }
     }
 
@@ -176,5 +208,9 @@ class MainFragment : Fragment() {
         setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             bundle.getString(BUNDLE_KEY)?.let { viewModel.setLocationValue(it) }
         }
+    }
+
+    companion object {
+        private const val WEATHER_API = "https://www.weatherapi.com/"
     }
 }

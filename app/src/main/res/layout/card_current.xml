@@ -11,29 +11,33 @@
         android:id="@+id/tv_current_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="top"
         android:textColor="?attr/colorOnPrimary"
-        android:textSize="96sp"
+        android:textSize="120sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_current_condition"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="-30" />
 
     <TextView
+        android:id="@+id/degree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/degree"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="60sp"
-        android:text="@string/celsius"
         app:layout_constraintStart_toEndOf="@id/tv_current_temp"
-        app:layout_constraintTop_toTopOf="@id/tv_current_temp"/>
+        app:layout_constraintTop_toTopOf="@id/tv_current_temp" />
 
     <TextView
         android:id="@+id/tv_current_condition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
         android:textColor="?attr/colorOnPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_current_temp"
@@ -45,21 +49,22 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:textColor="?attr/colorOnPrimary"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/tv_current_temp"
         app:layout_constraintStart_toStartOf="@+id/tv_current_temp"
         app:layout_constraintTop_toBottomOf="@+id/tv_current_condition"
         tools:text="max/min" />
 
-    <ImageView
-        android:id="@+id/iv_current_condition"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:foregroundGravity="center"
-        app:layout_constraintEnd_toEndOf="@+id/tv_current_temp"
-        app:layout_constraintStart_toStartOf="@+id/tv_current_temp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_loading"
-        tools:ignore="ContentDescription" />
+    <TextView
+        android:id="@+id/celsius"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+
+        android:text="@string/celsius"
+        android:textColor="?attr/colorOnPrimary"
+        android:textSize="48sp"
+        app:layout_constraintStart_toEndOf="@+id/degree"
+        app:layout_constraintTop_toTopOf="@+id/degree" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
