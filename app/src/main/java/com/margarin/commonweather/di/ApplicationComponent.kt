@@ -2,8 +2,6 @@ package com.margarin.commonweather.di
 
 import android.app.Application
 import com.margarin.commonweather.app.WeatherApp
-import com.margarin.commonweather.data.di.ApplicationScope
-import com.margarin.commonweather.data.di.DataModule
 import com.margarin.commonweather.ui.searchscreen.CityListFragment
 import com.margarin.commonweather.ui.mainscreen.MainFragment
 import com.margarin.commonweather.ui.searchscreen.SearchFragment
