@@ -7,7 +7,6 @@ import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
 import com.margarin.commonweather.data.mapper.WeatherMapper
 import com.margarin.commonweather.data.remote.ApiService
-import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
 import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.SearchModel
 import javax.inject.Inject
@@ -25,9 +24,9 @@ class WeatherRepositoryImpl @Inject constructor(
         try {
             val forecastData = apiService.getForecastWeather(city = query, lang = lang)
             if (forecastData != null) {
-                addCurrentData(forecastData)
-                addByDayData(forecastData)
-                addByHourData(forecastData)
+                currentDao.addCurrentWeather(mapper.mapForecastDataToCurrentDbModel(forecastData))
+                byDaysDao.addByDaysWeather(mapper.mapForecastDataToListDayDbModel(forecastData))
+                byHoursDao.addByHoursWeather(mapper.mapForecastDataToListHoursDbModel(forecastData))
             }
         } catch (_: Exception) { }
     }
@@ -64,20 +63,5 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun deleteSearchItem(searchModel: SearchModel) {
         searchDao.deleteSearchItem(searchModel.id)
-    }
-
-    private suspend fun addCurrentData(forecastData: ForecastData) {
-        val currentDbModel = mapper.mapForecastDataToCurrentDbModel(forecastData)
-        currentDao.addCurrentWeather(currentDbModel)
-    }
-
-    private suspend fun addByDayData(forecastData: ForecastData) {
-        val byDaysDbModelList = mapper.mapForecastDataToListDayDbModel(forecastData)
-        byDaysDao.addByDaysWeather(byDaysDbModelList)
-    }
-
-    private suspend fun addByHourData(forecastData: ForecastData) {
-        val byHoursDbModelList = mapper.mapForecastDataToListHoursDbModel(forecastData)
-        byHoursDao.addByHoursWeather(byHoursDbModelList)
     }
 }
