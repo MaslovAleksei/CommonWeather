@@ -3,10 +3,8 @@ package com.margarin.commonweather.data.di
 import android.app.Application
 import com.margarin.commonweather.data.repository.WeatherRepositoryImpl
 import com.margarin.commonweather.data.database.AppDatabase
-import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
-import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
-import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
+import com.margarin.commonweather.data.database.dao.WeatherDao
 import com.margarin.commonweather.data.remote.ApiFactory
 import com.margarin.commonweather.data.remote.ApiService
 import com.margarin.commonweather.domain.WeatherRepository
@@ -31,20 +29,8 @@ interface DataModule {
 
         @Provides
         @ApplicationScope
-        fun provideCurrentWeatherDao(application: Application): CurrentWeatherDao {
-            return AppDatabase.getInstance(application).currentWeatherDao()
-        }
-
-        @Provides
-        @ApplicationScope
-        fun provideByDaysWeatherDao(application: Application): ByDaysWeatherDao {
-            return AppDatabase.getInstance(application).byDaysWeatherDao()
-        }
-
-        @Provides
-        @ApplicationScope
-        fun provideByHoursWeatherDao(application: Application): ByHoursWeatherDao {
-            return AppDatabase.getInstance(application).byHoursWeatherDao()
+        fun provideWeatherDao(application: Application): WeatherDao {
+            return AppDatabase.getInstance(application).weatherDao()
         }
 
         @Provides

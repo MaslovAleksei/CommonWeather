@@ -124,7 +124,7 @@ class SearchViewModel @Inject constructor(
                 application,
                 getString(application,
                     R.string.point_the_center_of_the_map_at_the_location_and_press_save_point),
-                Toast.LENGTH_LONG
+                Toast.LENGTH_SHORT
             ).show()
         }
     }
@@ -149,7 +149,6 @@ class SearchViewModel @Inject constructor(
             _savedLocation.value = requestSearchLocationUseCase(query)
         }
     }
-
 
     companion object {
 

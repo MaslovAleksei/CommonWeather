@@ -1,8 +1,6 @@
 package com.margarin.commonweather.domain.models
 
 data class ByDaysWeatherModel(
-    val name: String,
-    val id: Int,
     val date: String?,
     val maxtemp_c: String?,
     val mintemp_c: String?,

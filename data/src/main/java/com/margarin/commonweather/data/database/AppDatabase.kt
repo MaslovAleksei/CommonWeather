@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
-import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
-import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
+import com.margarin.commonweather.data.database.dao.WeatherDao
 import com.margarin.commonweather.data.database.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.data.database.dbmodels.CurrentWeatherDbModel
@@ -45,9 +43,7 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun byDaysWeatherDao(): ByDaysWeatherDao
-    abstract fun byHoursWeatherDao(): ByHoursWeatherDao
-    abstract fun currentWeatherDao(): CurrentWeatherDao
+    abstract fun weatherDao(): WeatherDao
     abstract fun searchDao(): SearchDao
 
 }

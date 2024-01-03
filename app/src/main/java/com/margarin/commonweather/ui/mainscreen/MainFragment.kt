@@ -102,45 +102,48 @@ class MainFragment : Fragment() {
         }
 
         binding.apply {
-            viewModel.currentWeather.observe(viewLifecycleOwner) {
+            viewModel.weather.observe(viewLifecycleOwner) {
+                adapter.submitList(it?.byHoursWeatherModel)
                 mainToolbar.tvCityName.text = it?.name
-                mainToolbar.tvLastUpdate.text = it?.last_updated
-                currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
-                currentCondition.tvCurrentCondition.text = it?.condition
-                cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
-                cardViewWind.tvWindSpeed.text = it?.wind_kph.toString()
-                cardViewDetails.tvHumidityValue.text = it?.humidity.toString()
-                cardViewDetails.tvFeelsLikeValue.text = it?.feels_like.toString()
-                cardViewDetails.tvUvValue.text = it?.uv.toString()
-                cardViewDetails.tvPressureValue.text = it?.pressure_mb.toString()
-                cardViewWind.imageView.setImageResource(it?.wind_dir_img ?: R.drawable.ic_loading)
-            }
+                mainToolbar.tvLastUpdate.text = it?.currentWeatherModel?.last_updated
+                currentCondition.tvCurrentTemp.text = it?.currentWeatherModel?.temp_c.toString()
+                currentCondition.tvCurrentCondition.text = it?.currentWeatherModel?.condition
+                cardViewWind.tvWindDirection.text = it?.currentWeatherModel?.wind_dir.toString()
+                cardViewWind.tvWindSpeed.text = it?.currentWeatherModel?.wind_kph.toString()
+                cardViewDetails.tvHumidityValue.text = it?.currentWeatherModel?.humidity.toString()
+                cardViewDetails.tvFeelsLikeValue.text =
+                    it?.currentWeatherModel?.feels_like.toString()
+                cardViewDetails.tvUvValue.text = it?.currentWeatherModel?.uv.toString()
+                cardViewDetails.tvPressureValue.text =
+                    it?.currentWeatherModel?.pressure_mb.toString()
+                cardViewWind.imageView.setImageResource(
+                    it?.currentWeatherModel?.wind_dir_img ?: R.drawable.ic_loading
+                )
 
-            viewModel.byDaysWeather.observe(viewLifecycleOwner) {
+
+                adapter.submitList(it?.byHoursWeatherModel)
+
                 cardViewForecastByDays.apply {
-                    if (it?.isNotEmpty() == true) {
-                        var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
+                    if (it?.byDaysWeatherModel?.isNotEmpty() == true) {
+                        var tempMaxMin = "${it.byDaysWeatherModel!![0].maxtemp_c} / ${it.byDaysWeatherModel!![0].mintemp_c}"
                         currentCondition.tvMainMaxmin.text = tempMaxMin
                         tv1dayMaxmin.text = tempMaxMin
-                        tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
+                        tempMaxMin = "${it.byDaysWeatherModel!![1].maxtemp_c} / ${it.byDaysWeatherModel!![1].mintemp_c}"
                         tv2dayMaxmin.text = tempMaxMin
-                        tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
+                        tempMaxMin = "${it.byDaysWeatherModel!![2].maxtemp_c} / ${it.byDaysWeatherModel!![2].mintemp_c}"
                         tv3dayMaxmin.text = tempMaxMin
-                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_loading)
-                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_loading)
-                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_loading)
+                        iv1dayCondition.setImageResource(it.byDaysWeatherModel!![0].icon_url ?: R.drawable.ic_loading)
+                        iv2dayCondition.setImageResource(it.byDaysWeatherModel!![1].icon_url ?: R.drawable.ic_loading)
+                        iv3dayCondition.setImageResource(it.byDaysWeatherModel!![2].icon_url ?: R.drawable.ic_loading)
                         tv1dayName.text = getString(R.string.today)
-                        tv2dayName.text = it[1].date
-                        tv3dayName.text = it[2].date
-                        tv1dayCondition.text = it[0].condition
-                        tv2dayCondition.text = it[1].condition
-                        tv3dayCondition.text = it[2].condition
-                        cardViewDetails.tvChanceOfRainValue.text = it[0].chance_of_rain.toString()
+                        tv2dayName.text = it.byDaysWeatherModel!![1].date
+                        tv3dayName.text = it.byDaysWeatherModel!![2].date
+                        tv1dayCondition.text = it.byDaysWeatherModel!![0].condition
+                        tv2dayCondition.text = it.byDaysWeatherModel!![1].condition
+                        tv3dayCondition.text = it.byDaysWeatherModel!![2].condition
+                        cardViewDetails.tvChanceOfRainValue.text = it.byDaysWeatherModel!![0].chance_of_rain.toString()
                     }
                 }
-            }
-            viewModel.byHoursWeather.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
             }
         }
     }

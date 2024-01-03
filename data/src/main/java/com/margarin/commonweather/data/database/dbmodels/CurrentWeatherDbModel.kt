@@ -3,9 +3,7 @@ package com.margarin.commonweather.data.database.dbmodels
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity("weather_current")
 data class CurrentWeatherDbModel(
-    @PrimaryKey
     val name: String,
     val condition: String?,
     val icon_url: String?,
