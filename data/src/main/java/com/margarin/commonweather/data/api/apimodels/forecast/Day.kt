@@ -1,6 +1,6 @@
-package com.margarin.commonweather.data.remote.apimodels.forecast
+package com.margarin.commonweather.data.api.apimodels.forecast
 
-import com.margarin.commonweather.data.remote.apimodels.current.Condition
+import com.margarin.commonweather.data.api.apimodels.current.Condition
 
 data class Day(
     val maxtemp_c: Float?,

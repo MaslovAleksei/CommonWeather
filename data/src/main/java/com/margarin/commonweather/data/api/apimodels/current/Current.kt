@@ -1,10 +1,8 @@
-package com.margarin.commonweather.data.remote.apimodels.forecast
+package com.margarin.commonweather.data.api.apimodels.current
 
-import com.margarin.commonweather.data.remote.apimodels.current.Condition
-
-data class Hour(
-    val time_epoch: Long?,
-    val time: String?,
+data class Current(
+    val last_updated_epoch: Long?,
+    val last_updated: String?,
     val temp_c: Float?,
     val temp_f: Float?,
     val is_day: Int?,
@@ -21,21 +19,9 @@ data class Hour(
     val cloud: Int?,
     val feelslike_c: Float?,
     val feelslike_f: Float?,
-    val windchill_c: Float?,
-    val windchill_f: Float?,
-    val heatindex_c: Float?,
-    val heatindex_f: Float?,
-    val dewpoint_c: Float?,
-    val dewpoint_f: Float?,
-    val will_it_rain: Int?,
-    val chance_of_rain: Int?,
-    val will_it_snow: Int?,
-    val chance_of_snow: Int?,
     val vis_km: Float?,
     val vis_miles: Float?,
+    val uv: Float?,
     val gust_mph: Float?,
     val gust_kph: Float?,
-    val uv: Float?,
-
-
     )

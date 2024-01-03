@@ -7,8 +7,10 @@ import com.margarin.commonweather.data.database.dao.ByDaysWeatherDao
 import com.margarin.commonweather.data.database.dao.ByHoursWeatherDao
 import com.margarin.commonweather.data.database.dao.CurrentWeatherDao
 import com.margarin.commonweather.data.database.dao.SearchDao
-import com.margarin.commonweather.data.remote.ApiFactory
-import com.margarin.commonweather.data.remote.ApiService
+import com.margarin.commonweather.data.api.ApiFactory
+import com.margarin.commonweather.data.api.ApiService
+import com.margarin.commonweather.data.repository.SearchRepositoryImpl
+import com.margarin.commonweather.domain.SearchRepository
 import com.margarin.commonweather.domain.WeatherRepository
 import dagger.Binds
 import dagger.Module
@@ -20,6 +22,10 @@ interface DataModule {
     @Binds
     @ApplicationScope
     fun bindWeatherRepository(impl: WeatherRepositoryImpl): WeatherRepository
+
+    @Binds
+    @ApplicationScope
+    fun bindSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 
     companion object {
 

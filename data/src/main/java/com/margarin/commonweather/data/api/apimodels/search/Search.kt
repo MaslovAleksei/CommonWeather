@@ -1,4 +1,4 @@
-package com.margarin.commonweather.data.remote.apimodels.search
+package com.margarin.commonweather.data.api.apimodels.search
 
 data class Search(
     val id: Int,

@@ -1,11 +1,11 @@
 package com.margarin.commonweather.domain.usecases
 
-import com.margarin.commonweather.domain.WeatherRepository
+import com.margarin.commonweather.domain.SearchRepository
 import com.margarin.commonweather.domain.models.SearchModel
 import javax.inject.Inject
 
 class DeleteSearchItemUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(searchModel: SearchModel) = weatherRepository.deleteSearchItem(searchModel)
+    suspend operator fun invoke(searchModel: SearchModel) = searchRepository.deleteSearchItem(searchModel)
 }
