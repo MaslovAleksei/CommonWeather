@@ -1,10 +1,10 @@
 package com.margarin.commonweather.domain.usecases
 
-import com.margarin.commonweather.domain.WeatherRepository
+import com.margarin.commonweather.domain.SearchRepository
 import javax.inject.Inject
 
 class RequestSearchLocationUseCase @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val searchRepository: SearchRepository
 ) {
-    suspend operator fun invoke(query: String) = weatherRepository.requestSearchLocation(query)
+    suspend operator fun invoke(query: String) = searchRepository.requestSearchLocation(query)
 }

@@ -1,7 +1,7 @@
-package com.margarin.commonweather.data.remote
+package com.margarin.commonweather.data.api
 
-import com.margarin.commonweather.data.remote.apimodels.forecast.ForecastData
-import com.margarin.commonweather.data.remote.apimodels.search.Search
+import com.margarin.commonweather.data.api.apimodels.forecast.ForecastData
+import com.margarin.commonweather.data.api.apimodels.search.Search
 import retrofit2.http.GET
 import retrofit2.http.Query
 

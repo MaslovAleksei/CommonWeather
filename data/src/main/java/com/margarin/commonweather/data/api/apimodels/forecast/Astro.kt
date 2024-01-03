@@ -1,4 +1,4 @@
-package com.margarin.commonweather.data.remote.apimodels.forecast
+package com.margarin.commonweather.data.api.apimodels.forecast
 
 data class Astro(
     val sunrise: String?,

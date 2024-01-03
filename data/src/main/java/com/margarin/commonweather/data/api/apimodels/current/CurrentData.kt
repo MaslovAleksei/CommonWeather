@@ -1,4 +1,4 @@
-package com.margarin.commonweather.data.remote.apimodels.current
+package com.margarin.commonweather.data.api.apimodels.current
 
 data class CurrentData(
     val location: Location?,
