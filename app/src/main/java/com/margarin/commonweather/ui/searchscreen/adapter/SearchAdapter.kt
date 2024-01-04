@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.margarin.commonweather.R
 import com.margarin.commonweather.databinding.CityItemBinding
 import com.margarin.commonweather.databinding.SearchItemBinding
-import com.margarin.commonweather.domain.models.SearchModel
+import com.margarin.commonweather.models.SearchModel
 
 class SearchAdapter(private var layout: Int) :
     ListAdapter<SearchModel, SearchHolder>(SearchDiffCallback()) {

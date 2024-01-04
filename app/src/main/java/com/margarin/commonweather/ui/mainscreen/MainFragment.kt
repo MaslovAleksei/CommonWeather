@@ -12,21 +12,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.EMPTY_STRING
+import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.R
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ui.ViewModelFactory
 import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.ui.mainscreen.adapter.WeatherAdapter
-import com.margarin.commonweather.ui.searchscreen.CityListFragment
-import com.margarin.commonweather.utils.BINDING_NULL
-import com.margarin.commonweather.utils.BUNDLE_KEY
-import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
-import com.margarin.commonweather.utils.EMPTY_STRING
-import com.margarin.commonweather.utils.LOCATION
-import com.margarin.commonweather.utils.REQUEST_KEY
-import com.margarin.commonweather.utils.launchFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -178,7 +176,8 @@ class MainFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
-            launchFragment(CityListFragment.newInstance(), CITY_LIST_FRAGMENT)
+            val controller = findNavController()
+            controller.navigate(R.id.action_mainFragment_to_cityListFragment)
         }
         binding.mainToolbar.bRefresh.setOnClickListener {
             binding.swipeRefresh.isRefreshing = true

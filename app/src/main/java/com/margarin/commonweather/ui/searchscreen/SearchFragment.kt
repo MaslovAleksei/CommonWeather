@@ -13,18 +13,18 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.R
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentSearchBinding
-import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
-import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.ui.ViewModelFactory
-import com.margarin.commonweather.utils.BINDING_NULL
-import com.margarin.commonweather.utils.BUNDLE_KEY
-import com.margarin.commonweather.utils.CITY_LIST_FRAGMENT
-import com.margarin.commonweather.utils.LOCATION
-import com.margarin.commonweather.utils.REQUEST_KEY
+import com.margarin.commonweather.ui.dataStore
+import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -46,6 +46,8 @@ class SearchFragment : Fragment() {
         get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     private lateinit var adapter: SearchAdapter
+
+
 
     ////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
@@ -108,27 +110,23 @@ class SearchFragment : Fragment() {
     }
 
     private fun setOnClickListeners() {
+        val controller = findNavController()
+
         adapter.apply {
             onItemClickListener = {
                 saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
-                requireActivity().supportFragmentManager.popBackStack(
-                    CITY_LIST_FRAGMENT,
-                    -1
-                )
+                controller.popBackStack(R.id.mainFragment, false)
             }
             onButtonAddToFavClickListener = {
                 viewModel.addSearchItem(it)
-                requireActivity().supportFragmentManager.popBackStack(
-                    CITY_LIST_FRAGMENT,
-                    0
-                )
+                controller.popBackStack()
             }
         }
 
         binding.apply {
             bCancel.setOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                controller.navigateUp()
             }
 
             tvAlmaty.setOnClickListener { clickOnPopularCity(it) }
@@ -164,10 +162,7 @@ class SearchFragment : Fragment() {
     private fun clickOnPopularCity(city: View) {
         saveToDataStore((city as TextView).text.toString())
         setFragmentResult((city).text.toString())
-        requireActivity().supportFragmentManager.popBackStack(
-            CITY_LIST_FRAGMENT,
-            -1
-        )
+        findNavController().popBackStack(R.id.mainFragment, false)
     }
 
     private fun saveToDataStore(name: String) {
@@ -184,10 +179,5 @@ class SearchFragment : Fragment() {
             REQUEST_KEY,
             bundleOf(BUNDLE_KEY to name)
         )
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////
-    companion object {
-        fun newInstance() = SearchFragment()
     }
 }
