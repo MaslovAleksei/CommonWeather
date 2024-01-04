@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface"
     android:focusable="auto"
-    tools:context=".ui.mainscreen.MainFragment">
+    tools:context=".ui.searchscreen.SearchFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"

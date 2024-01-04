@@ -23,7 +23,7 @@ import com.margarin.commonweather.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.usecases.GetSearchListUseCase
 import com.margarin.commonweather.usecases.RequestSearchLocationUseCase
 import com.margarin.commonweather.ui.dataStore
-import com.margarin.commonweather.utils.LOCATION
+import com.margarin.commonweather.LOCATION
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point

@@ -13,20 +13,19 @@ import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.R
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentCityListBinding
-import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
 import com.margarin.commonweather.ui.ViewModelFactory
-import com.margarin.commonweather.utils.BINDING_NULL
-import com.margarin.commonweather.utils.BUNDLE_KEY
-import com.margarin.commonweather.utils.REQUEST_KEY
-import com.margarin.commonweather.utils.SEARCH_FRAGMENT
-import com.margarin.commonweather.utils.launchFragment
+import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.runBlocking
@@ -97,13 +96,14 @@ class CityListFragment : Fragment() {
     private fun setOnClickListeners() {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         val map = binding.mapview.mapWindow.map
+        val controller = findNavController()
 
         with(adapter) {
 
             onItemClickListener = {
                 viewModel.saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
-                requireActivity().supportFragmentManager.popBackStack()
+                controller.navigateUp()
             }
 
             onButtonDeleteClickListener = {
@@ -120,11 +120,11 @@ class CityListFragment : Fragment() {
         with(binding) {
 
             bInputLocation.setOnClickListener {
-                launchFragment(SearchFragment.newInstance(), SEARCH_FRAGMENT)
+                controller.navigate(R.id.action_cityListFragment_to_searchFragment)
             }
 
             bBack.setOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                controller.navigateUp()
             }
 
             bDefineLoc.setOnClickListener {
@@ -217,7 +217,5 @@ class CityListFragment : Fragment() {
     /////////////////////////////////////////////////////////////////////////////
     companion object {
         private const val ZOOM_STEP = 1f
-
-        fun newInstance() = CityListFragment()
     }
 }
