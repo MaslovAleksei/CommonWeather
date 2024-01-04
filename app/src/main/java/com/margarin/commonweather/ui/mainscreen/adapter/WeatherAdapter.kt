@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.margarin.commonweather.R
 import com.margarin.commonweather.databinding.HourItemBinding
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
+import com.margarin.commonweather.models.ByHoursWeatherModel
 
 class WeatherAdapter() : ListAdapter<ByHoursWeatherModel, WeatherHolder>(WeatherDiffCallback()) {
 

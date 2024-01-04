@@ -17,11 +17,11 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.R
-import com.margarin.commonweather.domain.models.SearchModel
-import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
-import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
+import com.margarin.commonweather.models.SearchModel
+import com.margarin.commonweather.usecases.AddSearchItemUseCase
+import com.margarin.commonweather.usecases.DeleteSearchItemUseCase
+import com.margarin.commonweather.usecases.GetSearchListUseCase
+import com.margarin.commonweather.usecases.RequestSearchLocationUseCase
 import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.utils.LOCATION
 import com.yandex.mapkit.Animation

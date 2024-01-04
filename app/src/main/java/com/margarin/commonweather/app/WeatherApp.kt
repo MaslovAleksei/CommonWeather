@@ -1,13 +1,13 @@
 package com.margarin.commonweather.app
 
 import android.app.Application
-import com.margarin.commonweather.di.DaggerApplicationComponent
+import com.margarin.commonweather.di.DaggerAppComponent
 import com.yandex.mapkit.MapKitFactory
 
 class WeatherApp: Application() {
 
     val component by lazy {
-        DaggerApplicationComponent.factory().create(this)
+        DaggerAppComponent.factory().create(this)
     }
 
     override fun onCreate() {
