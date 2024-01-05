@@ -42,8 +42,8 @@ android {
 
 dependencies {
 
-    implementation(project (":data"))
-    implementation(project(":domain"))
+    implementation(project (":feature:search"))
+    implementation(project (":feature:weather"))
     implementation(project (":network"))
     implementation(project (":database"))
     implementation(project (":core"))
