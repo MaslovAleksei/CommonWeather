@@ -17,6 +17,7 @@ import com.margarin.commonweather.BINDING_NULL
 import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.EMPTY_STRING
 import com.margarin.commonweather.REQUEST_KEY
+import com.margarin.commonweather.URI_CITY_LIST_FRAGMENT
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.WeatherComponentProvider
 import com.margarin.commonweather.ui.adapter.WeatherAdapter
@@ -173,8 +174,7 @@ class WeatherFragment : Fragment() {
 
     private fun setOnClickListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
-            val controller = findNavController()
-            //controller.navigate(R.id.action_mainFragment_to_cityListFragment)
+            findNavController().navigate(Uri.parse(URI_CITY_LIST_FRAGMENT))
         }
         binding.mainToolbar.bRefresh.setOnClickListener {
             binding.swipeRefresh.isRefreshing = true

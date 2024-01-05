@@ -118,7 +118,7 @@ class CityListFragment : Fragment() {
         with(binding) {
 
             bInputLocation.setOnClickListener {
-                //controller.navigate(R.id.action_cityListFragment_to_searchFragment)
+                controller.navigate(R.id.action_cityListFragment_to_searchFragment)
             }
 
             bBack.setOnClickListener {

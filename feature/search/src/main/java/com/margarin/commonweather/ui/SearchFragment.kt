@@ -1,6 +1,7 @@
 package com.margarin.commonweather.ui
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
 import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.REQUEST_KEY
+import com.margarin.commonweather.ROUTE_WEATHER_FRAGMENT
+import com.margarin.commonweather.URI_CITY_LIST_FRAGMENT
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.di.SearchComponentProvider
@@ -109,7 +112,7 @@ class SearchFragment : Fragment() {
             onItemClickListener = {
                 saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
-                //controller.popBackStack(R.id.mainFragment, false)
+                findNavController().popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
                 viewModel.addSearchItem(it)
@@ -155,7 +158,7 @@ class SearchFragment : Fragment() {
     private fun clickOnPopularCity(city: View) {
         saveToDataStore((city as TextView).text.toString())
         setFragmentResult((city).text.toString())
-        //findNavController().popBackStack(R.id.mainFragment, false)
+        findNavController().popBackStack(ROUTE_WEATHER_FRAGMENT, false)
     }
 
     private fun saveToDataStore(name: String) {

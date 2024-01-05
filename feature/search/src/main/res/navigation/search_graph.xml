@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/search_graph"
+    app:startDestination="@id/cityListFragment">
+
+    <fragment
+        android:id="@+id/cityListFragment"
+        android:name="com.margarin.commonweather.ui.CityListFragment"
+        android:label="CityListFragment">
+        <deepLink app:uri="weatherApp://cityListFragment" />
+        <action
+            android:id="@+id/action_cityListFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.margarin.commonweather.ui.SearchFragment"
+        android:label="SearchFragment" />
+
+</navigation>
