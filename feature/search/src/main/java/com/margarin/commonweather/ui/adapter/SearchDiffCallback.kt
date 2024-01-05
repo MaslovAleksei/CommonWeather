@@ -1,4 +1,4 @@
-package com.margarin.commonweather.adapter
+package com.margarin.commonweather.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.margarin.commonweather.models.SearchModel

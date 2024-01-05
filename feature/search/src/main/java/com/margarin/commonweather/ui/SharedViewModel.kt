@@ -1,4 +1,4 @@
-package com.margarin.commonweather
+package com.margarin.commonweather.ui
 
 import android.Manifest
 import android.app.Application
@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getString
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,10 +27,9 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class SearchViewModel @Inject constructor(
+class SharedViewModel @Inject constructor(
     private val requestSearchLocationUseCase: RequestSearchLocationUseCase,
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,

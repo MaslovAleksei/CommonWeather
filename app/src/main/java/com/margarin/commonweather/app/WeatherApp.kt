@@ -4,9 +4,11 @@ import android.app.Application
 import com.margarin.commonweather.di.DaggerAppComponent
 import com.margarin.commonweather.di.SearchComponent
 import com.margarin.commonweather.di.SearchComponentProvider
+import com.margarin.commonweather.di.WeatherComponent
+import com.margarin.commonweather.di.WeatherComponentProvider
 import com.yandex.mapkit.MapKitFactory
 
-class WeatherApp: Application(), SearchComponentProvider {
+class WeatherApp: Application(), SearchComponentProvider, WeatherComponentProvider {
 
     val appComponent by lazy {
         DaggerAppComponent.factory().create(this)
@@ -20,6 +22,10 @@ class WeatherApp: Application(), SearchComponentProvider {
     }
 
     override fun getSearchComponent(): SearchComponent {
+        return appComponent
+    }
+
+    override fun getWeatherComponent(): WeatherComponent {
         return appComponent
     }
 }

@@ -1,4 +1,4 @@
-package com.margarin.commonweather
+package com.margarin.commonweather.ui
 
 import android.content.Context
 import android.os.Bundle
@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.os.bundleOf
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.margarin.commonweather.adapter.SearchAdapter
+import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.REQUEST_KEY
+import com.margarin.commonweather.ViewModelFactory
+import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentSearchBinding
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -28,7 +29,7 @@ class SearchFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[SharedViewModel::class.java]
     }
 
     private var _binding: FragmentSearchBinding? = null

@@ -6,16 +6,16 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.margarin.commonweather.ui.mainscreen.MainFragment"
+        android:name="com.margarin.commonweather.ui.WeatherFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_weather" >
         <action
             android:id="@+id/action_mainFragment_to_cityListFragment"
             app:destination="@id/cityListFragment" />
     </fragment>
     <fragment
         android:id="@+id/cityListFragment"
-        android:name="com.margarin.commonweather.CityListFragment"
+        android:name="com.margarin.commonweather.ui.CityListFragment"
         android:label="fragment_city_list"
         tools:layout="@layout/fragment_city_list" >
         <action
@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.margarin.commonweather.SearchFragment"
+        android:name="com.margarin.commonweather.ui.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
 </navigation>

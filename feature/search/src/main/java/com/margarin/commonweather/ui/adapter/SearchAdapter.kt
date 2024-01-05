@@ -1,4 +1,4 @@
-package com.margarin.commonweather.adapter
+package com.margarin.commonweather.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View

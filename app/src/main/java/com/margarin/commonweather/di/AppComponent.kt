@@ -3,10 +3,9 @@ package com.margarin.commonweather.di
 import android.app.Application
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.AppScope
-import com.margarin.commonweather.CityListFragment
-import com.margarin.commonweather.ui.mainscreen.MainFragment
-import com.margarin.commonweather.SearchFragment
-import com.margarin.commonweather.database.AppDatabase
+import com.margarin.commonweather.ui.CityListFragment
+import com.margarin.commonweather.ui.WeatherFragment
+import com.margarin.commonweather.ui.SearchFragment
 import dagger.BindsInstance
 import dagger.Component
 
@@ -19,13 +18,13 @@ import dagger.Component
         DatabaseModule::class
     ]
 )
-interface AppComponent: SearchComponent {
+interface AppComponent: SearchComponent, WeatherComponent {
 
     fun inject(application: WeatherApp)
-    fun inject(fragment: MainFragment)
 
     override fun injectCityListFragment(cityListFragment: CityListFragment)
     override fun injectSearchFragment(searchFragment: SearchFragment)
+    override fun injectWeatherFragment(weatherFragment: WeatherFragment)
 
     @Component.Factory
     interface Factory {

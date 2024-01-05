@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.mainscreen
+package com.margarin.commonweather.ui
 
 import android.content.Context
 import android.content.Intent
@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
@@ -17,43 +16,38 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
 import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.EMPTY_STRING
-import com.margarin.commonweather.LOCATION
-import com.margarin.commonweather.R
 import com.margarin.commonweather.REQUEST_KEY
-import com.margarin.commonweather.app.WeatherApp
-import com.margarin.commonweather.databinding.FragmentMainBinding
 import com.margarin.commonweather.ViewModelFactory
-import com.margarin.commonweather.ui.dataStore
-import com.margarin.commonweather.ui.mainscreen.adapter.WeatherAdapter
+import com.margarin.commonweather.di.WeatherComponentProvider
+import com.margarin.commonweather.ui.adapter.WeatherAdapter
+import com.margarin.weather.R
+import com.margarin.weather.databinding.FragmentWeatherBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainFragment : Fragment() {
+class WeatherFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-    }
-
-    private val component by lazy {
-        (requireActivity().application as WeatherApp).appComponent
+        ViewModelProvider(this, viewModelFactory)[WeatherViewModel::class.java]
     }
 
     private lateinit var adapter: WeatherAdapter
 
-    private var _binding: FragmentMainBinding? = null
-    private val binding: FragmentMainBinding
+    private var _binding: FragmentWeatherBinding? = null
+    private val binding: FragmentWeatherBinding
         get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     //////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
-        component.inject(this)
         super.onAttach(context)
+        (context.applicationContext as WeatherComponentProvider)
+            .getWeatherComponent()
+            .injectWeatherFragment(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +59,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = FragmentWeatherBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -152,11 +146,14 @@ class MainFragment : Fragment() {
                 bSearch.isEnabled = false
                 binding.swipeRefresh.isRefreshing = true
 
+                /*
                 lifecycleScope.launch(Dispatchers.IO) {
                     val dataStoreKey = stringPreferencesKey(LOCATION)
                     val preferences = (requireContext().dataStore.data.first())
                     name = preferences[dataStoreKey] ?: EMPTY_STRING
                 }.join()
+
+                 */
 
                 if (name == EMPTY_STRING) {
                     viewModel.initViewModel(getString(R.string.moscow), getString(R.string.lang))
@@ -177,7 +174,7 @@ class MainFragment : Fragment() {
     private fun setOnClickListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
             val controller = findNavController()
-            controller.navigate(R.id.action_mainFragment_to_cityListFragment)
+            //controller.navigate(R.id.action_mainFragment_to_cityListFragment)
         }
         binding.mainToolbar.bRefresh.setOnClickListener {
             binding.swipeRefresh.isRefreshing = true

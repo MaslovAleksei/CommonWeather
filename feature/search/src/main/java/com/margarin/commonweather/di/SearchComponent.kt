@@ -1,8 +1,8 @@
 package com.margarin.commonweather.di
 
-import com.margarin.commonweather.CityListFragment
+import com.margarin.commonweather.ui.CityListFragment
 import com.margarin.commonweather.Feature
-import com.margarin.commonweather.SearchFragment
+import com.margarin.commonweather.ui.SearchFragment
 
 @Feature
 interface SearchComponent {

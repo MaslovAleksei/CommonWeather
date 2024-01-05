@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.mainscreen
+package com.margarin.commonweather.ui
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MainViewModel @Inject constructor(
+class WeatherViewModel @Inject constructor(
     private val loadDataUseCase: LoadDataUseCase,
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val getByDaysWeatherUseCase: GetByDaysWeatherUseCase,

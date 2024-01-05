@@ -1,4 +1,4 @@
-package com.margarin.commonweather
+package com.margarin.commonweather.ui
 
 import android.content.Context
 import android.content.Intent
@@ -18,7 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.margarin.commonweather.adapter.SearchAdapter
+import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.REQUEST_KEY
+import com.margarin.commonweather.ViewModelFactory
+import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentCityListBinding
@@ -35,7 +39,7 @@ class CityListFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[SharedViewModel::class.java]
     }
 
     private var _binding: FragmentCityListBinding? = null
