@@ -1,7 +1,6 @@
-package com.margarin.commonweather.ui
+package com.margarin.commonweather.ui.screens
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
 import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.REQUEST_KEY
-import com.margarin.commonweather.ROUTE_WEATHER_FRAGMENT
-import com.margarin.commonweather.URI_CITY_LIST_FRAGMENT
 import com.margarin.commonweather.ViewModelFactory
-import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.di.SearchComponentProvider
+import com.margarin.commonweather.ui.adapter.SearchAdapter
+import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentSearchBinding
 import javax.inject.Inject
@@ -32,7 +30,7 @@ class SearchFragment : Fragment() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[SharedViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
     }
 
     private var _binding: FragmentSearchBinding? = null
@@ -73,7 +71,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.definiteLocation.observe(viewLifecycleOwner) {
+        viewModel.requestLocation.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
     }
@@ -110,9 +108,9 @@ class SearchFragment : Fragment() {
 
         adapter.apply {
             onItemClickListener = {
-                saveToDataStore(it.name.toString())
+                viewModel.saveToDataStore(it.name.toString())
                 setFragmentResult(it.name.toString())
-                findNavController().popBackStack(ROUTE_WEATHER_FRAGMENT, false)
+                controller.popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
                 viewModel.addSearchItem(it)
@@ -156,21 +154,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun clickOnPopularCity(city: View) {
-        saveToDataStore((city as TextView).text.toString())
+        viewModel.saveToDataStore((city as TextView).text.toString())
         setFragmentResult((city).text.toString())
         findNavController().popBackStack(ROUTE_WEATHER_FRAGMENT, false)
-    }
-
-    private fun saveToDataStore(name: String) {
-        /*
-        val dataStoreKey = stringPreferencesKey(LOCATION)
-        runBlocking {
-            requireContext().dataStore.edit { settings ->
-                settings[dataStoreKey] = name
-            }
-        }
-
-         */
     }
 
     private fun setFragmentResult(name: String) {
@@ -178,5 +164,9 @@ class SearchFragment : Fragment() {
             REQUEST_KEY,
             bundleOf(BUNDLE_KEY to name)
         )
+    }
+
+    companion object {
+        private const val ROUTE_WEATHER_FRAGMENT = "weatherFragment"
     }
 }

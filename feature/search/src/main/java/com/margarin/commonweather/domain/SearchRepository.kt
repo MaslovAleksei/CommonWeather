@@ -8,7 +8,7 @@ interface SearchRepository {
 
     suspend fun addSearchItem(searchModel: SearchModel)
 
-    fun getSearchList(): LiveData<List<SearchModel>>
+    fun getSavedCityList(): LiveData<List<SearchModel>>
 
     suspend fun deleteSearchItem(searchModel: SearchModel)
 

@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui
+package com.margarin.commonweather.ui.viewmodels
 
 import android.Manifest
 import android.app.Application
@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getString
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,10 +16,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.dataStore
 import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.GetSearchListUseCase
+import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
 import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
 import com.margarin.search.R
 import com.yandex.mapkit.Animation
@@ -27,13 +31,14 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-class SharedViewModel @Inject constructor(
+class CityListViewModel @Inject constructor(
     private val requestSearchLocationUseCase: RequestSearchLocationUseCase,
     private val addSearchItemUseCase: AddSearchItemUseCase,
     private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
-    private val getSearchListUseCase: GetSearchListUseCase,
+    private val getSavedCityListUseCase: GetSavedCityListUseCase,
     private val application: Application
 ) : ViewModel() {
 
@@ -41,17 +46,13 @@ class SharedViewModel @Inject constructor(
     val definiteLocation: LiveData<List<SearchModel>?>
         get() = _definiteLocation
 
-    private val _savedLocation = MutableLiveData<List<SearchModel>?>()
-    val savedLocation: LiveData<List<SearchModel>?>
-        get() = _savedLocation
-
-    private var _searchList: LiveData<List<SearchModel>>? = null
-    val searchList: LiveData<List<SearchModel>>?
-        get() = _searchList
+    private var _savedCityList: LiveData<List<SearchModel>>? = null
+    val savedCityList: LiveData<List<SearchModel>>?
+        get() = _savedCityList
 
     fun getSearchList() {
         viewModelScope.launch {
-            _searchList = getSearchListUseCase()
+            _savedCityList = getSavedCityListUseCase()
         }
     }
 
@@ -82,11 +83,16 @@ class SharedViewModel @Inject constructor(
                 application,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
-        ) { }
+        ) {
+        }
         fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
             .addOnCompleteListener {
-                changeDefiniteLocation("${it.result.latitude}, ${it.result.longitude}")
+                viewModelScope.launch {
+                    _definiteLocation.value = requestSearchLocationUseCase(
+                            "${it.result.latitude}, ${it.result.longitude}"
+                        )
+                }
             }
     }
 
@@ -117,34 +123,35 @@ class SharedViewModel @Inject constructor(
         map.move(START_POSITION, LINEAR_ANIMATION) {
             Toast.makeText(
                 application,
-                getString(application,
-                    R.string.point_the_center_of_the_map_at_the_location_and_press_save_point),
-                Toast.LENGTH_LONG
+                getString(
+                    application,
+                    R.string.point_the_center_of_the_map_at_the_location_and_press_save_point
+                ),
+                Toast.LENGTH_SHORT
             ).show()
         }
     }
 
     fun saveToDataStore(name: String) {
-        /*
         val dataStoreKey = stringPreferencesKey(LOCATION)
         runBlocking {
             application.dataStore.edit { settings ->
                 settings[dataStoreKey] = name
             }
         }
-
-         */
     }
 
-    fun changeDefiniteLocation(query: String) {
+    fun attemptSaveLocation(query: String) {
         viewModelScope.launch {
-            _definiteLocation.value = requestSearchLocationUseCase(query)
-        }
-    }
-
-    fun changeSavedLocation(query: String) {
-        viewModelScope.launch {
-            _savedLocation.value = requestSearchLocationUseCase(query)
+            val requestedLocation = requestSearchLocationUseCase(query)
+            if (requestedLocation?.isNotEmpty() == true) {
+                addSearchItem(requestedLocation.first())
+            } else {
+                Toast.makeText(
+                    application,
+                    R.string.settlement_not_found, Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
