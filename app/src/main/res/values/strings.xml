@@ -1,13 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">CommonWeather</string>
     <string name="lang" tools:ignore="MissingTranslation">en</string>
     <string name="today" tools:ignore="MissingTranslation">Today</string>
-    <string name="data_has_been_deleted" tools:ignore="MissingTranslation">Data has been deleted</string>
-    <string name="undo" tools:ignore="MissingTranslation">Undo</string>
-    <string name="close_map" tools:ignore="MissingTranslation">Close map</string>
-    <string name="open_map" tools:ignore="MissingTranslation">Open map</string>
-    <string name="settlement_not_found" tools:ignore="MissingTranslation">Settlement not found</string>
-    <string name="point_the_center_of_the_map_at_the_location_and_press_save_point" tools:ignore="MissingTranslation">Point the center of the map at the location and press \"Save point\"</string>
     <string name="pressure" tools:ignore="MissingTranslation">Pressure</string>
     <string name="chance_of_rain" tools:ignore="MissingTranslation">Chance of rain</string>
     <string name="uv" tools:ignore="MissingTranslation">UV</string>
@@ -16,42 +11,10 @@
     <string name="_3_day_forecast" tools:ignore="MissingTranslation">3-day forecast</string>
     <string name="more_details" tools:ignore="MissingTranslation">More details></string>
     <string name="_24_hour_forecast" tools:ignore="MissingTranslation">24-hour forecast</string>
-    <string name="manage_cities" tools:ignore="MissingTranslation">Manage cities</string>
-    <string name="enter_location" tools:ignore="MissingTranslation">Enter location</string>
-    <string name="locate" tools:ignore="MissingTranslation">Locate</string>
-    <string name="save_point" tools:ignore="MissingTranslation">Save point</string>
     <string name="data_provided_by_weather_api" tools:ignore="MissingTranslation">data provided by Weather API</string>
-    <string name="cancel" tools:ignore="MissingTranslation">Cancel</string>
-    <string name="popular_cities" tools:ignore="MissingTranslation">Popular cities</string>
-    <string name="moscow" tools:ignore="MissingTranslation">Moscow</string>
-    <string name="saint_petersburg" tools:ignore="MissingTranslation">Saint Petersburg</string>
-    <string name="tashkent" tools:ignore="MissingTranslation">Tashkent</string>
-    <string name="kyiv" tools:ignore="MissingTranslation">Kyiv</string>
-    <string name="kazan" tools:ignore="MissingTranslation">Kazan</string>
-    <string name="ekaterinburg" tools:ignore="MissingTranslation">Ekaterinburg</string>
-    <string name="novosibirsk" tools:ignore="MissingTranslation">Novosibirsk</string>
-    <string name="minsk" tools:ignore="MissingTranslation">Minsk</string>
-    <string name="almaty" tools:ignore="MissingTranslation">Almaty</string>
-    <string name="perm" tools:ignore="MissingTranslation">Perm</string>
-    <string name="tallinn" tools:ignore="MissingTranslation">Tallinn</string>
-    <string name="erevan" tools:ignore="MissingTranslation">Erevan</string>
-    <string name="ashkhabad" tools:ignore="MissingTranslation">Ashkhabad</string>
-    <string name="bucharest" tools:ignore="MissingTranslation">Bucharest</string>
-    <string name="voronezh" tools:ignore="MissingTranslation">Voronezh</string>
-    <string name="volgograd" tools:ignore="MissingTranslation">Volgograd</string>
-    <string name="tbilisi" tools:ignore="MissingTranslation">Tbilisi</string>
-    <string name="astana" tools:ignore="MissingTranslation">Astana</string>
-    <string name="baku" tools:ignore="MissingTranslation">Baku</string>
-    <string name="omsk" tools:ignore="MissingTranslation">Omsk</string>
-    <string name="bishkek" tools:ignore="MissingTranslation">Bishkek</string>
-    <string name="riga" tools:ignore="MissingTranslation">Riga</string>
-    <string name="vilnius" tools:ignore="MissingTranslation">Vilnius</string>
-    <string name="krasnoyarsk" tools:ignore="MissingTranslation">Krasnoyarsk</string>
-    <string name="chelyabinsk" tools:ignore="MissingTranslation">Chelyabinsk</string>
-    <string name="samara" tools:ignore="MissingTranslation">Samara</string>
-    <string name="tyumen" tools:ignore="MissingTranslation">Tyumen</string>
     <string name="celsius" translatable="false">C</string>
     <string name="degree" translatable="false">°</string>
     <string name="loading">loading…</string>
+    <string name="moscow">Moscow</string>
 
 </resources>

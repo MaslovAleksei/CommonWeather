@@ -22,7 +22,7 @@ import com.margarin.commonweather.R
 import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.app.WeatherApp
 import com.margarin.commonweather.databinding.FragmentMainBinding
-import com.margarin.commonweather.ui.ViewModelFactory
+import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.ui.dataStore
 import com.margarin.commonweather.ui.mainscreen.adapter.WeatherAdapter
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class MainFragment : Fragment() {
     }
 
     private val component by lazy {
-        (requireActivity().application as WeatherApp).component
+        (requireActivity().application as WeatherApp).appComponent
     }
 
     private lateinit var adapter: WeatherAdapter

@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.searchscreen
+package com.margarin.commonweather
 
 import android.Manifest
 import android.app.Application
@@ -16,14 +16,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.margarin.commonweather.R
 import com.margarin.commonweather.models.SearchModel
 import com.margarin.commonweather.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.usecases.GetSearchListUseCase
 import com.margarin.commonweather.usecases.RequestSearchLocationUseCase
-import com.margarin.commonweather.ui.dataStore
-import com.margarin.commonweather.LOCATION
+import com.margarin.search.R
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
@@ -130,12 +128,15 @@ class SearchViewModel @Inject constructor(
     }
 
     fun saveToDataStore(name: String) {
+        /*
         val dataStoreKey = stringPreferencesKey(LOCATION)
         runBlocking {
             application.dataStore.edit { settings ->
                 settings[dataStoreKey] = name
             }
         }
+
+         */
     }
 
     fun changeDefiniteLocation(query: String) {

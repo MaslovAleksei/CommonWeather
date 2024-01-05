@@ -1,14 +1,14 @@
-package com.margarin.commonweather.ui.searchscreen.adapter
+package com.margarin.commonweather.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.ListAdapter
-import com.margarin.commonweather.R
-import com.margarin.commonweather.databinding.CityItemBinding
-import com.margarin.commonweather.databinding.SearchItemBinding
 import com.margarin.commonweather.models.SearchModel
+import com.margarin.search.R
+import com.margarin.search.databinding.CityItemBinding
+import com.margarin.search.databinding.SearchItemBinding
 
 class SearchAdapter(private var layout: Int) :
     ListAdapter<SearchModel, SearchHolder>(SearchDiffCallback()) {

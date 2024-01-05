@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.searchscreen
+package com.margarin.commonweather
 
 import android.content.Context
 import android.content.Intent
@@ -18,14 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import com.margarin.commonweather.BINDING_NULL
-import com.margarin.commonweather.BUNDLE_KEY
-import com.margarin.commonweather.R
-import com.margarin.commonweather.REQUEST_KEY
-import com.margarin.commonweather.app.WeatherApp
-import com.margarin.commonweather.databinding.FragmentCityListBinding
-import com.margarin.commonweather.ui.ViewModelFactory
-import com.margarin.commonweather.ui.searchscreen.adapter.SearchAdapter
+import com.margarin.commonweather.adapter.SearchAdapter
+import com.margarin.commonweather.di.SearchComponentProvider
+import com.margarin.search.R
+import com.margarin.search.databinding.FragmentCityListBinding
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.runBlocking
@@ -42,10 +38,6 @@ class CityListFragment : Fragment() {
         ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
     }
 
-    private val component by lazy {
-        (requireActivity().application as WeatherApp).component
-    }
-
     private var _binding: FragmentCityListBinding? = null
     private val binding: FragmentCityListBinding
         get() = _binding ?: throw RuntimeException(BINDING_NULL)
@@ -54,8 +46,10 @@ class CityListFragment : Fragment() {
 
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
-        component.inject(this)
         super.onAttach(context)
+        (context.applicationContext as SearchComponentProvider)
+            .getSearchComponent()
+            .injectCityListFragment(this)
     }
 
     override fun onCreateView(
@@ -120,7 +114,7 @@ class CityListFragment : Fragment() {
         with(binding) {
 
             bInputLocation.setOnClickListener {
-                controller.navigate(R.id.action_cityListFragment_to_searchFragment)
+                //controller.navigate(R.id.action_cityListFragment_to_searchFragment)
             }
 
             bBack.setOnClickListener {
