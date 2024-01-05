@@ -1,4 +1,4 @@
-package com.margarin.commonweather.utils
+package com.margarin.commonweather
 
 import android.Manifest
 import androidx.activity.result.contract.ActivityResultContracts
