@@ -1,7 +1,7 @@
 package com.margarin.commonweather.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.margarin.commonweather.models.ByHoursWeatherModel
+import com.margarin.commonweather.domain.models.ByHoursWeatherModel
 
 class WeatherDiffCallback : DiffUtil.ItemCallback<ByHoursWeatherModel>() {
     override fun areItemsTheSame(

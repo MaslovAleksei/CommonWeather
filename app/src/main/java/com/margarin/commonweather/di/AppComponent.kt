@@ -12,7 +12,8 @@ import dagger.Component
 @AppScope
 @Component(
     modules = [
-        DataModule::class,
+        WeatherModule::class,
+        SearchModule::class,
         ViewModelModule::class,
         NetworkModule::class,
         DatabaseModule::class

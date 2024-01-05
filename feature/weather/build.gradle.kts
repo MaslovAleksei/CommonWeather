@@ -39,8 +39,8 @@ android {
 
 dependencies {
 
-    implementation(project(":domain"))
     implementation(project (":core"))
+    implementation(project (":network"))
     implementation(project (":database"))
 
     implementation("androidx.core:core-ktx:1.12.0")

@@ -44,8 +44,6 @@ dependencies {
 
     implementation(project (":feature:search"))
     implementation(project (":feature:weather"))
-    implementation(project (":data"))
-    implementation(project(":domain"))
     implementation(project (":network"))
     implementation(project (":database"))
     implementation(project (":core"))

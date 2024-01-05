@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.ListAdapter
-import com.margarin.commonweather.models.SearchModel
+import com.margarin.commonweather.domain.SearchModel
 import com.margarin.search.R
 import com.margarin.search.databinding.CityItemBinding
 import com.margarin.search.databinding.SearchItemBinding

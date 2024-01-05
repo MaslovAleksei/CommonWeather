@@ -1,7 +1,7 @@
 package com.margarin.commonweather.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.margarin.commonweather.models.SearchModel
+import com.margarin.commonweather.domain.SearchModel
 
 class SearchDiffCallback : DiffUtil.ItemCallback<SearchModel>() {
     override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
