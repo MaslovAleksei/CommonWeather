@@ -20,21 +20,12 @@ class WeatherViewModel @Inject constructor(
     val weather: LiveData<WeatherModel?>
         get() = _weather
 
-    private val _location = MutableLiveData<String?>()
-    val location: LiveData<String?>
-        get() = _location
-
     fun initViewModel(name: String, lang: String) {
         viewModelScope.launch(Dispatchers.Main) {
             viewModelScope.launch(Dispatchers.IO) {
                 loadDataUseCase(name, lang)
             }.join()
-
             _weather.value = getWeatherUseCase(name)
         }
-    }
-
-    fun setLocationValue(result: String) {
-        _location.value = result
     }
 }

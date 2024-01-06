@@ -7,10 +7,8 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,10 +16,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.margarin.commonweather.BINDING_NULL
-import com.margarin.commonweather.BUNDLE_KEY
-import com.margarin.commonweather.REQUEST_KEY
+import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.SearchComponentProvider
+import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.ui.viewmodels.CityListViewModel
 import com.margarin.search.R
@@ -96,8 +94,7 @@ class CityListFragment : Fragment() {
         with(adapter) {
 
             onItemClickListener = {
-                viewModel.saveToDataStore(it.name.toString())
-                setFragmentResult(it.name.toString())
+                saveToDataStore(requireContext(), LOCATION, it.name.toString())
                 controller.navigateUp()
             }
 
@@ -170,20 +167,12 @@ class CityListFragment : Fragment() {
         }
     }
 
-    private fun setFragmentResult(name: String) {
-        setFragmentResult(
-            REQUEST_KEY,
-            bundleOf(BUNDLE_KEY to name)
-        )
-    }
-
     private fun interactWithLocation(fusedLocationClient: FusedLocationProviderClient, map: Map) {
         if (viewModel.isGpsEnabled()) {
             viewModel.getLocationLatLon(fusedLocationClient)
             viewModel.definiteLocation.observe(viewLifecycleOwner) {
                 if (binding.mapContainer.isGone) {
-                    viewModel.saveToDataStore(it?.first()?.name.toString())
-                    setFragmentResult(it?.first()?.name.toString())
+                    saveToDataStore(requireContext(), LOCATION, it?.first()?.name.toString())
                     findNavController().popBackStack()
                 } else {
                     viewModel.mapMoveToPosition(

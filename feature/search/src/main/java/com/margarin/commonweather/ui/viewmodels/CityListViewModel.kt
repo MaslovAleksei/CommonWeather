@@ -7,8 +7,6 @@ import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.getString
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,8 +14,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.margarin.commonweather.LOCATION
-import com.margarin.commonweather.dataStore
 import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
@@ -31,7 +27,6 @@ import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class CityListViewModel @Inject constructor(
@@ -129,15 +124,6 @@ class CityListViewModel @Inject constructor(
                 ),
                 Toast.LENGTH_SHORT
             ).show()
-        }
-    }
-
-    fun saveToDataStore(name: String) {
-        val dataStoreKey = stringPreferencesKey(LOCATION)
-        runBlocking {
-            application.dataStore.edit { settings ->
-                settings[dataStoreKey] = name
-            }
         }
     }
 
