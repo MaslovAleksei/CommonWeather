@@ -25,4 +25,5 @@
     <string name="north_west">Северо-запад</string>
     <string name="updated">"обновлено: "</string>
     <string name="now">Сейчас</string>
+    <string name="error_loading">Ошибка загрузки</string>
 </resources>

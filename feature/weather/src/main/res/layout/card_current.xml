@@ -23,11 +23,11 @@
         android:id="@+id/degree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/degree"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="60sp"
         app:layout_constraintStart_toEndOf="@id/tv_current_temp"
-        app:layout_constraintTop_toTopOf="@id/tv_current_temp" />
+        app:layout_constraintTop_toTopOf="@id/tv_current_temp"
+        tools:text="@string/degree" />
 
     <TextView
         android:id="@+id/tv_current_condition"
@@ -60,11 +60,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-
-        android:text="@string/celsius"
         android:textColor="?attr/colorOnPrimary"
         android:textSize="48sp"
         app:layout_constraintStart_toEndOf="@+id/degree"
-        app:layout_constraintTop_toTopOf="@+id/degree" />
+        app:layout_constraintTop_toTopOf="@+id/degree"
+        tools:text="@string/celsius" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

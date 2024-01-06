@@ -25,11 +25,12 @@
         android:id="@+id/iv_condition"
         android:layout_width="70dp"
         android:layout_height="70dp"
+        android:background="@drawable/round_bgr"
         android:importantForAccessibility="no"
         app:layout_constraintEnd_toEndOf="@+id/tv_temp"
         app:layout_constraintStart_toStartOf="@+id/tv_temp"
         app:layout_constraintTop_toBottomOf="@+id/tv_temp"
-        app:srcCompat="@drawable/ic_loading" />
+        tools:srcCompat="@drawable/ic_loading" />
 
     <TextView
         android:id="@+id/tv_wind_speed"
