@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="point_the_center_of_the_map_at_the_location_and_press_save_point" tools:ignore="MissingTranslation">Point the center of the map at the location and press \"Save point\"</string>
     <string name="data_has_been_deleted" tools:ignore="MissingTranslation">Data has been deleted</string>
     <string name="close_map" tools:ignore="MissingTranslation">Close map</string>
     <string name="open_map" tools:ignore="MissingTranslation">Open map</string>
@@ -39,4 +38,8 @@
     <string name="locate" tools:ignore="MissingTranslation">Locate</string>
     <string name="save_point" tools:ignore="MissingTranslation">Save point</string>
     <string name="undo" tools:ignore="MissingTranslation">Undo</string>
+    <string name="loading">loading…</string>
+    <string name="list_is_empty">No cities added</string>
+    <string name="navigation_permissions_not_allowed">Navigation permissions not allowed</string>
+    <string name="switch_on_gps">Switch on GPS</string>
 </resources>

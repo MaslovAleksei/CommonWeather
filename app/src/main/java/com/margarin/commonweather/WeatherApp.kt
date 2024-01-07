@@ -1,4 +1,4 @@
-package com.margarin.commonweather.app
+package com.margarin.commonweather
 
 import android.app.Application
 import com.margarin.commonweather.di.DaggerAppComponent

@@ -1,11 +1,11 @@
 package com.margarin.commonweather.di
 
 import android.app.Application
-import com.margarin.commonweather.app.WeatherApp
+import com.margarin.commonweather.WeatherApp
 import com.margarin.commonweather.AppScope
-import com.margarin.commonweather.ui.screens.CityListFragment
+import com.margarin.commonweather.ui.screens.citylist.CityListFragment
 import com.margarin.commonweather.ui.WeatherFragment
-import com.margarin.commonweather.ui.screens.SearchFragment
+import com.margarin.commonweather.ui.screens.search.SearchFragment
 import dagger.BindsInstance
 import dagger.Component
 

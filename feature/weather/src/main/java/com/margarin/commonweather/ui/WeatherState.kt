@@ -2,7 +2,7 @@ package com.margarin.commonweather.ui
 
 import com.margarin.commonweather.domain.models.WeatherModel
 
-sealed class WeatherState()
+sealed class WeatherState
 
 class WeatherInfo(val weather: WeatherModel) : WeatherState()
 data object Error : WeatherState()

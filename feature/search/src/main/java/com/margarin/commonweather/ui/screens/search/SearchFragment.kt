@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui.screens.search
 
 import android.content.Context
 import android.os.Bundle
@@ -17,7 +17,6 @@ import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.SearchAdapter
-import com.margarin.commonweather.ui.viewmodels.SearchViewModel
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentSearchBinding
 import javax.inject.Inject

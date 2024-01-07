@@ -1,4 +1,4 @@
-package com.margarin.commonweather.ui.viewmodels
+package com.margarin.commonweather.ui.screens.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

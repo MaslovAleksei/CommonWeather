@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/cityListFragment"
-        android:name="com.margarin.commonweather.ui.screens.CityListFragment"
+        android:name="com.margarin.commonweather.ui.screens.citylist.CityListFragment"
         android:label="CityListFragment">
         <deepLink app:uri="weatherApp://cityListFragment" />
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.margarin.commonweather.ui.screens.SearchFragment"
+        android:name="com.margarin.commonweather.ui.screens.search.SearchFragment"
         android:label="SearchFragment" />
 
 </navigation>

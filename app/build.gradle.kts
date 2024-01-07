@@ -55,8 +55,6 @@ dependencies {
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
 
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")

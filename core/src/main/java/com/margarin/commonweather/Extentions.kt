@@ -13,3 +13,11 @@ fun saveToDataStore(context: Context, stringPreferencesKey: String, value: Strin
         }
     }
 }
+
+fun isGpsEnabled(context: Context): Boolean {
+    val locationManager =
+        context
+            .getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
+    return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+}
+

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string name="point_the_center_of_the_map_at_the_location_and_press_save_point" tools:ignore="MissingTranslation">Point the center of the map at the location and press \"Save point\"</string>
+</resources>

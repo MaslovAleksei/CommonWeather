@@ -89,9 +89,11 @@ class WeatherFragment : Fragment() {
                     tvStatus.visibility = View.GONE
                     bSearch.isEnabled = true
                     binding.swipeRefresh.isRefreshing = false
-                    currentCondition.tvMainMaxmin.text = EMPTY_STRING
                     tvLastUpdate.visibility = View.GONE
                 }
+                tvLoadingError.visibility = View.GONE
+                scrollView.visibility = View.VISIBLE
+                currentCondition.root.visibility = View.VISIBLE
 
                 when (it) {
                     is WeatherInfo -> {
@@ -99,6 +101,8 @@ class WeatherFragment : Fragment() {
                                 "/ ${it.weather.byDaysWeatherModel?.get(0)?.mintemp_c}"
 
                         adapter.submitList(it.weather.byHoursWeatherModel)
+
+                        mainToolbar.tvCityName.visibility = View.VISIBLE
 
                         mainToolbar.apply {
                             tvCityName.text = it.weather.currentWeatherModel?.name
@@ -163,17 +167,23 @@ class WeatherFragment : Fragment() {
                         }
 
                     }
+
                     is Loading -> {
                         mainToolbar.apply {
-                            tvStatus.visibility = View.VISIBLE
+                            tvStatus.visibility = View.GONE
                             tvStatus.text = getString(R.string.loading)
                             bSearch.isEnabled = false
                             binding.swipeRefresh.isRefreshing = true
                         }
                     }
+
                     is Error -> {
-                        currentCondition.tvMainMaxmin.text = getString(R.string.error_loading)
+                        tvLoadingError.visibility = View.VISIBLE
+                        mainToolbar.tvCityName.visibility = View.GONE
+                        scrollView.visibility = View.GONE
+                        currentCondition.root.visibility = View.GONE
                     }
+
                     is Success -> {
                         binding.mainToolbar.apply {
                             binding.swipeRefresh.isRefreshing = false
@@ -195,9 +205,9 @@ class WeatherFragment : Fragment() {
             name = preferences[dataStoreKey] ?: EMPTY_STRING
         }
         if (name == EMPTY_STRING) {
-            viewModel.loadWeatherData(getString(R.string.moscow), getString(R.string.lang))
+            viewModel.send(LoadWeatherEvent(getString(R.string.moscow), getString(R.string.lang)))
         } else {
-            viewModel.loadWeatherData(name, getString(R.string.lang))
+            viewModel.send(LoadWeatherEvent(name, getString(R.string.lang)))
         }
     }
 

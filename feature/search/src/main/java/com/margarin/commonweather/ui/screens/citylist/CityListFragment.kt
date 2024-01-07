@@ -1,9 +1,7 @@
-package com.margarin.commonweather.ui.screens
+package com.margarin.commonweather.ui.screens.citylist
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.margarin.commonweather.BINDING_NULL
@@ -21,11 +18,10 @@ import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.SearchAdapter
-import com.margarin.commonweather.ui.viewmodels.CityListViewModel
+import com.margarin.commonweather.utils.YandexMapManager
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentCityListBinding
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.map.Map
 import javax.inject.Inject
 
 
@@ -44,6 +40,8 @@ class CityListFragment : Fragment() {
 
     private lateinit var adapter: SearchAdapter
 
+    private val yandexMapManager by lazy { YandexMapManager(requireContext()) }
+
     //////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -61,11 +59,11 @@ class CityListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            super.onViewCreated(view, savedInstanceState)
-            viewModel.getSearchList()
-            observeViewModel()
-            configureRecyclerView()
-            setOnClickListeners()
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.send(GetSavedCityList)
+        observeViewModel()
+        configureRecyclerView()
+        setOnClickListeners()
     }
 
     override fun onDestroyView() {
@@ -75,8 +73,29 @@ class CityListFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.savedCityList?.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.state.observe(viewLifecycleOwner) {
+            binding.apply {
+                when (it) {
+                    is CityList -> {
+                        adapter.submitList(it.cityList)
+                        tvStateFragment?.visibility = View.GONE
+                        rvCityList.visibility = View.VISIBLE
+                    }
+
+                    is EmptyList -> {
+                        tvStateFragment?.visibility = View.VISIBLE
+                        tvStateFragment?.text = getString(R.string.list_is_empty)
+                        rvCityList.visibility = View.GONE
+
+                    }
+
+                    is Loading -> {
+                        tvStateFragment?.visibility = View.VISIBLE
+                        tvStateFragment?.text = getString(R.string.loading)
+                        rvCityList.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -100,11 +119,13 @@ class CityListFragment : Fragment() {
 
             onButtonDeleteClickListener = {
                 val searchModel = it
-                viewModel.deleteSearchItem(it)
-                Snackbar.make(requireView(),
-                    getString(R.string.data_has_been_deleted), Snackbar.LENGTH_LONG)
-                    .setAction(getString(R.string.undo)){
-                        viewModel.addSearchItem(searchModel)
+                viewModel.send(DeleteSearchItem(it))
+                Snackbar.make(
+                    requireView(),
+                    getString(R.string.data_has_been_deleted), Snackbar.LENGTH_LONG
+                )
+                    .setAction(getString(R.string.undo)) {
+                        viewModel.send(AddSearchItem(searchModel))
                     }
                     .show()
             }
@@ -120,14 +141,17 @@ class CityListFragment : Fragment() {
             }
 
             bDefineLoc.setOnClickListener {
-                interactWithLocation(fusedLocationClient, map)
+                viewModel.send(UseGps(fusedLocationClient = fusedLocationClient,
+                    isMapGone = binding.mapview.isGone,
+                    yandexMapManager = yandexMapManager,
+                    map = map))
             }
 
             bMap.setOnClickListener {
                 if (mapContainer.isGone) {
                     MapKitFactory.getInstance().onStart()
                     mapview.onStart()
-                    viewModel.configureMap(map)
+                    yandexMapManager.configureMap(map)
 
                     mapContainer.visibility = View.VISIBLE
                     rvCityList.visibility = View.GONE
@@ -145,7 +169,7 @@ class CityListFragment : Fragment() {
             bSavePoint.setOnClickListener {
                 val latLonString =
                     "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
-                viewModel.attemptSaveLocation(latLonString)
+                viewModel.send(RequestSearchLocation(latLonString))
 
                 MapKitFactory.getInstance().onStop()
                 mapContainer.visibility = View.GONE
@@ -154,39 +178,19 @@ class CityListFragment : Fragment() {
             }
 
             bZoomIn.setOnClickListener {
-                viewModel.changeZoomByStep(ZOOM_STEP, map)
+                yandexMapManager.changeZoomByStep(ZOOM_STEP, map)
             }
 
             bZoomOut.setOnClickListener {
-                viewModel.changeZoomByStep(-ZOOM_STEP, map)
+                yandexMapManager.changeZoomByStep(-ZOOM_STEP, map)
             }
 
             bCurrentLoc.setOnClickListener {
-                interactWithLocation(fusedLocationClient, map)
+                viewModel.send(UseGps(fusedLocationClient = fusedLocationClient,
+                    isMapGone = binding.mapview.isGone,
+                    yandexMapManager = yandexMapManager,
+                    map = map))
             }
-        }
-    }
-
-    private fun interactWithLocation(fusedLocationClient: FusedLocationProviderClient, map: Map) {
-        if (viewModel.isGpsEnabled()) {
-            viewModel.getLocationLatLon(fusedLocationClient)
-            viewModel.definiteLocation.observe(viewLifecycleOwner) {
-                if (binding.mapContainer.isGone) {
-                    saveToDataStore(requireContext(), LOCATION, it?.first()?.name.toString())
-                    findNavController().popBackStack()
-                } else {
-                    viewModel.mapMoveToPosition(
-                        map,
-                        it?.first()?.lat.toString(),
-                        it?.first()?.lon.toString()
-                    )
-                }
-            }
-        } else {
-            requireContext().startActivity(
-                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
         }
     }
 
