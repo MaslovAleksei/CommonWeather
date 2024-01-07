@@ -4,52 +4,50 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.margarin.commonweather.domain.models.ByDaysWeatherModel
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
-import com.margarin.commonweather.domain.models.CurrentWeatherModel
-import com.margarin.commonweather.domain.usecases.GetByDaysWeatherUseCase
-import com.margarin.commonweather.domain.usecases.GetByHoursWeatherUseCase
-import com.margarin.commonweather.domain.usecases.GetCurrentWeatherUseCase
+import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
 import com.margarin.commonweather.domain.usecases.LoadDataUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(
     private val loadDataUseCase: LoadDataUseCase,
-    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
-    private val getByDaysWeatherUseCase: GetByDaysWeatherUseCase,
-    private val getByHoursWeatherUseCase: GetByHoursWeatherUseCase,
+    private val getWeatherUseCase: GetWeatherUseCase
 ) : ViewModel() {
 
-    private val _currentWeather = MutableLiveData<CurrentWeatherModel?>()
-    val currentWeather: LiveData<CurrentWeatherModel?>
-        get() = _currentWeather
+    private val _state = MutableLiveData<WeatherState>()
+    val state: LiveData<WeatherState>
+        get() = _state
 
-    private val _byDaysWeather = MutableLiveData<List<ByDaysWeatherModel>?>()
-    val byDaysWeather: LiveData<List<ByDaysWeatherModel>?>
-        get() = _byDaysWeather
-
-    private val _byHoursWeather = MutableLiveData<List<ByHoursWeatherModel>?>()
-    val byHoursWeather: LiveData<List<ByHoursWeatherModel>?>
-        get() = _byHoursWeather
-
-    private val _location = MutableLiveData<String?>()
-    val location: LiveData<String?>
-        get() = _location
-
-    fun initViewModel(name: String, lang: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            viewModelScope.launch(Dispatchers.IO) {
-                loadDataUseCase(name, lang)
-            }.join()
-            _currentWeather.value = getCurrentWeatherUseCase(name)
-            _byDaysWeather.value = getByDaysWeatherUseCase(name)
-            _byHoursWeather.value = getByHoursWeatherUseCase(name)
+    fun send(event: WeatherEvent) {
+        when (event) {
+            is LoadWeatherEvent -> {
+                loadWeatherData(name = event.name, lang = event.lang)
+            }
         }
     }
 
-    fun setLocationValue(result: String) {
-        _location.value = result
+    private fun loadWeatherData(name: String, lang: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            _state.value = Loading
+
+            viewModelScope.launch(Dispatchers.IO) {
+                loadDataUseCase(name, lang)
+            }.join()
+            val weather = getWeatherUseCase(name)
+            if (weather == null ||
+                weather.currentWeatherModel?.name?.isEmpty() == true ||
+                weather.byDaysWeatherModel?.size!! == 0 ||
+                weather.byHoursWeatherModel?.size!! == 0
+            ) {
+                _state.value = Error
+                return@launch
+            }
+            delay(200)
+            _state.value = Success
+            delay(700)
+            _state.value = WeatherInfo(weather)
+        }
     }
 }

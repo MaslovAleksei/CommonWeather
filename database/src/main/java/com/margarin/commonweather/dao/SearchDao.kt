@@ -14,7 +14,7 @@ interface SearchDao {
     suspend fun addSearchItem(search: SearchDbModel)
 
     @Query("SELECT * FROM search_table")
-    fun getSearchList(): LiveData<List<SearchDbModel>>
+    fun getSavedCityList(): LiveData<List<SearchDbModel>>
 
     @Query("DELETE FROM search_table WHERE id=:searchId")
     suspend fun deleteSearchItem(searchId: Int)

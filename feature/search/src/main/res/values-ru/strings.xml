@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="point_the_center_of_the_map_at_the_location_and_press_save_point">Наведите центр карты на населенный пункт и нажмите \\\"Сохранить место\\\"</string>
     <string name="data_has_been_deleted">Данные удалены</string>
     <string name="close_map">Закрыть карту</string>
     <string name="open_map">Открыть карту</string>
@@ -39,4 +38,8 @@
     <string name="locate">Определить</string>
     <string name="save_point">Сохранить место</string>
     <string name="undo">Отменить</string>
+    <string name="loading">Загрузка…</string>
+    <string name="list_is_empty">Нет добавленных городов</string>
+    <string name="navigation_permissions_not_allowed">Разрешения для местоположения не предоставлены</string>
+    <string name="switch_on_gps">Включите GPS</string>
 </resources>

@@ -28,5 +28,6 @@
     <string name="north_west">North West</string>
     <string name="updated">"updated: "</string>
     <string name="now">"Now"</string>
+    <string name="error_loading">Loading error</string>
 
 </resources>

@@ -7,25 +7,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
-import com.margarin.commonweather.BUNDLE_KEY
-import com.margarin.commonweather.EMPTY_STRING
-import com.margarin.commonweather.REQUEST_KEY
-import com.margarin.commonweather.URI_CITY_LIST_FRAGMENT
+import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.ViewModelFactory
+import com.margarin.commonweather.dataStore
 import com.margarin.commonweather.di.WeatherComponentProvider
 import com.margarin.commonweather.ui.adapter.WeatherAdapter
 import com.margarin.weather.R
 import com.margarin.weather.databinding.FragmentWeatherBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class WeatherFragment : Fragment() {
@@ -51,11 +49,6 @@ class WeatherFragment : Fragment() {
             .injectWeatherFragment(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModel()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,7 +59,7 @@ class WeatherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getResultFromChildFragment()
+        initViewModel()
         setOnClickListeners()
         observeViewModel()
         setOnRefreshListener()
@@ -89,86 +82,132 @@ class WeatherFragment : Fragment() {
     }
 
     private fun observeViewModel() {
+        viewModel.state.observe(viewLifecycleOwner) {
+            binding.apply {
 
-        viewModel.location.observe(viewLifecycleOwner) { result ->
-            result?.let { name -> viewModel.initViewModel(name, getString(R.string.lang)) }
-        }
+                mainToolbar.apply {
+                    tvStatus.visibility = View.GONE
+                    bSearch.isEnabled = true
+                    binding.swipeRefresh.isRefreshing = false
+                    tvLastUpdate.visibility = View.GONE
+                }
+                tvLoadingError.visibility = View.GONE
+                scrollView.visibility = View.VISIBLE
+                currentCondition.root.visibility = View.VISIBLE
 
-        binding.apply {
-            viewModel.currentWeather.observe(viewLifecycleOwner) {
-                mainToolbar.tvCityName.text = it?.name
-                mainToolbar.tvLastUpdate.text = it?.last_updated
-                currentCondition.tvCurrentTemp.text = it?.temp_c.toString()
-                currentCondition.tvCurrentCondition.text = it?.condition
-                cardViewWind.tvWindDirection.text = it?.wind_dir.toString()
-                cardViewWind.tvWindSpeed.text = it?.wind_kph.toString()
-                cardViewDetails.tvHumidityValue.text = it?.humidity.toString()
-                cardViewDetails.tvFeelsLikeValue.text = it?.feels_like.toString()
-                cardViewDetails.tvUvValue.text = it?.uv.toString()
-                cardViewDetails.tvPressureValue.text = it?.pressure_mb.toString()
-                cardViewWind.imageView.setImageResource(it?.wind_dir_img ?: R.drawable.ic_loading)
-            }
+                when (it) {
+                    is WeatherInfo -> {
+                        var tempMaxMin = "${it.weather.byDaysWeatherModel?.get(0)?.maxtemp_c} " +
+                                "/ ${it.weather.byDaysWeatherModel?.get(0)?.mintemp_c}"
 
-            viewModel.byDaysWeather.observe(viewLifecycleOwner) {
-                cardViewForecastByDays.apply {
-                    if (it?.isNotEmpty() == true) {
-                        var tempMaxMin = "${it[0].maxtemp_c} / ${it[0].mintemp_c}"
-                        currentCondition.tvMainMaxmin.text = tempMaxMin
-                        tv1dayMaxmin.text = tempMaxMin
-                        tempMaxMin = "${it[1].maxtemp_c} / ${it[1].mintemp_c}"
-                        tv2dayMaxmin.text = tempMaxMin
-                        tempMaxMin = "${it[2].maxtemp_c} / ${it[2].mintemp_c}"
-                        tv3dayMaxmin.text = tempMaxMin
-                        iv1dayCondition.setImageResource(it[0].icon_url ?: R.drawable.ic_loading)
-                        iv2dayCondition.setImageResource(it[1].icon_url ?: R.drawable.ic_loading)
-                        iv3dayCondition.setImageResource(it[2].icon_url ?: R.drawable.ic_loading)
-                        tv1dayName.text = getString(R.string.today)
-                        tv2dayName.text = it[1].date
-                        tv3dayName.text = it[2].date
-                        tv1dayCondition.text = it[0].condition
-                        tv2dayCondition.text = it[1].condition
-                        tv3dayCondition.text = it[2].condition
-                        cardViewDetails.tvChanceOfRainValue.text = it[0].chance_of_rain.toString()
+                        adapter.submitList(it.weather.byHoursWeatherModel)
+
+                        mainToolbar.tvCityName.visibility = View.VISIBLE
+
+                        mainToolbar.apply {
+                            tvCityName.text = it.weather.currentWeatherModel?.name
+                            tvLastUpdate.text = it.weather.currentWeatherModel?.last_updated
+                        }
+
+                        currentCondition.apply {
+                            tvCurrentTemp.text = it.weather.currentWeatherModel?.temp_c.toString()
+                            tvCurrentCondition.text = it.weather.currentWeatherModel?.condition
+                            tvMainMaxmin.text = tempMaxMin
+                            celsius.text = getString(R.string.celsius)
+                            degree.text = getString(R.string.degree)
+                        }
+
+                        cardViewForecastByDays.apply {
+                            tv1dayMaxmin.text = tempMaxMin
+                            tempMaxMin = "${it.weather.byDaysWeatherModel?.get(1)?.maxtemp_c} " +
+                                    "/ ${it.weather.byDaysWeatherModel?.get(1)?.mintemp_c}"
+                            tv2dayMaxmin.text = tempMaxMin
+                            tempMaxMin = "${it.weather.byDaysWeatherModel?.get(2)?.maxtemp_c} " +
+                                    "/ ${it.weather.byDaysWeatherModel?.get(2)?.mintemp_c}"
+                            tv3dayMaxmin.text = tempMaxMin
+                            iv1dayCondition.setImageResource(
+                                it.weather.byDaysWeatherModel?.get(0)?.icon_url!!
+                            )
+                            iv2dayCondition.setImageResource(
+                                it.weather.byDaysWeatherModel[1].icon_url!!
+                            )
+                            iv3dayCondition.setImageResource(
+                                it.weather.byDaysWeatherModel[2].icon_url!!
+                            )
+                            tv1dayName.text = getString(R.string.today)
+                            tv2dayName.text = it.weather.byDaysWeatherModel[1].date
+                            tv3dayName.text = it.weather.byDaysWeatherModel[2].date
+                            tv1dayCondition.text = it.weather.byDaysWeatherModel[0].condition
+                            tv2dayCondition.text = it.weather.byDaysWeatherModel[1].condition
+                            tv3dayCondition.text = it.weather.byDaysWeatherModel[2].condition
+                        }
+
+                        cardViewWind.apply {
+                            cardViewWind.tvWindDirection.text =
+                                it.weather.currentWeatherModel?.wind_dir.toString()
+                            cardViewWind.tvWindSpeed.text =
+                                it.weather.currentWeatherModel?.wind_kph.toString()
+                            cardViewWind.imageView.setImageResource(
+                                it.weather.currentWeatherModel?.wind_dir_img!!
+
+                            )
+                        }
+
+                        cardViewDetails.apply {
+                            cardViewDetails.tvHumidityValue.text =
+                                it.weather.currentWeatherModel?.humidity.toString()
+                            cardViewDetails.tvFeelsLikeValue.text =
+                                it.weather.currentWeatherModel?.feels_like.toString()
+                            cardViewDetails.tvUvValue.text =
+                                it.weather.currentWeatherModel?.uv.toString()
+                            cardViewDetails.tvPressureValue.text =
+                                it.weather.currentWeatherModel?.pressure_mb.toString()
+                            cardViewDetails.tvChanceOfRainValue.text =
+                                it.weather.byDaysWeatherModel?.get(0)?.chance_of_rain.toString()
+                        }
+
+                    }
+
+                    is Loading -> {
+                        mainToolbar.apply {
+                            tvStatus.visibility = View.GONE
+                            tvStatus.text = getString(R.string.loading)
+                            bSearch.isEnabled = false
+                            binding.swipeRefresh.isRefreshing = true
+                        }
+                    }
+
+                    is Error -> {
+                        tvLoadingError.visibility = View.VISIBLE
+                        mainToolbar.tvCityName.visibility = View.GONE
+                        scrollView.visibility = View.GONE
+                        currentCondition.root.visibility = View.GONE
+                    }
+
+                    is Success -> {
+                        binding.mainToolbar.apply {
+                            binding.swipeRefresh.isRefreshing = false
+                            tvStatus.visibility = View.GONE
+                            tvLastUpdate.visibility = View.VISIBLE
+                            bSearch.isEnabled = true
+                        }
                     }
                 }
-            }
-            viewModel.byHoursWeather.observe(viewLifecycleOwner) {
-                adapter.submitList(it)
             }
         }
     }
 
     private fun initViewModel() {
-        lifecycleScope.launch(Dispatchers.Main) {
-            with(binding.mainToolbar) {
-                var name = EMPTY_STRING
-                tvStatus.visibility = View.VISIBLE
-                tvStatus.text = getString(R.string.loading)
-                bSearch.isEnabled = false
-                binding.swipeRefresh.isRefreshing = true
-
-                /*
-                lifecycleScope.launch(Dispatchers.IO) {
-                    val dataStoreKey = stringPreferencesKey(LOCATION)
-                    val preferences = (requireContext().dataStore.data.first())
-                    name = preferences[dataStoreKey] ?: EMPTY_STRING
-                }.join()
-
-                 */
-
-                if (name == EMPTY_STRING) {
-                    viewModel.initViewModel(getString(R.string.moscow), getString(R.string.lang))
-                } else {
-                    viewModel.initViewModel(name, getString(R.string.lang))
-                }
-                delay(500)
-                binding.swipeRefresh.isRefreshing = false
-                tvStatus.visibility = View.GONE
-                tvLastUpdate.visibility = View.VISIBLE
-                delay(1000)
-                tvLastUpdate.visibility = View.GONE
-                bSearch.isEnabled = true
-            }
+        var name: String
+        runBlocking {
+            val dataStoreKey = stringPreferencesKey(LOCATION)
+            val preferences = (requireContext().dataStore.data.first())
+            name = preferences[dataStoreKey] ?: EMPTY_STRING
+        }
+        if (name == EMPTY_STRING) {
+            viewModel.send(LoadWeatherEvent(getString(R.string.moscow), getString(R.string.lang)))
+        } else {
+            viewModel.send(LoadWeatherEvent(name, getString(R.string.lang)))
         }
     }
 
@@ -200,13 +239,9 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    private fun getResultFromChildFragment() {
-        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
-            bundle.getString(BUNDLE_KEY)?.let { viewModel.setLocationValue(it) }
-        }
-    }
-
     companion object {
         private const val WEATHER_API = "https://www.weatherapi.com/"
+        private const val URI_CITY_LIST_FRAGMENT = "weatherApp://cityListFragment"
+        const val EMPTY_STRING = ""
     }
 }

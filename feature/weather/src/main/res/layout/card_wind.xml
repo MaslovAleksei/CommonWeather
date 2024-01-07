@@ -45,7 +45,7 @@
             app:layout_constraintEnd_toEndOf="@+id/tv_wind_speed"
             app:layout_constraintStart_toStartOf="@+id/tv_wind_speed"
             app:layout_constraintTop_toBottomOf="@+id/tv_wind_speed"
-            app:srcCompat="@drawable/ic_time"
+            tools:srcCompat="@drawable/ic_time"
             android:importantForAccessibility="no" />
 
         <ImageView

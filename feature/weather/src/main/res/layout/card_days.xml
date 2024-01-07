@@ -78,7 +78,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_2day_maxmin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_2day_maxmin"
-            app:srcCompat="@drawable/ic_loading"
+            tools:srcCompat="@drawable/ic_loading"
             tools:ignore="ImageContrastCheck" />
 
         <ImageView
@@ -92,7 +92,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_3day_maxmin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_3day_maxmin"
-            app:srcCompat="@drawable/ic_loading"
+            tools:srcCompat="@drawable/ic_loading"
             tools:ignore="ImageContrastCheck" />
 
         <TextView
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="@string/today"
+            tools:text="@string/today"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="@+id/iv_calendar"

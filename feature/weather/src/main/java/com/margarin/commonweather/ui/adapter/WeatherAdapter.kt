@@ -27,7 +27,5 @@ class WeatherAdapter() : ListAdapter<ByHoursWeatherModel, WeatherHolder>(Weather
             tvWindSpeed.text = item.wind_kph.toString()
             ivCondition.setImageResource(item.icon_url ?: R.drawable.ic_loading)
         }
-
-
     }
 }

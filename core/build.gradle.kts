@@ -35,9 +35,17 @@ android {
 
 dependencies {
 
+    implementation("androidx.appcompat:appcompat:1.6.1")
+
     implementation("com.google.dagger:dagger:2.48.1")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
     ksp("com.google.dagger:dagger-compiler:2.48.1")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    implementation("com.yandex.android:maps.mobile:4.4.0-lite")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

@@ -1,7 +1,8 @@
 package com.margarin.commonweather.di
 
 import androidx.lifecycle.ViewModel
-import com.margarin.commonweather.ui.SharedViewModel
+import com.margarin.commonweather.ui.screens.citylist.CityListViewModel
+import com.margarin.commonweather.ui.screens.search.SearchViewModel
 import com.margarin.commonweather.ui.WeatherViewModel
 import dagger.Binds
 import dagger.Module
@@ -17,7 +18,12 @@ interface ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(SharedViewModel::class)
-    fun bindSearchViewModel(viewModel: SharedViewModel): ViewModel
+    @ViewModelKey(CityListViewModel::class)
+    fun bindCityListViewModel(viewModel: CityListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    fun bindSearchViewModel(viewModel: SearchViewModel): ViewModel
 
 }

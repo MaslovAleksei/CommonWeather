@@ -1,7 +1,6 @@
 package com.margarin.commonweather.data
 
 import android.app.Application
-import android.util.Log
 import com.margarin.commonweather.apimodels.forecast.ForecastData
 import com.margarin.commonweather.apimodels.forecast.ForecastDay
 import com.margarin.commonweather.apimodels.forecast.Hour
@@ -301,7 +300,6 @@ class WeatherMapper @Inject constructor(
         formatIn: String,
         formatOut: String
     ): String? {
-        Log.d("tag", serverDate + formatIn + formatOut)
         val originalFormat = SimpleDateFormat(formatIn, Locale.getDefault())
         val targetFormat = SimpleDateFormat(formatOut, Locale.getDefault())
         val date = originalFormat.parse(serverDate.toString())
