@@ -1,6 +1,5 @@
 package com.margarin.commonweather.ui.screens.search
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,19 +15,37 @@ class SearchViewModel @Inject constructor(
     private val addSearchItemUseCase: AddSearchItemUseCase,
 ) : ViewModel() {
 
-    private val _requestLocation = MutableLiveData<List<SearchModel>?>()
-    val requestLocation: LiveData<List<SearchModel>?>
-        get() = _requestLocation
+    private val _state = MutableLiveData<SearchState>()
+    val state: MutableLiveData<SearchState>
+        get() = _state
 
-    fun addSearchItem(searchModel: SearchModel) {
+    fun send(event: SearchEvent) {
+        when (event) {
+            is AddSearchItem -> {
+                addSearchItem(event.searchModel)
+            }
+            is OnQueryTextLocation -> {
+                onQueryTextLocation(event.query)
+            }
+            is StopQuery -> {
+                stopQuery()
+            }
+        }
+    }
+
+    private fun addSearchItem(searchModel: SearchModel) {
         viewModelScope.launch(Dispatchers.IO) {
             addSearchItemUseCase(searchModel)
         }
     }
 
-    fun changeDefiniteLocation(query: String) {
+    private fun onQueryTextLocation(query: String) {
         viewModelScope.launch {
-            _requestLocation.value = requestSearchLocationUseCase(query)
+            _state.value = OnQueryText(requestSearchLocationUseCase(query))
         }
+    }
+
+    private fun stopQuery() {
+        _state.value = StopQueryText
     }
 }

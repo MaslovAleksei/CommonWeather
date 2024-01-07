@@ -3,7 +3,6 @@ package com.margarin.commonweather.ui.screens.citylist
 import android.app.Application
 import android.content.Intent
 import android.provider.Settings
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +17,7 @@ import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
 import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
 import com.margarin.commonweather.isGpsEnabled
+import com.margarin.commonweather.makeToast
 import com.margarin.commonweather.utils.YandexMapManager
 import com.margarin.search.R
 import com.yandex.mapkit.map.Map
@@ -45,19 +45,15 @@ class CityListViewModel @Inject constructor(
             is GetSavedCityList -> {
                 getSavedCityList()
             }
-
             is AddSearchItem -> {
                 addSearchItem(searchModel = event.searchModel)
             }
-
             is DeleteSearchItem -> {
                 deleteSearchItem(searchModel = event.searchModel)
             }
-
             is RequestSearchLocation -> {
                 requestSearchLocation(query = event.query)
             }
-
             is UseGps -> {
                 useGps(
                     fusedLocationClient = event.fusedLocationClient,
@@ -66,12 +62,14 @@ class CityListViewModel @Inject constructor(
                     map = event.map
                 )
             }
+            is OpenMap -> {
+                openMap()
+            }
         }
     }
 
      private fun getSavedCityList() {
         viewModelScope.launch {
-            _state.value = Loading
             cityListLD = getSavedCityListUseCase()
 
             /*
@@ -79,7 +77,6 @@ class CityListViewModel @Inject constructor(
                 _state.value = EmptyList
                 return@launch
             }
-
              */
 
             cityListLD?.observeForever{
@@ -106,13 +103,13 @@ class CityListViewModel @Inject constructor(
             if (requestedLocation?.isNotEmpty() == true) {
                 addSearchItem(requestedLocation.first())
             } else {
-                Toast.makeText(
-                    application,
-                    R.string.settlement_not_found,
-                    Toast.LENGTH_SHORT
-                ).show()
+                makeToast(application, application.getString(R.string.settlement_not_found))
             }
         }
+    }
+
+    private fun openMap() {
+        _state.value = OpenedMap
     }
 
     private fun useGps(fusedLocationClient: FusedLocationProviderClient,
@@ -128,11 +125,7 @@ class CityListViewModel @Inject constructor(
                 )
 
         } else {
-            Toast.makeText(
-                application,
-                application.getString(R.string.switch_on_gps),
-                Toast.LENGTH_SHORT
-            ).show()
+            makeToast(application, application.getString(R.string.switch_on_gps))
             application.startActivity(
                 Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -147,18 +140,15 @@ class CityListViewModel @Inject constructor(
         map: Map
     ) {
         if (PermissionManager.checkLocationPermission(application)) {
-            Toast.makeText(
-                application,
-                application.getString(R.string.navigation_permissions_not_allowed),
-                Toast.LENGTH_SHORT
-            ).show()
+            makeToast(application, application.getString(R.string.navigation_permissions_not_allowed))
             return
         }
         fusedLocationClient
             .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, CancellationTokenSource().token)
             .addOnCompleteListener {
                 if (isMapGone) {
-                    requestSearchLocation("${it.result.latitude}, ${it.result.longitude}")
+                    val latLon = "${it.result.latitude}, ${it.result.longitude}"
+                    requestSearchLocation(latLon)
                 } else {
                     yandexMapManager.mapMoveToPosition(
                         map,

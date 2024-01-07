@@ -4,7 +4,7 @@ import com.margarin.commonweather.domain.SearchModel
 
 sealed class CityListState
 
-data object Loading: CityListState()
 data object EmptyList: CityListState()
+data object OpenedMap: CityListState()
 class CityList(val cityList: List<SearchModel>?): CityListState()
 

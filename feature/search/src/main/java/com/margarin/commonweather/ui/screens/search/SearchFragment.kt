@@ -37,7 +37,6 @@ class SearchFragment : Fragment() {
     private lateinit var adapter: SearchAdapter
 
 
-
     ////////////////////////////////////////////////////////////////////////////
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,8 +67,20 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.requestLocation.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.state.observe(viewLifecycleOwner) {
+            binding.apply {
+                when (it) {
+                    is OnQueryText -> {
+                        adapter.submitList(it.queryList)
+                        binding.svPopularCities.visibility = View.GONE
+                        binding.rvSearch.visibility = View.VISIBLE
+                    }
+                    is StopQueryText -> {
+                        binding.svPopularCities.visibility = View.VISIBLE
+                        binding.rvSearch.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -87,13 +98,11 @@ class SearchFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.changeDefiniteLocation(it) }
+
                 if (newText?.isNotBlank() == true) {
-                    binding.svPopularCities.visibility = View.GONE
-                    binding.rvSearch.visibility = View.VISIBLE
+                    viewModel.send(OnQueryTextLocation(newText))
                 } else {
-                    binding.svPopularCities.visibility = View.VISIBLE
-                    binding.rvSearch.visibility = View.GONE
+                    viewModel.send(StopQuery)
                 }
                 return true
             }
@@ -109,7 +118,7 @@ class SearchFragment : Fragment() {
                 controller.popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
-                viewModel.addSearchItem(it)
+                viewModel.send(AddSearchItem(it))
                 controller.popBackStack()
             }
         }

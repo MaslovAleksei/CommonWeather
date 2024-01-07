@@ -197,28 +197,12 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    private fun initViewModel() {
-        var name: String
-        runBlocking {
-            val dataStoreKey = stringPreferencesKey(LOCATION)
-            val preferences = (requireContext().dataStore.data.first())
-            name = preferences[dataStoreKey] ?: EMPTY_STRING
-        }
-        if (name == EMPTY_STRING) {
-            viewModel.send(LoadWeatherEvent(getString(R.string.moscow), getString(R.string.lang)))
-        } else {
-            viewModel.send(LoadWeatherEvent(name, getString(R.string.lang)))
-        }
-    }
-
     private fun setOnClickListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
             findNavController().navigate(Uri.parse(URI_CITY_LIST_FRAGMENT))
         }
         binding.mainToolbar.bRefresh.setOnClickListener {
-            binding.swipeRefresh.isRefreshing = true
             initViewModel()
-            binding.swipeRefresh.isRefreshing = false
         }
         binding.tvWeatherApi.setOnClickListener {
             startActivity(
@@ -234,8 +218,22 @@ class WeatherFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             lifecycleScope.launch {
                 initViewModel()
-                binding.swipeRefresh.isRefreshing = false
             }
+        }
+    }
+
+
+    private fun initViewModel() {
+        var name: String
+        runBlocking {
+            val dataStoreKey = stringPreferencesKey(LOCATION)
+            val preferences = (requireContext().dataStore.data.first())
+            name = preferences[dataStoreKey] ?: EMPTY_STRING
+        }
+        if (name == EMPTY_STRING) {
+            viewModel.send(LoadWeatherEvent(getString(R.string.moscow), getString(R.string.lang)))
+        } else {
+            viewModel.send(LoadWeatherEvent(name, getString(R.string.lang)))
         }
     }
 

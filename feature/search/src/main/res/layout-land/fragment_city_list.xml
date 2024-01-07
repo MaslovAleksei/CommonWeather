@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
+    <TextView
+        android:id="@+id/tv_state_fragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:elevation="2dp"
+        android:gravity="center"
+        android:text="@string/list_is_empty"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/b_back"
         android:layout_width="40dp"
