@@ -29,5 +29,8 @@
     <string name="updated">"updated: "</string>
     <string name="now">"Now"</string>
     <string name="error_loading">Loading error</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
 
 </resources>

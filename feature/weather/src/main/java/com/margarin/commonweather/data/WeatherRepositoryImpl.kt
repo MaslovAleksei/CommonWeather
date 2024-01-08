@@ -1,7 +1,11 @@
 package com.margarin.commonweather.data
 
+import android.app.Application
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.WorkManager
 import com.margarin.commonweather.ApiService
 import com.margarin.commonweather.dao.WeatherDao
+import com.margarin.commonweather.data.worker.RefreshWeatherWorker
 import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.WeatherModel
 import javax.inject.Inject
@@ -10,6 +14,7 @@ class WeatherRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
     private val weatherMapper: WeatherMapper,
     private val weatherDao: WeatherDao,
+    private val application: Application
 ) : WeatherRepository {
 
     override suspend fun loadData(query: String, lang: String) {
@@ -28,6 +33,12 @@ class WeatherRepositoryImpl @Inject constructor(
             }
         } catch (_: Exception) {
         }
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniquePeriodicWork(
+            RefreshWeatherWorker.NAME,
+            ExistingPeriodicWorkPolicy.UPDATE,
+            RefreshWeatherWorker.makeRequest()
+        )
     }
 
     override suspend fun getWeather(name: String) = WeatherModel(

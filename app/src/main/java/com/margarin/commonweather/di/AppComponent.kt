@@ -16,10 +16,11 @@ import dagger.Component
         SearchModule::class,
         ViewModelModule::class,
         NetworkModule::class,
-        DatabaseModule::class
+        DatabaseModule::class,
+        WorkerModule::class
     ]
 )
-interface AppComponent: SearchComponent, WeatherComponent {
+interface AppComponent : SearchComponent, WeatherComponent {
 
     fun inject(application: WeatherApp)
 

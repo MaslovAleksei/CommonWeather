@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2")
 
     implementation("com.google.dagger:dagger:2.48.1")
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
     ksp("com.google.dagger:dagger-compiler:2.48.1")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
