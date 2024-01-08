@@ -38,8 +38,7 @@ class WeatherViewModel @Inject constructor(
             val weather = getWeatherUseCase(name)
             if (weather == null ||
                 weather.currentWeatherModel?.name?.isEmpty() == true ||
-                weather.byDaysWeatherModel?.size!! == 0 ||
-                weather.byHoursWeatherModel?.size!! == 0
+                weather.byDaysWeatherModel?.size!! == 0
             ) {
                 _state.value = Error
                 return@launch

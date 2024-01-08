@@ -5,18 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.margarin.commonweather.BINDING_NULL
-import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.SearchComponentProvider
-import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.commonweather.utils.YandexMapManager
 import com.margarin.search.R
@@ -64,6 +66,7 @@ class CityListFragment : Fragment() {
         observeViewModel()
         configureRecyclerView()
         setOnClickListeners()
+        initMap()
     }
 
     override fun onDestroyView() {
@@ -78,21 +81,30 @@ class CityListFragment : Fragment() {
                 when (it) {
                     is CityList -> {
                         adapter.submitList(it.cityList)
-                        tvStateFragment?.visibility = View.GONE
+                        tvStateFragment.visibility = View.GONE
                         rvCityList.visibility = View.VISIBLE
+                        mapContainer.visibility = View.GONE
+                        bMap.text = getString(R.string.open_map)
+                        bDefineLoc.text = getString(R.string.locate)
                     }
 
                     is EmptyList -> {
-                        tvStateFragment?.visibility = View.VISIBLE
-                        tvStateFragment?.text = getString(R.string.list_is_empty)
+                        tvStateFragment.visibility = View.VISIBLE
                         rvCityList.visibility = View.GONE
-
+                        mapContainer.visibility = View.GONE
+                        bMap.text = getString(R.string.open_map)
+                        bDefineLoc.text = getString(R.string.locate)
                     }
 
-                    is Loading -> {
-                        tvStateFragment?.visibility = View.VISIBLE
-                        tvStateFragment?.text = getString(R.string.loading)
+                    is OpenedMap -> {
                         rvCityList.visibility = View.GONE
+                        mapContainer.visibility = View.VISIBLE
+                        bMap.text = getString(R.string.close_map)
+                        bDefineLoc.text = getString(R.string.locate)
+                    }
+
+                    is Locating -> {
+                        bDefineLoc.text = getString(R.string.locating)
                     }
                 }
             }
@@ -113,7 +125,7 @@ class CityListFragment : Fragment() {
         with(adapter) {
 
             onItemClickListener = {
-                saveToDataStore(requireContext(), LOCATION, it.name.toString())
+                setFragmentResult(REQUEST_KEY, bundleOf(BUNDLE_KEY to it.name.toString()))
                 controller.navigateUp()
             }
 
@@ -141,28 +153,21 @@ class CityListFragment : Fragment() {
             }
 
             bDefineLoc.setOnClickListener {
-                viewModel.send(UseGps(fusedLocationClient = fusedLocationClient,
-                    isMapGone = binding.mapview.isGone,
-                    yandexMapManager = yandexMapManager,
-                    map = map))
+                viewModel.send(
+                    UseGps(
+                        fusedLocationClient = fusedLocationClient,
+                        isMapGone = binding.mapContainer.isGone,
+                        yandexMapManager = yandexMapManager,
+                        map = map
+                    )
+                )
             }
 
             bMap.setOnClickListener {
                 if (mapContainer.isGone) {
-                    MapKitFactory.getInstance().onStart()
-                    mapview.onStart()
-                    yandexMapManager.configureMap(map)
-
-                    mapContainer.visibility = View.VISIBLE
-                    rvCityList.visibility = View.GONE
-                    bMap.text = getString(R.string.close_map)
-
+                    viewModel.send(OpenMap)
                 } else {
-                    MapKitFactory.getInstance().onStop()
-
-                    mapContainer.visibility = View.GONE
-                    rvCityList.visibility = View.VISIBLE
-                    bMap.text = getString(R.string.open_map)
+                    viewModel.send(GetSavedCityList)
                 }
             }
 
@@ -170,11 +175,6 @@ class CityListFragment : Fragment() {
                 val latLonString =
                     "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
                 viewModel.send(RequestSearchLocation(latLonString))
-
-                MapKitFactory.getInstance().onStop()
-                mapContainer.visibility = View.GONE
-                rvCityList.visibility = View.VISIBLE
-                bMap.text = getString(R.string.open_map)
             }
 
             bZoomIn.setOnClickListener {
@@ -186,15 +186,24 @@ class CityListFragment : Fragment() {
             }
 
             bCurrentLoc.setOnClickListener {
-                viewModel.send(UseGps(fusedLocationClient = fusedLocationClient,
-                    isMapGone = binding.mapview.isGone,
-                    yandexMapManager = yandexMapManager,
-                    map = map))
+                viewModel.send(
+                    UseGps(
+                        fusedLocationClient = fusedLocationClient,
+                        isMapGone = binding.mapContainer.isGone,
+                        yandexMapManager = yandexMapManager,
+                        map = map
+                    )
+                )
             }
         }
     }
 
-    /////////////////////////////////////////////////////////////////////////////
+    private fun initMap() {
+        MapKitFactory.getInstance().onStart()
+        binding.mapview.onStart()
+        yandexMapManager.configureMap(binding.mapview.mapWindow.map)
+    }
+
     companion object {
         private const val ZOOM_STEP = 1f
     }

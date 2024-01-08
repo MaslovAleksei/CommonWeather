@@ -8,6 +8,7 @@ import com.yandex.mapkit.map.Map
 sealed class CityListEvent
 
 data object GetSavedCityList : CityListEvent()
+data object OpenMap: CityListEvent()
 class AddSearchItem(val searchModel: SearchModel) : CityListEvent()
 class DeleteSearchItem(val searchModel: SearchModel) : CityListEvent()
 class RequestSearchLocation(val query: String) : CityListEvent()

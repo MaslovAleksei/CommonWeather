@@ -7,15 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
-import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.BUNDLE_KEY
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.SearchComponentProvider
-import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentSearchBinding
@@ -35,7 +37,6 @@ class SearchFragment : Fragment() {
         get() = _binding ?: throw RuntimeException(BINDING_NULL)
 
     private lateinit var adapter: SearchAdapter
-
 
 
     ////////////////////////////////////////////////////////////////////////////
@@ -68,8 +69,20 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.requestLocation.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.state.observe(viewLifecycleOwner) {
+            binding.apply {
+                when (it) {
+                    is OnQueryText -> {
+                        adapter.submitList(it.queryList)
+                        binding.svPopularCities.visibility = View.GONE
+                        binding.rvSearch.visibility = View.VISIBLE
+                    }
+                    is StopQueryText -> {
+                        binding.svPopularCities.visibility = View.VISIBLE
+                        binding.rvSearch.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -81,19 +94,14 @@ class SearchFragment : Fragment() {
 
     private fun addTextChangeListeners() {
         binding.searchView.setOnQueryTextListener(object : OnQueryTextListener {
-
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let { viewModel.changeDefiniteLocation(it) }
                 if (newText?.isNotBlank() == true) {
-                    binding.svPopularCities.visibility = View.GONE
-                    binding.rvSearch.visibility = View.VISIBLE
+                    viewModel.send(OnQueryTextLocation(newText))
                 } else {
-                    binding.svPopularCities.visibility = View.VISIBLE
-                    binding.rvSearch.visibility = View.GONE
+                    viewModel.send(StopQuery)
                 }
                 return true
             }
@@ -105,11 +113,11 @@ class SearchFragment : Fragment() {
 
         adapter.apply {
             onItemClickListener = {
-                saveToDataStore(requireContext(), LOCATION, it.name.toString())
+                setFragmentResult(REQUEST_KEY, bundleOf(BUNDLE_KEY to it.name.toString()))
                 controller.popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
-                viewModel.addSearchItem(it)
+                viewModel.send(AddSearchItem(it))
                 controller.popBackStack()
             }
         }
@@ -150,7 +158,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun clickOnPopularCity(city: View) {
-        saveToDataStore(requireContext(), LOCATION, (city as TextView).text.toString())
+        setFragmentResult(
+            REQUEST_KEY,
+            bundleOf(BUNDLE_KEY to (city as TextView).text.toString())
+        )
         findNavController().popBackStack(ROUTE_WEATHER_FRAGMENT, false)
     }
 
