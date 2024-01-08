@@ -139,6 +139,7 @@ class CityListViewModel @Inject constructor(
         yandexMapManager: YandexMapManager,
         map: Map
     ) {
+        _state.value = Locating
         if (PermissionManager.checkLocationPermission(application)) {
             makeToast(application, application.getString(R.string.navigation_permissions_not_allowed))
             return
@@ -149,12 +150,14 @@ class CityListViewModel @Inject constructor(
                 if (isMapGone) {
                     val latLon = "${it.result.latitude}, ${it.result.longitude}"
                     requestSearchLocation(latLon)
+                    getSavedCityList()
                 } else {
                     yandexMapManager.mapMoveToPosition(
                         map,
                         it.result.latitude.toString(),
                         it.result.longitude.toString()
                     )
+                    _state.value = OpenedMap
                 }
             }
     }

@@ -42,4 +42,5 @@
     <string name="list_is_empty">No cities added</string>
     <string name="navigation_permissions_not_allowed">Navigation permissions not allowed</string>
     <string name="switch_on_gps">Switch on GPS</string>
+    <string name="locating">Locating</string>
 </resources>

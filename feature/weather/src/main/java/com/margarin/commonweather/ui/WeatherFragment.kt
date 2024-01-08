@@ -7,23 +7,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
+import com.margarin.commonweather.BUNDLE_KEY
 import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.ViewModelFactory
-import com.margarin.commonweather.dataStore
 import com.margarin.commonweather.di.WeatherComponentProvider
+import com.margarin.commonweather.loadFromDataStore
+import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.ui.adapter.WeatherAdapter
 import com.margarin.weather.R
 import com.margarin.weather.databinding.FragmentWeatherBinding
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class WeatherFragment : Fragment() {
@@ -84,32 +85,54 @@ class WeatherFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.state.observe(viewLifecycleOwner) {
             binding.apply {
-
-                mainToolbar.apply {
-                    tvStatus.visibility = View.GONE
-                    bSearch.isEnabled = true
-                    binding.swipeRefresh.isRefreshing = false
-                    tvLastUpdate.visibility = View.GONE
-                }
-                tvLoadingError.visibility = View.GONE
-                scrollView.visibility = View.VISIBLE
-                currentCondition.root.visibility = View.VISIBLE
-
                 when (it) {
+                    is Loading -> {
+                        mainToolbar.bSearch.isEnabled = false
+                        swipeRefresh.isRefreshing = true
+                        currentCondition.root.visibility = View.VISIBLE
+                        tvLoadingError.visibility = View.GONE
+                        scrollView.visibility = View.VISIBLE
+                    }
+
+                    is Error -> {
+                        mainToolbar.tvCityName.visibility = View.GONE
+                        mainToolbar.bSearch.isEnabled = true
+                        mainToolbar.tvLastUpdate.visibility = View.GONE
+                        tvLoadingError.visibility = View.VISIBLE
+                        scrollView.visibility = View.GONE
+                        currentCondition.root.visibility = View.GONE
+                        swipeRefresh.isRefreshing = false
+                    }
+
+                    is Success -> {
+                        mainToolbar.tvLastUpdate.visibility = View.VISIBLE
+                        mainToolbar.bSearch.isEnabled = true
+                        swipeRefresh.isRefreshing = false
+                        currentCondition.root.visibility = View.VISIBLE
+                        tvLoadingError.visibility = View.GONE
+                        scrollView.visibility = View.VISIBLE
+                    }
+
                     is WeatherInfo -> {
+                        adapter.submitList(it.weather.byHoursWeatherModel)
+
+                        tvLoadingError.visibility = View.GONE
+                        scrollView.visibility = View.VISIBLE
+
                         var tempMaxMin = "${it.weather.byDaysWeatherModel?.get(0)?.maxtemp_c} " +
                                 "/ ${it.weather.byDaysWeatherModel?.get(0)?.mintemp_c}"
 
-                        adapter.submitList(it.weather.byHoursWeatherModel)
-
-                        mainToolbar.tvCityName.visibility = View.VISIBLE
-
                         mainToolbar.apply {
+                            tvCityName.visibility = View.VISIBLE
                             tvCityName.text = it.weather.currentWeatherModel?.name
                             tvLastUpdate.text = it.weather.currentWeatherModel?.last_updated
+                            bSearch.isEnabled = true
+                            binding.swipeRefresh.isRefreshing = false
+                            tvLastUpdate.visibility = View.GONE
                         }
 
                         currentCondition.apply {
+                            root.visibility = View.VISIBLE
                             tvCurrentTemp.text = it.weather.currentWeatherModel?.temp_c.toString()
                             tvCurrentCondition.text = it.weather.currentWeatherModel?.condition
                             tvMainMaxmin.text = tempMaxMin
@@ -165,32 +188,6 @@ class WeatherFragment : Fragment() {
                             cardViewDetails.tvChanceOfRainValue.text =
                                 it.weather.byDaysWeatherModel?.get(0)?.chance_of_rain.toString()
                         }
-
-                    }
-
-                    is Loading -> {
-                        mainToolbar.apply {
-                            tvStatus.visibility = View.GONE
-                            tvStatus.text = getString(R.string.loading)
-                            bSearch.isEnabled = false
-                            binding.swipeRefresh.isRefreshing = true
-                        }
-                    }
-
-                    is Error -> {
-                        tvLoadingError.visibility = View.VISIBLE
-                        mainToolbar.tvCityName.visibility = View.GONE
-                        scrollView.visibility = View.GONE
-                        currentCondition.root.visibility = View.GONE
-                    }
-
-                    is Success -> {
-                        binding.mainToolbar.apply {
-                            binding.swipeRefresh.isRefreshing = false
-                            tvStatus.visibility = View.GONE
-                            tvLastUpdate.visibility = View.VISIBLE
-                            bSearch.isEnabled = true
-                        }
                     }
                 }
             }
@@ -206,10 +203,7 @@ class WeatherFragment : Fragment() {
         }
         binding.tvWeatherApi.setOnClickListener {
             startActivity(
-                Intent(
-                    Intent.ACTION_VIEW,
-                    Uri.parse(WEATHER_API)
-                )
+                Intent(Intent.ACTION_VIEW, Uri.parse(WEATHER_API))
             )
         }
     }
@@ -222,24 +216,24 @@ class WeatherFragment : Fragment() {
         }
     }
 
-
     private fun initViewModel() {
-        var name: String
-        runBlocking {
-            val dataStoreKey = stringPreferencesKey(LOCATION)
-            val preferences = (requireContext().dataStore.data.first())
-            name = preferences[dataStoreKey] ?: EMPTY_STRING
-        }
-        if (name == EMPTY_STRING) {
-            viewModel.send(LoadWeatherEvent(getString(R.string.moscow), getString(R.string.lang)))
-        } else {
-            viewModel.send(LoadWeatherEvent(name, getString(R.string.lang)))
+        val value = loadFromDataStore(requireContext(), LOCATION, getString(R.string.moscow))
+        viewModel.send(LoadWeatherEvent(value, getString(R.string.lang)))
+        setResultFromChildFragment()
+    }
+
+    private fun setResultFromChildFragment() {
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
+            val result = bundle.getString(BUNDLE_KEY)
+            if (result != null) {
+                viewModel.send(LoadWeatherEvent(result, getString(R.string.lang)))
+                saveToDataStore(requireContext(), LOCATION, result)
+            }
         }
     }
 
     companion object {
         private const val WEATHER_API = "https://www.weatherapi.com/"
         private const val URI_CITY_LIST_FRAGMENT = "weatherApp://cityListFragment"
-        const val EMPTY_STRING = ""
     }
 }

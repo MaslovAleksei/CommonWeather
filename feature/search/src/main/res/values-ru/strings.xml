@@ -42,4 +42,5 @@
     <string name="list_is_empty">Нет добавленных городов</string>
     <string name="navigation_permissions_not_allowed">Разрешения для местоположения не предоставлены</string>
     <string name="switch_on_gps">Включите GPS</string>
+    <string name="locating">Определяется</string>
 </resources>
