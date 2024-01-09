@@ -1,4 +1,4 @@
-package com.margarin.commonweather.data.worker
+package com.margarin.commonweather.data.workers
 
 import android.content.Context
 import androidx.work.Constraints
@@ -10,6 +10,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.data.WeatherRepositoryImpl
+import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
 import com.margarin.commonweather.loadFromDataStore
 import com.margarin.weather.R
 import java.util.concurrent.TimeUnit
@@ -23,7 +24,7 @@ class RefreshWeatherWorker(
 
     override suspend fun doWork(): Result {
         val value = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
-        weatherRepositoryImpl.refreshData(value)
+        weatherRepositoryImpl.loadData(value)
         return Result.success()
     }
 
@@ -48,6 +49,7 @@ class RefreshWeatherWorker(
 
         fun makeRequest(): PeriodicWorkRequest {
             return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(1, TimeUnit.HOURS)
+                .setInitialDelay(1, TimeUnit.HOURS)
                 .setConstraints(makeConstraints())
                 .addTag("RefreshWeatherWorker")
                 .build()

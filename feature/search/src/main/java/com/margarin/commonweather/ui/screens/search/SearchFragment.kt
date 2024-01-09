@@ -10,7 +10,10 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.margarin.commonweather.BINDING_NULL
@@ -21,6 +24,7 @@ import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.commonweather.ui.adapter.SearchAdapter
 import com.margarin.search.R
 import com.margarin.search.databinding.FragmentSearchBinding
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchFragment : Fragment() {
@@ -69,20 +73,25 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.state.observe(viewLifecycleOwner) {
-            binding.apply {
-                when (it) {
-                    is OnQueryText -> {
-                        adapter.submitList(it.queryList)
-                        binding.svPopularCities.visibility = View.GONE
-                        binding.rvSearch.visibility = View.VISIBLE
-                    }
-                    is StopQueryText -> {
-                        binding.svPopularCities.visibility = View.VISIBLE
-                        binding.rvSearch.visibility = View.GONE
+        lifecycleScope.launch {
+            viewModel.state
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    binding.apply {
+                        when (it) {
+                            is SearchState.OnQueryText -> {
+                                adapter.submitList(it.queryList)
+                                svPopularCities.visibility = View.GONE
+                                rvSearch.visibility = View.VISIBLE
+                            }
+
+                            is SearchState.StopQueryText -> {
+                                svPopularCities.visibility = View.VISIBLE
+                                rvSearch.visibility = View.GONE
+                            }
+                        }
                     }
                 }
-            }
         }
     }
 
@@ -97,11 +106,12 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText?.isNotBlank() == true) {
-                    viewModel.send(OnQueryTextLocation(newText))
+                    viewModel.send(SearchEvent.OnQueryTextLocation(newText))
                 } else {
-                    viewModel.send(StopQuery)
+                    viewModel.send(SearchEvent.StopQuery)
                 }
                 return true
             }
@@ -117,7 +127,7 @@ class SearchFragment : Fragment() {
                 controller.popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
-                viewModel.send(AddSearchItem(it))
+                viewModel.send(SearchEvent.AddSearchItem(it))
                 controller.popBackStack()
             }
         }

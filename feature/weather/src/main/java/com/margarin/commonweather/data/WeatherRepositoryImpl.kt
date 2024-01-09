@@ -6,7 +6,7 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkManager
 import com.margarin.commonweather.ApiService
 import com.margarin.commonweather.dao.WeatherDao
-import com.margarin.commonweather.data.worker.RefreshWeatherWorker
+import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.WeatherModel
 import com.margarin.weather.R
@@ -35,7 +35,7 @@ class WeatherRepositoryImpl @Inject constructor(
         weatherDao.getByHoursWeather(name)?.map { weatherMapper.mapByHoursDbModelToEntity(it) }
     )
 
-    private suspend fun loadData(query: String) {
+    suspend fun loadData(query: String) {
         val lang = application.getString(R.string.lang)
         try {
             val forecastData = apiService.getForecastWeather(city = query, lang = lang)

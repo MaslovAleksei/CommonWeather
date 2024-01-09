@@ -1,7 +1,7 @@
 package com.margarin.commonweather.di
 
-import com.margarin.commonweather.data.worker.ChildWorkerFactory
-import com.margarin.commonweather.data.worker.RefreshWeatherWorker
+import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
+import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

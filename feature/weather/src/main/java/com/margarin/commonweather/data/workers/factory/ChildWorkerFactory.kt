@@ -1,4 +1,4 @@
-package com.margarin.commonweather.data.worker
+package com.margarin.commonweather.data.workers.factory
 
 import android.content.Context
 import androidx.work.ListenableWorker

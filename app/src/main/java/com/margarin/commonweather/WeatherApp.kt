@@ -2,7 +2,7 @@ package com.margarin.commonweather
 
 import android.app.Application
 import androidx.work.Configuration
-import com.margarin.commonweather.data.worker.RefreshWeatherWorkerFactory
+import com.margarin.commonweather.data.workers.factory.RefreshWeatherWorkerFactory
 import com.margarin.commonweather.di.DaggerAppComponent
 import com.margarin.commonweather.di.SearchComponent
 import com.margarin.commonweather.di.SearchComponentProvider

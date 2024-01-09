@@ -3,15 +3,12 @@ package com.margarin.commonweather.ui.screens.citylist
 import android.app.Application
 import android.content.Intent
 import android.provider.Settings
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.PermissionManager
-import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
@@ -22,6 +19,10 @@ import com.margarin.commonweather.utils.YandexMapManager
 import com.margarin.search.R
 import com.yandex.mapkit.map.Map
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,103 +34,57 @@ class CityListViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<CityListState>()
-    val state: LiveData<CityListState>
-        get() = _state
-
-    private var cityListLD: LiveData<List<SearchModel>>? = null
+    private val _state = MutableStateFlow<CityListState>(CityListState.EmptyList)
+    val state = _state.asStateFlow()
 
     fun send(event: CityListEvent) {
-
         when (event) {
-            is GetSavedCityList -> {
-                getSavedCityList()
+            is CityListEvent.GetSavedCityList -> {
+                viewModelScope.launch {
+                    getSavedCityListUseCase()
+                        .onEach { _state.value = CityListState.Content(it) }
+                        .filter { it.isEmpty() }
+                        .collect {
+                            _state.value = CityListState.EmptyList
+                        }
+                }
             }
-            is AddSearchItem -> {
-                addSearchItem(searchModel = event.searchModel)
+
+            is CityListEvent.AddSearchItem -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    addSearchItemUseCase(event.searchModel)
+                }
             }
-            is DeleteSearchItem -> {
-                deleteSearchItem(searchModel = event.searchModel)
+
+            is CityListEvent.DeleteSearchItem -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    deleteSearchItemUseCase(event.searchModel)
+                }
             }
-            is RequestSearchLocation -> {
-                requestSearchLocation(query = event.query)
+
+            is CityListEvent.RequestSearchLocation -> {
+                requestSearchLocation(event.query)
             }
-            is UseGps -> {
-                useGps(
-                    fusedLocationClient = event.fusedLocationClient,
-                    isMapGone = event.isMapGone,
-                    yandexMapManager = event.yandexMapManager,
-                    map = event.map
-                )
+
+            is CityListEvent.UseGps -> {
+                if (isGpsEnabled(application)) {
+                    interactWithCurrentLocation(
+                        fusedLocationClient = event.fusedLocationClient,
+                        isMapGone = event.isMapGone,
+                        yandexMapManager = event.yandexMapManager,
+                        map = event.map
+                    )
+                } else {
+                    makeToast(application, application.getString(R.string.switch_on_gps))
+                    application.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    )
+                }
             }
-            is OpenMap -> {
-                openMap()
+
+            is CityListEvent.OpenMap -> {
+                _state.value = CityListState.OpenedMap
             }
-        }
-    }
-
-     private fun getSavedCityList() {
-        viewModelScope.launch {
-            cityListLD = getSavedCityListUseCase()
-
-            /*
-            if (cityListLD?.value?.get(0) == null) {
-                _state.value = EmptyList
-                return@launch
-            }
-             */
-
-            cityListLD?.observeForever{
-                _state.value = CityList(it)
-            }
-        }
-    }
-
-    private fun addSearchItem(searchModel: SearchModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            addSearchItemUseCase(searchModel)
-        }
-    }
-
-    private fun deleteSearchItem(searchModel: SearchModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            deleteSearchItemUseCase(searchModel)
-        }
-    }
-
-    private fun requestSearchLocation(query: String) {
-        viewModelScope.launch {
-            val requestedLocation = requestSearchLocationUseCase(query)
-            if (requestedLocation?.isNotEmpty() == true) {
-                addSearchItem(requestedLocation.first())
-            } else {
-                makeToast(application, application.getString(R.string.settlement_not_found))
-            }
-        }
-    }
-
-    private fun openMap() {
-        _state.value = OpenedMap
-    }
-
-    private fun useGps(fusedLocationClient: FusedLocationProviderClient,
-               isMapGone: Boolean,
-               yandexMapManager: YandexMapManager,
-               map: Map) {
-        if (isGpsEnabled(application)) {
-                interactWithCurrentLocation(
-                    fusedLocationClient = fusedLocationClient,
-                    isMapGone = isMapGone,
-                    yandexMapManager = yandexMapManager,
-                    map = map
-                )
-
-        } else {
-            makeToast(application, application.getString(R.string.switch_on_gps))
-            application.startActivity(
-                Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
         }
     }
 
@@ -139,9 +94,12 @@ class CityListViewModel @Inject constructor(
         yandexMapManager: YandexMapManager,
         map: Map
     ) {
-        _state.value = Locating
+        _state.value = CityListState.Locating
         if (PermissionManager.checkLocationPermission(application)) {
-            makeToast(application, application.getString(R.string.navigation_permissions_not_allowed))
+            makeToast(
+                application,
+                application.getString(R.string.navigation_permissions_not_allowed)
+            )
             return
         }
         fusedLocationClient
@@ -150,20 +108,25 @@ class CityListViewModel @Inject constructor(
                 if (isMapGone) {
                     val latLon = "${it.result.latitude}, ${it.result.longitude}"
                     requestSearchLocation(latLon)
-                    getSavedCityList()
                 } else {
                     yandexMapManager.mapMoveToPosition(
                         map,
                         it.result.latitude.toString(),
                         it.result.longitude.toString()
                     )
-                    _state.value = OpenedMap
+                    _state.value = CityListState.OpenedMap
                 }
             }
     }
 
-    override fun onCleared() {
-        //list?.removeObservers()
-        super.onCleared()
+    private fun requestSearchLocation(query: String) {
+        viewModelScope.launch {
+            val requestedLocation = requestSearchLocationUseCase(query)
+            if (requestedLocation?.isNotEmpty() == true) {
+                addSearchItemUseCase(requestedLocation.first())
+            } else {
+                makeToast(application, application.getString(R.string.settlement_not_found))
+            }
+        }
     }
 }

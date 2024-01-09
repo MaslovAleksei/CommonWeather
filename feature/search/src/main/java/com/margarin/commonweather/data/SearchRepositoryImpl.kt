@@ -1,10 +1,10 @@
 package com.margarin.commonweather.data
 
-import androidx.lifecycle.map
 import com.margarin.commonweather.ApiService
 import com.margarin.commonweather.dao.SearchDao
 import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.SearchRepository
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(
@@ -19,7 +19,8 @@ class SearchRepositoryImpl @Inject constructor(
             result = apiService.getSearchWeather(query = query)?.map {
                 searchMapper.mapSearchDtoToSearchModel(it)
             }
-        } catch (_: Exception) { }
+        } catch (_: Exception) {
+        }
         return result
     }
 
@@ -28,11 +29,10 @@ class SearchRepositoryImpl @Inject constructor(
         searchDao.addSearchItem(searchDbModel)
     }
 
-    override fun getSavedCityList() = searchDao.getSavedCityList().map {
-        it.map { searchDbModel ->
-            searchMapper.mapSearchDbModelToSearchModel(searchDbModel)
+    override suspend fun getSavedCityList() = searchDao.getSavedCityList()
+        .map { it.map { searchDbModel ->
+            searchMapper.mapSearchDbModelToSearchModel(searchDbModel) }
         }
-    }
 
     override suspend fun deleteSearchItem(searchModel: SearchModel) {
         searchDao.deleteSearchItem(searchModel.id)

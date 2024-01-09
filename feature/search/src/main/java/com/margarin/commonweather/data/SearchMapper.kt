@@ -10,7 +10,7 @@ class SearchMapper @Inject constructor(
     val application: Application
 ) {
 
-    fun mapSearchDtoToSearchModel(search: Search) = com.margarin.commonweather.domain.SearchModel(
+    fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
         id = search.id,
         name = search.name,
         region = search.region,
@@ -20,7 +20,7 @@ class SearchMapper @Inject constructor(
         url = search.url
     )
 
-    fun mapSearchModelToSearchDbModel(searchModel: com.margarin.commonweather.domain.SearchModel) =
+    fun mapSearchModelToSearchDbModel(searchModel: SearchModel) =
         SearchDbModel(
             id = searchModel.id,
             name = searchModel.name,
@@ -32,7 +32,7 @@ class SearchMapper @Inject constructor(
         )
 
     fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
-        com.margarin.commonweather.domain.SearchModel(
+        SearchModel(
             id = searchDb.id,
             name = searchDb.name,
             region = searchDb.region,

@@ -1,9 +1,10 @@
-package com.margarin.commonweather.data.worker
+package com.margarin.commonweather.data.workers.factory
 
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import javax.inject.Inject
 import javax.inject.Provider
 

@@ -1,6 +1,6 @@
 package com.margarin.commonweather.domain
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
 
@@ -8,7 +8,7 @@ interface SearchRepository {
 
     suspend fun addSearchItem(searchModel: SearchModel)
 
-    fun getSavedCityList(): LiveData<List<SearchModel>>
+    suspend fun  getSavedCityList(): Flow<List<SearchModel>>
 
     suspend fun deleteSearchItem(searchModel: SearchModel)
 

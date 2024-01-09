@@ -7,6 +7,9 @@ import com.margarin.commonweather.apimodels.forecast.Hour
 import com.margarin.commonweather.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.dbmodels.ByHoursWeatherDbModel
 import com.margarin.commonweather.dbmodels.CurrentWeatherDbModel
+import com.margarin.commonweather.domain.models.ByDaysWeatherModel
+import com.margarin.commonweather.domain.models.ByHoursWeatherModel
+import com.margarin.commonweather.domain.models.CurrentWeatherModel
 import com.margarin.weather.R
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -17,22 +20,21 @@ class WeatherMapper @Inject constructor(
     val application: Application
 ) {
 
-    fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) =
-        CurrentWeatherDbModel(
-            name = forecastData.location?.name.toString(),
-            condition = forecastData.current?.condition?.text,
-            icon_url = forecastData.current?.condition?.icon,
-            last_updated = forecastData.current?.last_updated,
-            wind_kph = forecastData.current?.wind_kph?.roundToInt(),
-            wind_dir = forecastData.current?.wind_dir,
-            temp_c = forecastData.current?.temp_c?.roundToInt(),
-            pressure_mb = forecastData.current?.pressure_mb?.roundToInt(),
-            humidity = forecastData.current?.humidity,
-            uv = forecastData.current?.uv?.roundToInt(),
-            feels_like = forecastData.current?.feelslike_c?.roundToInt(),
-            latitude = forecastData.location?.lat,
-            longitude = forecastData.location?.lon
-        )
+    fun mapForecastDataToCurrentDbModel(forecastData: ForecastData) = CurrentWeatherDbModel(
+        name = forecastData.location?.name.toString(),
+        condition = forecastData.current?.condition?.text,
+        icon_url = forecastData.current?.condition?.icon,
+        last_updated = forecastData.current?.last_updated,
+        wind_kph = forecastData.current?.wind_kph?.roundToInt(),
+        wind_dir = forecastData.current?.wind_dir,
+        temp_c = forecastData.current?.temp_c?.roundToInt(),
+        pressure_mb = forecastData.current?.pressure_mb?.roundToInt(),
+        humidity = forecastData.current?.humidity,
+        uv = forecastData.current?.uv?.roundToInt(),
+        feels_like = forecastData.current?.feelslike_c?.roundToInt(),
+        latitude = forecastData.location?.lat,
+        longitude = forecastData.location?.lon
+    )
 
 
     private fun mapByDayDtoToByDaysDbModel(id: Int, name: String, forecastDay: ForecastDay) =
@@ -49,10 +51,7 @@ class WeatherMapper @Inject constructor(
         )
 
     private fun mapByHourDtoToByHoursDbModel(
-        id: Int,
-        name: String,
-        currentTime: String,
-        hour: Hour
+        id: Int, name: String, currentTime: String, hour: Hour
     ) = ByHoursWeatherDbModel(
         name = name,
         id = id,
@@ -63,14 +62,13 @@ class WeatherMapper @Inject constructor(
         wind_kph = hour.wind_kph?.roundToInt()
     )
 
-    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel?): com.margarin.commonweather.domain.models.CurrentWeatherModel? {
+    fun mapCurrentDbToEntity(db: CurrentWeatherDbModel?): CurrentWeatherModel? {
         return if (db != null) {
-            com.margarin.commonweather.domain.models.CurrentWeatherModel(
+            CurrentWeatherModel(
                 name = db.name,
                 condition = db.condition,
                 icon_url = mapConditionImage(db.icon_url.toString()),
-                last_updated = application.getString(R.string.updated) +
-                        convertDate(db.last_updated, DATE_FULL_DEFAULT, DATE_LAST_UPD),
+                last_updated = lastUpdated(db.last_updated.toString()),
                 wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
                 wind_dir = convertWindDirections(db.wind_dir),
                 wind_dir_img = bindWindImage(db.wind_dir),
@@ -87,21 +85,20 @@ class WeatherMapper @Inject constructor(
         }
     }
 
-    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) =
-        com.margarin.commonweather.domain.models.ByDaysWeatherModel(
-            name = db.name,
-            id = db.id,
-            date = convertDate(db.date, DATE_DEFAULT, DAY_MONTH),
-            maxtemp_c = "${db.maxtemp_c}°",
-            mintemp_c = "${db.mintemp_c}°",
-            condition = db.condition,
-            icon_url = mapConditionImage(db.icon_url.toString()),
-            maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
-            chance_of_rain = "${db.chance_of_rain}%",
-            day_of_week = db.date
-        )
+    fun mapByDaysDbModelToEntity(db: ByDaysWeatherDbModel) = ByDaysWeatherModel(
+        name = db.name,
+        id = db.id,
+        date = convertDate(db.date, DATE_DEFAULT, DAY_MONTH),
+        maxtemp_c = "${db.maxtemp_c}°",
+        mintemp_c = "${db.mintemp_c}°",
+        condition = db.condition,
+        icon_url = mapConditionImage(db.icon_url.toString()),
+        maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
+        chance_of_rain = "${db.chance_of_rain}%",
+        day_of_week = db.date
+    )
 
-    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel): com.margarin.commonweather.domain.models.ByHoursWeatherModel {
+    fun mapByHoursDbModelToEntity(db: ByHoursWeatherDbModel): ByHoursWeatherModel {
         val hourLastUpd = convertDate(db.currentTime, DATE_FULL_DEFAULT, HOUR)
         val hour = convertDate(db.time, DATE_FULL_DEFAULT, HOUR)
         val time = if (hourLastUpd == hour) {
@@ -109,7 +106,7 @@ class WeatherMapper @Inject constructor(
         } else {
             convertDate(db.time, DATE_FULL_DEFAULT, TIME)
         }
-        return com.margarin.commonweather.domain.models.ByHoursWeatherModel(
+        return ByHoursWeatherModel(
             name = db.name,
             id = db.id,
             time = time,
@@ -118,7 +115,6 @@ class WeatherMapper @Inject constructor(
             wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
         )
     }
-
 
 
     fun mapForecastDataToListDayDbModel(forecastData: ForecastData): List<ByDaysWeatherDbModel> {
@@ -295,10 +291,38 @@ class WeatherMapper @Inject constructor(
         }
     }
 
+    private fun convertMonthNumberToName(number: String): String {
+        return when (number) {
+            "01" -> application.getString(R.string.january)
+            "02" -> application.getString(R.string.february)
+            "03" -> application.getString(R.string.march)
+            "04" -> application.getString(R.string.april)
+            "05" -> application.getString(R.string.may)
+            "06" -> application.getString(R.string.june)
+            "07" -> application.getString(R.string.july)
+            "08" -> application.getString(R.string.august)
+            "09" -> application.getString(R.string.september)
+            "10" -> application.getString(R.string.october)
+            "11" -> application.getString(R.string.november)
+            "12" -> application.getString(R.string.december)
+            else -> ""
+        }
+    }
+
+    private fun lastUpdated(date: String): String {
+        val day = convertDate(date, DATE_FULL_DEFAULT, DAY)
+        val month = convertMonthNumberToName(
+            convertDate(date, DATE_FULL_DEFAULT, MONTH) ?: ""
+        )
+        val time = convertDate(date, DATE_FULL_DEFAULT, TIME)
+        val string =
+            "${application.getString(R.string.updated)} $day " +
+                    "$month ${application.getString(R.string.at)} $time"
+        return string
+    }
+
     private fun convertDate(
-        serverDate: String?,
-        formatIn: String,
-        formatOut: String
+        serverDate: String?, formatIn: String, formatOut: String
     ): String? {
         val originalFormat = SimpleDateFormat(formatIn, Locale.getDefault())
         val targetFormat = SimpleDateFormat(formatOut, Locale.getDefault())
@@ -313,8 +337,7 @@ class WeatherMapper @Inject constructor(
         private const val DAY_MONTH = "dd.MM"
         private const val TIME = "HH:mm"
         private const val HOUR = "HH"
-        private const val DATE_LAST_UPD = "dd.MM HH:mm"
-
-
+        private const val DAY = "dd"
+        private const val MONTH = "MM"
     }
 }
