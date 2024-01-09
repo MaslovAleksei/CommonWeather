@@ -218,7 +218,7 @@ class WeatherFragment : Fragment() {
 
     private fun initViewModel() {
         val value = loadFromDataStore(requireContext(), LOCATION, getString(R.string.moscow))
-        viewModel.send(LoadWeatherEvent(value, getString(R.string.lang)))
+        viewModel.send(RefreshWeatherEvent(value))
         setResultFromChildFragment()
     }
 
@@ -226,7 +226,7 @@ class WeatherFragment : Fragment() {
         setFragmentResultListener(REQUEST_KEY) { _, bundle ->
             val result = bundle.getString(BUNDLE_KEY)
             if (result != null) {
-                viewModel.send(LoadWeatherEvent(result, getString(R.string.lang)))
+                viewModel.send(RefreshWeatherEvent(result))
                 saveToDataStore(requireContext(), LOCATION, result)
             }
         }

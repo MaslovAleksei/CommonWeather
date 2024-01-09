@@ -1,19 +1,24 @@
 package com.margarin.commonweather
 
 import android.app.Application
-import android.content.res.Configuration
+import androidx.work.Configuration
+import com.margarin.commonweather.data.worker.RefreshWeatherWorkerFactory
 import com.margarin.commonweather.di.DaggerAppComponent
 import com.margarin.commonweather.di.SearchComponent
 import com.margarin.commonweather.di.SearchComponentProvider
 import com.margarin.commonweather.di.WeatherComponent
 import com.margarin.commonweather.di.WeatherComponentProvider
 import com.yandex.mapkit.MapKitFactory
+import javax.inject.Inject
 
-class WeatherApp: Application(), SearchComponentProvider, WeatherComponentProvider, Configuration.Provider {
+class WeatherApp: Application(), SearchComponentProvider, WeatherComponentProvider, Configuration.Provider  {
 
     val appComponent by lazy {
         DaggerAppComponent.factory().create(this)
     }
+
+    @Inject
+    lateinit var workerFactory: RefreshWeatherWorkerFactory
 
     override fun onCreate() {
         appComponent.inject(this)
@@ -29,4 +34,9 @@ class WeatherApp: Application(), SearchComponentProvider, WeatherComponentProvid
     override fun getWeatherComponent(): WeatherComponent {
         return appComponent
     }
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 }

@@ -5,14 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
-import com.margarin.commonweather.domain.usecases.LoadDataUseCase
+import com.margarin.commonweather.domain.usecases.RefreshDataUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(
-    private val loadDataUseCase: LoadDataUseCase,
+    private val refreshDataUseCase: RefreshDataUseCase,
     private val getWeatherUseCase: GetWeatherUseCase
 ) : ViewModel() {
 
@@ -22,18 +22,18 @@ class WeatherViewModel @Inject constructor(
 
     fun send(event: WeatherEvent) {
         when (event) {
-            is LoadWeatherEvent -> {
-                loadWeatherData(name = event.name, lang = event.lang)
+            is RefreshWeatherEvent -> {
+                refreshWeatherData(name = event.name)
             }
         }
     }
 
-    private fun loadWeatherData(name: String, lang: String) {
+    private fun refreshWeatherData(name: String) {
         viewModelScope.launch(Dispatchers.Main) {
             _state.value = Loading
 
             viewModelScope.launch(Dispatchers.IO) {
-                loadDataUseCase(name, lang)
+                refreshDataUseCase(name)
             }.join()
             val weather = getWeatherUseCase(name)
             if (weather == null ||

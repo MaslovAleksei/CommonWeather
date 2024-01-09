@@ -11,7 +11,7 @@ interface ApiService {
     suspend fun getForecastWeather(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_CITY) city: String = "",
-        @Query(QUERY_PARAM_QUANTITY_OF_DAYS) days: Int = 5,
+        @Query(QUERY_PARAM_QUANTITY_OF_DAYS) days: Int = 3,
         @Query(QUERY_PARAM_AQI) aqi: String = "no",
         @Query(QUERY_PARAM_ALERTS) alerts: String = "no",
         @Query(QUERY_PARAM_LANG) lang: String = "en"
