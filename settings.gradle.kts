@@ -16,7 +16,8 @@ dependencyResolutionManagement {
 rootProject.name = "CommonWeather"
 include(":app")
 include(":network")
-include(":core")
 include(":database")
 include(":feature:search")
 include(":feature:weather")
+include(":core:theme")
+include(":core:core")

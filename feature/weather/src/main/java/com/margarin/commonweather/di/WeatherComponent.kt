@@ -1,7 +1,7 @@
 package com.margarin.commonweather.di
 
 import com.margarin.commonweather.Feature
-import com.margarin.commonweather.ui.WeatherFragment
+import com.margarin.commonweather.presentation.WeatherFragment
 
 @Feature
 interface WeatherComponent {

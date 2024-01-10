@@ -2,7 +2,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="data_has_been_deleted" tools:ignore="MissingTranslation">Data has been deleted</string>
     <string name="close_map" tools:ignore="MissingTranslation">Close map</string>
-    <string name="open_map" tools:ignore="MissingTranslation">Open map</string>
+    <string name="open_map" tools:ignore="MissingTranslation">Map</string>
     <string name="settlement_not_found" tools:ignore="MissingTranslation">Settlement not found</string>
     <string name="cancel" tools:ignore="MissingTranslation">Cancel</string>
     <string name="popular_cities" tools:ignore="MissingTranslation">Popular cities</string>
@@ -34,9 +34,9 @@
     <string name="samara" tools:ignore="MissingTranslation">Samara</string>
     <string name="tyumen" tools:ignore="MissingTranslation">Tyumen</string>
     <string name="manage_cities" tools:ignore="MissingTranslation">Manage cities</string>
-    <string name="enter_location" tools:ignore="MissingTranslation">Enter location</string>
+    <string name="search" tools:ignore="MissingTranslation">Search</string>
     <string name="locate" tools:ignore="MissingTranslation">Locate</string>
-    <string name="save_point" tools:ignore="MissingTranslation">Save point</string>
+    <string name="ok" tools:ignore="MissingTranslation" translatable="false">OK</string>
     <string name="undo" tools:ignore="MissingTranslation">Undo</string>
     <string name="loading">loading…</string>
     <string name="list_is_empty">No cities added</string>

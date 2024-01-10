@@ -35,7 +35,7 @@ android {
 
 dependencies {
 
-    implementation(project (":core"))
+    implementation(project (":core:core"))
 
     ksp ("androidx.room:room-compiler:2.6.1")
     implementation ("androidx.room:room-ktx:2.6.1")

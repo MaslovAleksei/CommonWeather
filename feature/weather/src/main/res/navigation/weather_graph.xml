@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/weatherFragment"
-        android:name="com.margarin.commonweather.ui.WeatherFragment"
+        android:name="com.margarin.commonweather.presentation.WeatherFragment"
         android:label="WeatherFragment"
         app:route="weatherFragment">
     </fragment>

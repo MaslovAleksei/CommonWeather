@@ -2,7 +2,7 @@
 <resources>
     <string name="data_has_been_deleted">Данные удалены</string>
     <string name="close_map">Закрыть карту</string>
-    <string name="open_map">Открыть карту</string>
+    <string name="open_map">Карта</string>
     <string name="settlement_not_found">Населенный пункт не обнаружен</string>
     <string name="cancel">Отменить</string>
     <string name="popular_cities">Популярные города</string>
@@ -34,13 +34,12 @@
     <string name="samara">Самара</string>
     <string name="tyumen">Тюмень</string>
     <string name="manage_cities">Управление городами</string>
-    <string name="enter_location">Введите местоположение</string>
     <string name="locate">Определить</string>
-    <string name="save_point">Сохранить место</string>
     <string name="undo">Отменить</string>
     <string name="loading">Загрузка…</string>
     <string name="list_is_empty">Нет добавленных городов</string>
     <string name="navigation_permissions_not_allowed">Разрешения для местоположения не предоставлены</string>
     <string name="switch_on_gps">Включите GPS</string>
     <string name="locating">Определяется</string>
+    <string name="search">Поиск</string>
 </resources>
