@@ -46,7 +46,8 @@ dependencies {
     implementation(project (":feature:weather"))
     implementation(project (":network"))
     implementation(project (":database"))
-    implementation(project (":core"))
+    implementation(project (":core:core"))
+    implementation(project (":core:theme"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
