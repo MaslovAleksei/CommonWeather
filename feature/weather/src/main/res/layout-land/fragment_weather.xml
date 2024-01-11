@@ -34,6 +34,7 @@
                 layout="@layout/main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -71,7 +72,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp">
 
 
                     <include
@@ -79,8 +83,6 @@
                         layout="@layout/card_days"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -90,9 +92,7 @@
                         layout="@layout/card_hours"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/cardViewForecastByDays" />
@@ -102,8 +102,7 @@
                         layout="@layout/card_wind"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="4dp"
                         app:layout_constraintBottom_toBottomOf="@id/card_view_details"
                         app:layout_constraintEnd_toEndOf="@id/guideline"
                         app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +115,7 @@
                         android:layout_height="220dp"
                         android:layout_marginStart="4dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@id/guideline"
                         app:layout_constraintTop_toBottomOf="@id/cardViewForecastByHours" />
