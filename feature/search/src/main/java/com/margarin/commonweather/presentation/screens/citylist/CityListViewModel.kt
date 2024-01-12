@@ -9,6 +9,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.PermissionManager
+import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
@@ -121,11 +122,12 @@ class CityListViewModel @Inject constructor(
 
     private fun requestSearchLocation(query: String) {
         viewModelScope.launch {
-            val requestedLocation = requestSearchLocationUseCase(query)
-            if (requestedLocation?.isNotEmpty() == true) {
-                addSearchItemUseCase(requestedLocation.first())
-            } else {
-                makeToast(application, application.getString(R.string.settlement_not_found))
+            requestSearchLocationUseCase(query).apply {
+                if (this?.isNotEmpty() == true) {
+                    addSearchItemUseCase(this.first())
+                } else {
+                    makeToast(application, application.getString(R.string.settlement_not_found))
+                }
             }
         }
     }
