@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import com.margarin.commonweather.data.workers.CurrentWeatherNotificationWorker
 import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import javax.inject.Inject
 import javax.inject.Provider
 
-class RefreshWeatherWorkerFactory @Inject constructor(
-    private val workerProviders: @JvmSuppressWildcards Map<Class<out ListenableWorker>, Provider<ChildWorkerFactory>>
+class WeatherWorkerFactory @Inject constructor(
+    private val workerProviders: @JvmSuppressWildcards Map<Class<out ListenableWorker>,
+            Provider<ChildWorkerFactory>>
 ) : WorkerFactory() {
 
     override fun createWorker(
@@ -22,6 +24,13 @@ class RefreshWeatherWorkerFactory @Inject constructor(
                 val childWorkerFactory = workerProviders[RefreshWeatherWorker::class.java]?.get()
                 return childWorkerFactory?.create(appContext, workerParameters)
             }
+
+            CurrentWeatherNotificationWorker::class.qualifiedName -> {
+                val childWorkerFactory =
+                    workerProviders[CurrentWeatherNotificationWorker::class.java]?.get()
+                return childWorkerFactory?.create(appContext, workerParameters)
+            }
+
             else -> null
         }
     }

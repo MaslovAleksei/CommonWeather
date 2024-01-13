@@ -9,17 +9,25 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.WorkManager
 import com.margarin.commonweather.ApiService
+import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.dao.WeatherDao
 import com.margarin.commonweather.data.broadcastreceivers.TodayWeatherBroadcastReceiver
+import com.margarin.commonweather.data.workers.CurrentWeatherNotificationWorker
 import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.WeatherModel
+import com.margarin.commonweather.loadFromDataStore
+import com.margarin.commonweather.log
 import com.margarin.weather.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 class WeatherRepositoryImpl @Inject constructor(
     private val apiService: ApiService,
@@ -31,7 +39,14 @@ class WeatherRepositoryImpl @Inject constructor(
     override suspend fun refreshData(query: String) {
         loadData(query)
         initRefreshWeatherWorker()
-        initTodayNotification()
+        //initTodayNotification()
+
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniqueWork(
+            CurrentWeatherNotificationWorker.NAME,
+            ExistingWorkPolicy.REPLACE,
+            CurrentWeatherNotificationWorker.makeRequest()
+        )
     }
 
     override suspend fun getWeather(name: String) = WeatherModel(
@@ -71,39 +86,39 @@ class WeatherRepositoryImpl @Inject constructor(
 
     private fun initTodayNotification() {
         val alarmManager = application.getSystemService(ALARM_SERVICE) as AlarmManager
-        val calendar = Calendar.getInstance()//.apply {
-            calendar.add(Calendar.SECOND, 2)
-        val alarmIntent = TodayWeatherBroadcastReceiver.newIntent(application)
-        val pendingIntent = PendingIntent.getBroadcast(application, 100, alarmIntent,
-            PendingIntent.FLAG_IMMUTABLE)
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.SECOND, 2)
+        val alarmIntent = TodayWeatherBroadcastReceiver.newIntent(application).let { intent ->
+            PendingIntent.getBroadcast(
+                application,
+                100,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE
+            )
+        }
         alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            pendingIntent
+            alarmIntent
         )
-
-
 
         //            timeInMillis = System.currentTimeMillis()
 //            set(Calendar.HOUR_OF_DAY, 7)
 //            set(Calendar.MINUTE, 20)
         //       }
-//        val alarmIntent = TodayWeatherBroadcastReceiver.newIntent(application).apply {
-//            putExtra("notificationTitle", "notificationTitle")
-//            putExtra("notificationText", "notificationText")
-//        }.let { intent ->
-//            PendingIntent.getBroadcast(
-//                application,
-//                100,
-//                intent,
-//                PendingIntent.FLAG_IMMUTABLE
-//            )
-//        }
+//
 //        alarmManager.setInexactRepeating(
 //            AlarmManager.RTC_WAKEUP,
 //            calendar.timeInMillis,
 //            AlarmManager.INTERVAL_DAY,
 //            alarmIntent
 //        )
+    }
+
+    private fun createCurrentNotification(location: String) {
+
+
+
+
     }
 }

@@ -35,7 +35,6 @@ class RefreshWeatherWorker(
             context: Context,
             workerParameters: WorkerParameters
         ): ListenableWorker {
-
             return RefreshWeatherWorker(
                 context,
                 workerParameters,
@@ -51,7 +50,7 @@ class RefreshWeatherWorker(
             return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(1, TimeUnit.HOURS)
                 .setInitialDelay(1, TimeUnit.HOURS)
                 .setConstraints(makeConstraints())
-                .addTag("RefreshWeatherWorker")
+                .addTag(NAME)
                 .build()
         }
 

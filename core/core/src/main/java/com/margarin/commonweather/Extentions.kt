@@ -1,6 +1,7 @@
 package com.margarin.commonweather
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -30,5 +31,9 @@ fun isGpsEnabled(context: Context): Boolean {
     val locationManager =
         context.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager
     return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+}
+
+fun log(string: String) {
+    Log.d("tag", string)
 }
 
