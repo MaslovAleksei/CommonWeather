@@ -1,9 +1,12 @@
 package com.margarin.commonweather.data.workers
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.Constraints
@@ -23,31 +26,18 @@ import javax.inject.Inject
 class CurrentWeatherNotificationWorker(
     private val context: Context,
     workerParameters: WorkerParameters,
-    private val weatherRepositoryImpl: WeatherRepositoryImpl,
+    private val weatherRepositoryImpl: WeatherRepositoryImpl
 ) : CoroutineWorker(context, workerParameters) {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     override suspend fun doWork(): Result {
-        val location = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
-        val weatherModel = weatherRepositoryImpl.getWeather(location)
         val notificationManager = ContextCompat.getSystemService(
             context,
             NotificationManager::class.java
         ) as NotificationManager
-
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setContentTitle("$location: ${weatherModel.currentWeatherModel?.temp_c}°")
-            .setContentText(
-                "${context.getString(R.string.feels_like)} " +
-                        "${weatherModel.currentWeatherModel?.feels_like}. " +
-                        " ${weatherModel.currentWeatherModel?.condition}."
-            )
-            .setSmallIcon(weatherModel.currentWeatherModel?.icon_url ?: R.drawable.clear_day)
-            .build()
-
+        val notification = createNotification()
         createNotificationChannel(notificationManager)
         notificationManager.notify(NOTIFICATION_ID, notification)
-
         return Result.success()
     }
 
@@ -58,6 +48,38 @@ class CurrentWeatherNotificationWorker(
             NotificationManager.IMPORTANCE_DEFAULT
         )
         notificationManager.createNotificationChannel(notificationChannel)
+    }
+
+    private fun createPendingIntent(): PendingIntent {
+        val notifyIntent = Intent(
+            context,
+            Class.forName("com.margarin.commonweather.MainActivity")
+        ).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        return PendingIntent.getActivity(
+            context, 0, notifyIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+
+    private suspend fun createNotification(): Notification {
+        val location = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
+        val weatherModel = weatherRepositoryImpl.getWeather(location)
+
+        return NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentIntent(createPendingIntent())
+            .setOnlyAlertOnce(true)
+            .setAutoCancel(true)
+            .setContentTitle("$location: ${weatherModel.currentWeatherModel?.temp_c}°")
+            .setContentText(
+                "${context.getString(R.string.feels_like)} " +
+                        "${weatherModel.currentWeatherModel?.feels_like}. " +
+                        " ${weatherModel.currentWeatherModel?.condition}."
+            )
+            .setSmallIcon(weatherModel.currentWeatherModel?.icon_url ?: R.drawable.clear_day)
+            .build()
     }
 
     class Factory @Inject constructor(
@@ -77,7 +99,6 @@ class CurrentWeatherNotificationWorker(
 
     companion object {
         const val NAME = "CurrentWeatherNotificationWorker"
-
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_NAME = "channel_name"
         private const val NOTIFICATION_ID = 3
