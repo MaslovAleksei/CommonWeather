@@ -39,5 +39,6 @@
     <string name="november">ноября</string>
     <string name="december">декабря</string>
     <string name="at">в</string>
+    <string name="feels_like">"Ощущается как: "</string>
 
 </resources>

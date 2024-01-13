@@ -32,7 +32,7 @@
             android:name="androidx.startup.InitializationProvider"
             tools:replace="android:authorities"
             tools:node="remove"/>
-        <receiver android:name=".data.broadcastreceivers.TodayWeatherBroadcastReceiver"/>
+        <receiver android:name=".data.broadcastreceivers.CurrentWeatherNotificationReceiver"/>
     </application>
 
 </manifest>

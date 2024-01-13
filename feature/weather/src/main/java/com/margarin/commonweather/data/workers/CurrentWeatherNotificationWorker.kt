@@ -1,9 +1,9 @@
 package com.margarin.commonweather.data.workers
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.Constraints
@@ -12,53 +12,44 @@ import androidx.work.ListenableWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequest
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.data.WeatherRepositoryImpl
 import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
 import com.margarin.commonweather.loadFromDataStore
-import com.margarin.commonweather.log
 import com.margarin.weather.R
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class CurrentWeatherNotificationWorker(
     private val context: Context,
     workerParameters: WorkerParameters,
-    private val weatherRepositoryImpl: WeatherRepositoryImpl
+    private val weatherRepositoryImpl: WeatherRepositoryImpl,
 ) : CoroutineWorker(context, workerParameters) {
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override suspend fun doWork(): Result {
-        log("doWork")
         val location = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
-
+        val weatherModel = weatherRepositoryImpl.getWeather(location)
         val notificationManager = ContextCompat.getSystemService(
             context,
             NotificationManager::class.java
         ) as NotificationManager
-        createNotificationChannel(notificationManager)
-        val notification = NotificationCompat.Builder(
-            context,
-            CHANNEL_ID
-        )
-            .setContentTitle(createNotificationTitle(location))
-            .setContentText("notificationText")
-            .setSmallIcon(R.drawable.clear_day)
+
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setContentTitle("$location: ${weatherModel.currentWeatherModel?.temp_c}°")
+            .setContentText(
+                "${context.getString(R.string.feels_like)} " +
+                        "${weatherModel.currentWeatherModel?.feels_like}. " +
+                        " ${weatherModel.currentWeatherModel?.condition}."
+            )
+            .setSmallIcon(weatherModel.currentWeatherModel?.icon_url ?: R.drawable.clear_day)
             .build()
+
+        createNotificationChannel(notificationManager)
         notificationManager.notify(NOTIFICATION_ID, notification)
 
         return Result.success()
-
     }
-
-    private suspend fun createNotificationTitle(location: String): String {
-        log("createNotificationTitle")
-        val weatherModel = weatherRepositoryImpl.getWeather(location)
-        return "$location: ${weatherModel.currentWeatherModel?.temp_c}°"
-    }
-
 
     private fun createNotificationChannel(notificationManager: NotificationManager) {
         val notificationChannel = NotificationChannel(
@@ -84,7 +75,6 @@ class CurrentWeatherNotificationWorker(
         }
     }
 
-
     companion object {
         const val NAME = "CurrentWeatherNotificationWorker"
 
@@ -101,8 +91,5 @@ class CurrentWeatherNotificationWorker(
         private fun makeConstraints(): Constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-
-
-
     }
 }

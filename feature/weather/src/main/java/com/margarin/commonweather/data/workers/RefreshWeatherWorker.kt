@@ -3,6 +3,7 @@ package com.margarin.commonweather.data.workers
 import android.content.Context
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
@@ -11,20 +12,18 @@ import androidx.work.WorkerParameters
 import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.data.WeatherRepositoryImpl
 import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
-import com.margarin.commonweather.loadFromDataStore
-import com.margarin.weather.R
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class RefreshWeatherWorker(
-    private val context: Context,
+    context: Context,
     workerParameters: WorkerParameters,
     private val weatherRepositoryImpl: WeatherRepositoryImpl
 ) : CoroutineWorker(context, workerParameters) {
 
     override suspend fun doWork(): Result {
-        val value = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
-        weatherRepositoryImpl.loadData(value)
+        val location = inputData.getString(LOCATION)
+        weatherRepositoryImpl.loadData(location.toString())
         return Result.success()
     }
 
@@ -46,9 +45,14 @@ class RefreshWeatherWorker(
     companion object {
         const val NAME = "RefreshWeatherWorker"
 
-        fun makeRequest(): PeriodicWorkRequest {
+        fun makeRequest(location: String): PeriodicWorkRequest {
+            val data = Data.Builder()
+                .putString(LOCATION, location)
+                .build()
+
             return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(1, TimeUnit.HOURS)
                 .setInitialDelay(1, TimeUnit.HOURS)
+                .setInputData(data)
                 .setConstraints(makeConstraints())
                 .addTag(NAME)
                 .build()

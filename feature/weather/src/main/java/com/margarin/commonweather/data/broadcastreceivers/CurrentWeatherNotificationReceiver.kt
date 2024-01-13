@@ -3,25 +3,26 @@ package com.margarin.commonweather.data.broadcastreceivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.margarin.commonweather.data.workers.CurrentWeatherNotificationWorker
-import com.margarin.commonweather.log
 
-class TodayWeatherBroadcastReceiver: BroadcastReceiver() {
+class CurrentWeatherNotificationReceiver: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         context?.let {
-
-
+            val workManager = WorkManager.getInstance(context)
+            workManager.enqueueUniqueWork(
+                CurrentWeatherNotificationWorker.NAME,
+                ExistingWorkPolicy.REPLACE,
+                CurrentWeatherNotificationWorker.makeRequest()
+            )
         }
     }
 
     companion object {
-
         fun newIntent(context: Context): Intent {
-            return Intent(context, TodayWeatherBroadcastReceiver::class.java)
+            return Intent(context, CurrentWeatherNotificationReceiver::class.java)
         }
     }
 }
