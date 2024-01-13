@@ -1,19 +1,23 @@
 package com.margarin.commonweather.data
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ListenableWorker
 import androidx.work.WorkManager
-import com.margarin.commonweather.ApiService
+import com.margarin.commonweather.ApiFactory.apiService
 import com.margarin.commonweather.dao.WeatherDao
+import com.margarin.commonweather.data.broadcastreceivers.CurrentWeatherNotificationReceiver
 import com.margarin.commonweather.data.workers.RefreshWeatherWorker
 import com.margarin.commonweather.domain.WeatherRepository
 import com.margarin.commonweather.domain.models.WeatherModel
 import com.margarin.weather.R
+import java.util.Calendar
 import javax.inject.Inject
 
 class WeatherRepositoryImpl @Inject constructor(
-    private val apiService: ApiService,
     private val weatherMapper: WeatherMapper,
     private val weatherDao: WeatherDao,
     private val application: Application
@@ -21,12 +25,8 @@ class WeatherRepositoryImpl @Inject constructor(
 
     override suspend fun refreshData(query: String) {
         loadData(query)
-        val workManager = WorkManager.getInstance(application)
-        workManager.enqueueUniquePeriodicWork(
-            RefreshWeatherWorker.NAME,
-            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-            RefreshWeatherWorker.makeRequest()
-        )
+        initRefreshWeatherWorker(query)
+        initCurrentNotificationManager()
     }
 
     override suspend fun getWeather(name: String) = WeatherModel(
@@ -53,5 +53,37 @@ class WeatherRepositoryImpl @Inject constructor(
         } catch (_: Exception) {
             ListenableWorker.Result.failure()
         }
+    }
+
+    private fun initRefreshWeatherWorker(location: String) {
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniquePeriodicWork(
+            RefreshWeatherWorker.NAME,
+            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
+            RefreshWeatherWorker.makeRequest(location)
+        )
+    }
+
+    private fun initCurrentNotificationManager() {
+        val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 7)
+            set(Calendar.MINUTE, 20)
+        }
+        val alarmIntent = CurrentWeatherNotificationReceiver.newIntent(application)
+        val pendingIntent = PendingIntent.getBroadcast(
+            application,
+            100,
+            alarmIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            1000 * 60 * 60 * 6,
+            pendingIntent
+        )
     }
 }

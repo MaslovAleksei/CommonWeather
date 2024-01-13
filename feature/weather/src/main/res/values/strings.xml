@@ -42,6 +42,7 @@
     <string name="november">november</string>
     <string name="december">december</string>
     <string name="at">at</string>
+    <string name="feels_like">"Feels like: "</string>
 
 
 </resources>
