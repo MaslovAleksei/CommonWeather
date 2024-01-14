@@ -82,7 +82,7 @@ class WeatherRepositoryImpl @Inject constructor(
         alarmManager.setInexactRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-            1000 * 60 * 60 * 6,
+            AlarmManager.INTERVAL_HALF_DAY,
             pendingIntent
         )
     }

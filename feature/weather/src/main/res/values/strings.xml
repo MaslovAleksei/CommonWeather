@@ -43,6 +43,7 @@
     <string name="december">december</string>
     <string name="at">at</string>
     <string name="feels_like">"Feels like: "</string>
+    <string name="app_widget_description">Current weather</string>
 
 
 </resources>

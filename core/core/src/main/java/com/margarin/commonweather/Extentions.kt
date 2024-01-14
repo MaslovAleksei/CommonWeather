@@ -17,10 +17,10 @@ suspend fun saveToDataStore(context: Context, stringPreferencesKey: String, valu
 suspend fun loadFromDataStore(
     context: Context,
     stringPreferencesKey: String,
-    defaultCity: String
+    defaultValue: String
 ): String {
     val preferences = (context.dataStore.data.first())
-    return preferences[stringPreferencesKey(stringPreferencesKey)] ?: defaultCity
+    return preferences[stringPreferencesKey(stringPreferencesKey)] ?: defaultValue
 }
 
 fun makeToast(context: Context, text: String) {

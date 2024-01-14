@@ -1,6 +1,5 @@
 package com.margarin.commonweather.data.workers
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -16,6 +15,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
+import com.margarin.commonweather.ACTIVITY_REFERENCE
 import com.margarin.commonweather.LOCATION
 import com.margarin.commonweather.data.WeatherRepositoryImpl
 import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
@@ -29,15 +29,13 @@ class CurrentWeatherNotificationWorker(
     private val weatherRepositoryImpl: WeatherRepositoryImpl
 ) : CoroutineWorker(context, workerParameters) {
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override suspend fun doWork(): Result {
         val notificationManager = ContextCompat.getSystemService(
             context,
             NotificationManager::class.java
         ) as NotificationManager
-        val notification = createNotification()
         createNotificationChannel(notificationManager)
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(NOTIFICATION_ID, createNotification())
         return Result.success()
     }
 
@@ -51,10 +49,7 @@ class CurrentWeatherNotificationWorker(
     }
 
     private fun createPendingIntent(): PendingIntent {
-        val notifyIntent = Intent(
-            context,
-            Class.forName("com.margarin.commonweather.MainActivity")
-        ).apply {
+        val notifyIntent = Intent(context, Class.forName(ACTIVITY_REFERENCE)).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         return PendingIntent.getActivity(
@@ -62,7 +57,6 @@ class CurrentWeatherNotificationWorker(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
-
 
     private suspend fun createNotification(): Notification {
         val location = loadFromDataStore(context, LOCATION, context.getString(R.string.moscow))
@@ -99,8 +93,8 @@ class CurrentWeatherNotificationWorker(
 
     companion object {
         const val NAME = "CurrentWeatherNotificationWorker"
-        private const val CHANNEL_ID = "channel_id"
-        private const val CHANNEL_NAME = "channel_name"
+        private const val CHANNEL_ID = "1"
+        private const val CHANNEL_NAME = "Current weather notifications"
         private const val NOTIFICATION_ID = 3
 
         fun makeRequest(): OneTimeWorkRequest {
