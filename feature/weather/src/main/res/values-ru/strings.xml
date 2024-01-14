@@ -40,5 +40,6 @@
     <string name="december">декабря</string>
     <string name="at">в</string>
     <string name="feels_like">"Ощущается как: "</string>
+    <string name="app_widget_description">Погода в данный момент</string>
 
 </resources>

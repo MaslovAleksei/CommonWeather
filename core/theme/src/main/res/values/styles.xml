@@ -9,4 +9,14 @@
         <item name="android:minWidth">80dp</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="Widget.CommonWeather.AppWidget.Container" parent="android:Widget">
+        <item name="android:id">@android:id/background</item>
+        <item name="android:background">@color/blue_600</item>
+   </style>
+
+   <style name="Widget.CommonWeather.AppWidget.InnerView" parent="android:Widget">
+        <!-- <item name="android:background">?android:attr/colorBackground</item> -->
+       <item name="android:textColor">@color/white</item>
+   </style>
 </resources>

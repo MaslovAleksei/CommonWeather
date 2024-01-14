@@ -13,3 +13,9 @@ const val HH = "HH"
 const val DD = "dd"
 const val MM = "MM"
 
+const val TEMP = "TEMP"
+const val CONDITION = "CONDITION"
+const val ICON = "ICON"
+
+const val ACTIVITY_REFERENCE = "com.margarin.commonweather.MainActivity"
+

@@ -9,14 +9,18 @@ import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
+import com.margarin.commonweather.CONDITION
+import com.margarin.commonweather.ICON
 import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.TEMP
 import com.margarin.commonweather.data.WeatherRepositoryImpl
 import com.margarin.commonweather.data.workers.factory.ChildWorkerFactory
+import com.margarin.commonweather.saveToDataStore
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class RefreshWeatherWorker(
-    context: Context,
+    private val context: Context,
     workerParameters: WorkerParameters,
     private val weatherRepositoryImpl: WeatherRepositoryImpl
 ) : CoroutineWorker(context, workerParameters) {
@@ -24,7 +28,15 @@ class RefreshWeatherWorker(
     override suspend fun doWork(): Result {
         val location = inputData.getString(LOCATION)
         weatherRepositoryImpl.loadData(location.toString())
+        saveDataForWidget(location)
         return Result.success()
+    }
+
+    private suspend fun saveDataForWidget(location: String?) {
+        val weatherModel = weatherRepositoryImpl.getWeather(location.toString())
+        saveToDataStore(context, CONDITION, weatherModel.currentWeatherModel?.condition.toString())
+        saveToDataStore(context, TEMP, weatherModel.currentWeatherModel?.temp_c.toString())
+        saveToDataStore(context, ICON, weatherModel.currentWeatherModel?.icon_url.toString())
     }
 
     class Factory @Inject constructor(
@@ -51,7 +63,7 @@ class RefreshWeatherWorker(
                 .build()
 
             return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(1, TimeUnit.HOURS)
-                .setInitialDelay(1, TimeUnit.HOURS)
+                //.setInitialDelay(1, TimeUnit.HOURS)
                 .setInputData(data)
                 .setConstraints(makeConstraints())
                 .addTag(NAME)

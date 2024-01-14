@@ -14,7 +14,7 @@ class YandexMapManager (private val context: Context){
         map.move(
             CameraPosition(
                 Point(lat.toDouble(), lon.toDouble()),
-                6.0f,
+                15.0f,
                 0.0f,
                 0.0f
             ),
