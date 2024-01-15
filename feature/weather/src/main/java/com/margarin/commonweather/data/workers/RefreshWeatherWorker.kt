@@ -62,8 +62,8 @@ class RefreshWeatherWorker(
                 .putString(LOCATION, location)
                 .build()
 
-            return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(1, TimeUnit.HOURS)
-                //.setInitialDelay(1, TimeUnit.HOURS)
+            return PeriodicWorkRequestBuilder<RefreshWeatherWorker>(30, TimeUnit.MINUTES)
+                .setInitialDelay(30, TimeUnit.MINUTES)
                 .setInputData(data)
                 .setConstraints(makeConstraints())
                 .addTag(NAME)

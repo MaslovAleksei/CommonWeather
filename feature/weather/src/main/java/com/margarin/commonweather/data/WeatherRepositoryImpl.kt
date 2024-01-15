@@ -23,10 +23,11 @@ class WeatherRepositoryImpl @Inject constructor(
     private val application: Application
 ) : WeatherRepository {
 
-    override suspend fun refreshData(query: String) {
+    override suspend fun refreshData(query: String): Boolean {
         loadData(query)
         initRefreshWeatherWorker(query)
         initCurrentNotificationManager()
+        return true
     }
 
     override suspend fun getWeather(name: String) = WeatherModel(

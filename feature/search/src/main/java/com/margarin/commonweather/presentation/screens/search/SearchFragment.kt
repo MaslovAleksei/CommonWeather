@@ -106,7 +106,6 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText?.isNotBlank() == true) {
                     viewModel.send(SearchEvent.OnQueryTextLocation(newText))

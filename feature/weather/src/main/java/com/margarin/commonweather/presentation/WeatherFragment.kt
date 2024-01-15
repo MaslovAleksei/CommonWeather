@@ -22,8 +22,9 @@ import com.margarin.commonweather.REQUEST_KEY
 import com.margarin.commonweather.ViewModelFactory
 import com.margarin.commonweather.di.WeatherComponentProvider
 import com.margarin.commonweather.loadFromDataStore
-import com.margarin.commonweather.saveToDataStore
 import com.margarin.commonweather.presentation.adapter.WeatherAdapter
+
+import com.margarin.commonweather.saveToDataStore
 import com.margarin.weather.R
 import com.margarin.weather.databinding.FragmentWeatherBinding
 import kotlinx.coroutines.launch
@@ -68,9 +69,8 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setResultFromChildFragment()
-        setOnClickListeners()
+        setListeners()
         observeViewModel()
-        setOnRefreshListener()
         configureRecyclerView()
     }
 
@@ -121,7 +121,7 @@ class WeatherFragment : Fragment() {
                             }
 
                             is WeatherState.WeatherInfo -> {
-                                adapter.submitList(it.weather.byHoursWeatherModel)
+                               // adapter.submitList(it.weather.byHoursWeatherModel)
 
                                 tvLoadingError.visibility = View.GONE
                                 scrollView.visibility = View.VISIBLE
@@ -209,7 +209,7 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    private fun setOnClickListeners() {
+    private fun setListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
             findNavController().navigate(Uri.parse(URI_CITY_LIST_FRAGMENT))
         }
@@ -221,13 +221,8 @@ class WeatherFragment : Fragment() {
                 Intent(Intent.ACTION_VIEW, Uri.parse(WEATHER_API))
             )
         }
-    }
-
-    private fun setOnRefreshListener() {
         binding.swipeRefresh.setOnRefreshListener {
-            lifecycleScope.launch {
-                initViewModel()
-            }
+            initViewModel()
         }
     }
 
@@ -239,14 +234,12 @@ class WeatherFragment : Fragment() {
     }
 
     private fun setResultFromChildFragment() {
-        lifecycleScope.launch {
-            setFragmentResultListener(REQUEST_KEY) { _, bundle ->
-                val result = bundle.getString(BUNDLE_KEY)
-                if (result != null) {
-                    lifecycleScope.launch {
-                        viewModel.send(WeatherEvent.RefreshWeatherEvent(result))
-                        saveToDataStore(requireContext(), LOCATION, result)
-                    }
+        setFragmentResultListener(REQUEST_KEY) { _, bundle ->
+            val result = bundle.getString(BUNDLE_KEY)
+            if (result != null) {
+                lifecycleScope.launch {
+                    viewModel.send(WeatherEvent.RefreshWeatherEvent(result))
+                    saveToDataStore(requireContext(), LOCATION, result)
                 }
             }
         }
