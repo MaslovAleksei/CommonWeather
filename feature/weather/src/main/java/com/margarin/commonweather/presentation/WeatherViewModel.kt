@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
 import com.margarin.commonweather.domain.usecases.RefreshDataUseCase
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,23 +23,22 @@ class WeatherViewModel @Inject constructor(
     fun send(event: WeatherEvent) {
         when (event) {
             is WeatherEvent.RefreshWeatherEvent -> {
-                viewModelScope.launch(Dispatchers.Main) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        refreshDataUseCase(event.name)
-                    }.join()
-                    val weather = getWeatherUseCase(event.name)
-                    if (weather == null ||
-                        weather.currentWeatherModel?.name?.isEmpty() == true ||
-                        weather.byDaysWeatherModel?.size!! == 0
-                    ) {
-                        _state.value = WeatherState.Error
-                        return@launch
-                    }
-                    _state.value = WeatherState.WeatherInfo(weather)
-                    delay(200)
-                    _state.value = WeatherState.Success
-                    delay(1000)
-                    _state.value = WeatherState.WeatherInfo(weather)
+                viewModelScope.launch {
+                    refreshDataUseCase(event.name)
+                    getWeatherUseCase(event.name)
+                        .onEach { _state.value = WeatherState.Error }
+                        .filter { it.currentWeatherModel?.name?.isNotEmpty() == true }
+                        .filter { it.byDaysWeatherModel?.size!! == 3 }
+                        .onEach {
+                            _state.value = WeatherState.Loading
+                        }
+                        .collect {
+                            _state.value = WeatherState.WeatherInfo(it)
+                            delay(200)
+                            _state.value = WeatherState.Success
+                            delay(1000)
+                            _state.value = WeatherState.WeatherInfo(it)
+                        }
                 }
             }
         }
