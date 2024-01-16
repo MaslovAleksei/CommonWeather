@@ -69,7 +69,7 @@ class WeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setResultFromChildFragment()
-        setListeners()
+        setOnListeners()
         observeViewModel()
         configureRecyclerView()
     }
@@ -121,7 +121,7 @@ class WeatherFragment : Fragment() {
                             }
 
                             is WeatherState.WeatherInfo -> {
-                               // adapter.submitList(it.weather.byHoursWeatherModel)
+                               adapter.submitList(it.weather.byHoursWeatherModel)
 
                                 tvLoadingError.visibility = View.GONE
                                 scrollView.visibility = View.VISIBLE
@@ -209,7 +209,7 @@ class WeatherFragment : Fragment() {
         }
     }
 
-    private fun setListeners() {
+    private fun setOnListeners() {
         binding.mainToolbar.bSearch.setOnClickListener {
             findNavController().navigate(Uri.parse(URI_CITY_LIST_FRAGMENT))
         }

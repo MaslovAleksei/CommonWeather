@@ -6,5 +6,5 @@ interface WeatherRepository {
 
     suspend fun refreshData(query: String): Boolean
 
-    suspend fun getWeather(name: String): WeatherModel?
+    suspend fun getWeather(name: String): WeatherModel
 }
