@@ -20,7 +20,7 @@ class WeatherViewModel @Inject constructor(
     private val _state = MutableStateFlow<WeatherState>(WeatherState.Loading)
     val state = _state.asStateFlow()
 
-    fun send(event: WeatherEvent) {
+    internal fun send(event: WeatherEvent) {
         when (event) {
             is WeatherEvent.RefreshWeatherEvent -> {
                 viewModelScope.launch {

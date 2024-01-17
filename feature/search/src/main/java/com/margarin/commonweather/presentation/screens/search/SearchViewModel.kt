@@ -18,7 +18,7 @@ class SearchViewModel @Inject constructor(
     private val _state = MutableStateFlow<SearchState>(SearchState.StopQueryText)
     val state = _state.asStateFlow()
 
-    fun send(event: SearchEvent) {
+    internal fun send(event: SearchEvent) {
         when (event) {
             is SearchEvent.AddSearchItem -> {
                 viewModelScope.launch(Dispatchers.IO) {

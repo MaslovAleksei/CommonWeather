@@ -9,7 +9,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.PermissionManager
-import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
 import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
@@ -38,7 +37,7 @@ class CityListViewModel @Inject constructor(
     private val _state = MutableStateFlow<CityListState>(CityListState.EmptyList)
     val state = _state.asStateFlow()
 
-    fun send(event: CityListEvent) {
+    internal fun send(event: CityListEvent) {
         when (event) {
             is CityListEvent.GetSavedCityList -> {
                 viewModelScope.launch {

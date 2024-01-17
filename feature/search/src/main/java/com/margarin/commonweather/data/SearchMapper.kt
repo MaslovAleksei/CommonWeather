@@ -1,16 +1,13 @@
 package com.margarin.commonweather.data
 
-import android.app.Application
 import com.margarin.commonweather.apimodels.search.Search
 import com.margarin.commonweather.dbmodels.SearchDbModel
 import com.margarin.commonweather.domain.SearchModel
 import javax.inject.Inject
 
-class SearchMapper @Inject constructor(
-    val application: Application
-) {
+class SearchMapper @Inject constructor() {
 
-    fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
+    internal fun mapSearchDtoToSearchModel(search: Search) = SearchModel(
         id = search.id,
         name = search.name,
         region = search.region,
@@ -20,7 +17,7 @@ class SearchMapper @Inject constructor(
         url = search.url
     )
 
-    fun mapSearchModelToSearchDbModel(searchModel: SearchModel) =
+    internal fun mapSearchModelToSearchDbModel(searchModel: SearchModel) =
         SearchDbModel(
             id = searchModel.id,
             name = searchModel.name,
@@ -31,7 +28,7 @@ class SearchMapper @Inject constructor(
             url = searchModel.url
         )
 
-    fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
+    internal fun mapSearchDbModelToSearchModel(searchDb: SearchDbModel) =
         SearchModel(
             id = searchDb.id,
             name = searchDb.name,

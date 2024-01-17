@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class WeatherConverter @Inject constructor (private val application: Application) {
 
-    fun convertConditionImage(url: String): Int? {
+    internal fun convertConditionImage(url: String): Int? {
         return when (url) {
             URL + "day/113.png" -> R.drawable.clear_day
             URL + "day/116.png" -> R.drawable.cloudy_day_1
@@ -114,7 +114,7 @@ class WeatherConverter @Inject constructor (private val application: Application
         }
     }
 
-    fun convertWindDirections(dir: String?): String? {
+    internal fun convertWindDirections(dir: String?): String? {
         return when (dir) {
             "S" -> application.getString(R.string.south)
             "N" -> application.getString(R.string.north)
@@ -136,7 +136,7 @@ class WeatherConverter @Inject constructor (private val application: Application
         }
     }
 
-    fun bindWindImage(dir: String?): Int? {
+    internal fun bindWindImage(dir: String?): Int? {
         return when (dir) {
             "S" -> R.drawable.ic_dir_south
             "N" -> R.drawable.ic_dir_north
@@ -176,7 +176,7 @@ class WeatherConverter @Inject constructor (private val application: Application
         }
     }
 
-    fun createStringLastUpdated(date: String): String {
+    internal fun createStringLastUpdated(date: String): String {
         val day = convertDate(date, YYYY_MM_DD_HH_MM, DD)
         val month = convertMonthNumberToName(
             convertDate(date, YYYY_MM_DD_HH_MM, MM) ?: ""
@@ -187,7 +187,7 @@ class WeatherConverter @Inject constructor (private val application: Application
         return string
     }
 
-    fun convertDate(
+    internal fun convertDate(
         serverDate: String?, formatIn: String, formatOut: String
     ): String? {
         val originalFormat = SimpleDateFormat(formatIn, Locale.getDefault())

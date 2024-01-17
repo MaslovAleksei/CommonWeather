@@ -36,7 +36,7 @@ class WeatherRepositoryImpl @Inject constructor(
         weatherDao.getByHoursWeather(name)?.map { weatherMapper.mapByHoursDbModelToEntity(it) }
     )
 
-    suspend fun loadData(query: String) {
+    internal suspend fun loadData(query: String) {
         val lang = application.getString(R.string.lang)
         try {
             val forecastData = apiService.getForecastWeather(city = query, lang = lang)

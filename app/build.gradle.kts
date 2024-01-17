@@ -5,6 +5,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("C:\\Users\\erect\\Documents\\upload-keystore.jks")
+            storePassword = "3Kokosaetomi"
+            keyAlias = "upload"
+            keyPassword = "3Kokosaetomi"
+        }
+    }
     namespace = "com.margarin.commonweather"
     compileSdk = 34
 
@@ -16,6 +24,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig = signingConfigs.getByName("debug")
     }
 
     buildTypes {
