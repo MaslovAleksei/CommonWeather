@@ -96,6 +96,10 @@ class WeatherFragment : Fragment() {
                 .collect {
                     binding.apply {
                         when (it) {
+                            is WeatherState.Initial -> {
+
+                            }
+
                             is WeatherState.Loading -> {
                                 swipeRefresh.isRefreshing = true
                                 currentCondition.root.visibility = View.VISIBLE
@@ -120,7 +124,7 @@ class WeatherFragment : Fragment() {
                                 scrollView.visibility = View.VISIBLE
                             }
 
-                            is WeatherState.WeatherInfo -> {
+                            is WeatherState.Info -> {
                                adapter.submitList(it.weather.byHoursWeatherModel)
 
                                 tvLoadingError.visibility = View.GONE
@@ -229,7 +233,7 @@ class WeatherFragment : Fragment() {
     private fun initViewModel() {
         lifecycleScope.launch {
             val value = loadFromDataStore(requireContext(), LOCATION, getString(R.string.moscow))
-            viewModel.send(WeatherEvent.RefreshWeatherEvent(value))
+            viewModel.sendEvent(WeatherEvent.RefreshWeather(value))
         }
     }
 
@@ -238,7 +242,7 @@ class WeatherFragment : Fragment() {
             val result = bundle.getString(BUNDLE_KEY)
             if (result != null) {
                 lifecycleScope.launch {
-                    viewModel.send(WeatherEvent.RefreshWeatherEvent(result))
+                    viewModel.sendEvent(WeatherEvent.RefreshWeather(result))
                     saveToDataStore(requireContext(), LOCATION, result)
                 }
             }

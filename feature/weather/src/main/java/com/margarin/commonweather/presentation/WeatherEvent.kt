@@ -2,5 +2,5 @@ package com.margarin.commonweather.presentation
 
 sealed class WeatherEvent {
 
-    class RefreshWeatherEvent(val name: String) : WeatherEvent()
+    class RefreshWeather(val name: String) : WeatherEvent()
 }

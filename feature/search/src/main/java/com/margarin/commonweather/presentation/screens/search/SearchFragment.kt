@@ -79,15 +79,19 @@ class SearchFragment : Fragment() {
                 .collect {
                     binding.apply {
                         when (it) {
-                            is SearchState.OnQueryText -> {
+                            is SearchState.StartedQueryText -> {
                                 adapter.submitList(it.queryList)
                                 svPopularCities.visibility = View.GONE
                                 rvSearch.visibility = View.VISIBLE
                             }
 
-                            is SearchState.StopQueryText -> {
+                            is SearchState.StoppedQueryText -> {
                                 svPopularCities.visibility = View.VISIBLE
                                 rvSearch.visibility = View.GONE
+                            }
+
+                            is SearchState.Initial -> {
+
                             }
                         }
                     }
@@ -108,9 +112,9 @@ class SearchFragment : Fragment() {
             }
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText?.isNotBlank() == true) {
-                    viewModel.send(SearchEvent.OnQueryTextLocation(newText))
+                    viewModel.sendEvent(SearchEvent.StartQuery(newText))
                 } else {
-                    viewModel.send(SearchEvent.StopQuery)
+                    viewModel.sendEvent(SearchEvent.StopQuery)
                 }
                 return true
             }
@@ -126,7 +130,7 @@ class SearchFragment : Fragment() {
                 controller.popBackStack(ROUTE_WEATHER_FRAGMENT, false)
             }
             onButtonAddToFavClickListener = {
-                viewModel.send(SearchEvent.AddSearchItem(it))
+                viewModel.sendEvent(SearchEvent.AddSearchItem(it))
                 controller.popBackStack()
             }
         }

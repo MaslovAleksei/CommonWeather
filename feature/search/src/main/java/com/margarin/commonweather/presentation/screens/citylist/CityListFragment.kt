@@ -65,7 +65,7 @@ class CityListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.send(CityListEvent.GetSavedCityList)
+        viewModel.sendEvent(CityListEvent.GetSavedCityList)
         observeViewModel()
         configureRecyclerView()
         setOnClickListeners()
@@ -102,7 +102,7 @@ class CityListFragment : Fragment() {
                                 bDefineLoc.text = getString(R.string.locate)
                             }
 
-                            is CityListState.OpenedMap -> {
+                            is CityListState.Map -> {
                                 tvStateFragment.visibility = View.GONE
                                 rvCityList.visibility = View.GONE
                                 mapContainer.visibility = View.VISIBLE
@@ -112,6 +112,10 @@ class CityListFragment : Fragment() {
 
                             is CityListState.Locating -> {
                                 bDefineLoc.text = getString(R.string.locating)
+                            }
+
+                            is CityListState.Initial -> {
+
                             }
                         }
                     }
@@ -138,13 +142,13 @@ class CityListFragment : Fragment() {
             }
             onButtonDeleteClickListener = {
                 val searchModel = it
-                viewModel.send(CityListEvent.DeleteSearchItem(it))
+                viewModel.sendEvent(CityListEvent.DeleteSearchItem(it))
                 Snackbar.make(
                     requireView(),
                     getString(R.string.data_has_been_deleted), Snackbar.LENGTH_LONG
                 )
                     .setAction(getString(R.string.undo)) {
-                        viewModel.send(CityListEvent.AddSearchItem(searchModel))
+                        viewModel.sendEvent(CityListEvent.AddSearchItem(searchModel))
                     }.show()
             }
         }
@@ -157,7 +161,7 @@ class CityListFragment : Fragment() {
                 controller.navigateUp()
             }
             bDefineLoc.setOnClickListener {
-                viewModel.send(
+                viewModel.sendEvent(
                     CityListEvent.UseGps(
                         fusedLocationClient = fusedLocationClient,
                         isMapGone = binding.mapContainer.isGone,
@@ -168,15 +172,15 @@ class CityListFragment : Fragment() {
             }
             bMap.setOnClickListener {
                 if (mapContainer.isGone) {
-                    viewModel.send(CityListEvent.OpenMap)
+                    viewModel.sendEvent(CityListEvent.OpenMap)
                 } else {
-                    viewModel.send(CityListEvent.GetSavedCityList)
+                    viewModel.sendEvent(CityListEvent.GetSavedCityList)
                 }
             }
             bSavePoint.setOnClickListener {
                 val latLonString =
                     "${map.cameraPosition.target.latitude}, ${map.cameraPosition.target.longitude}"
-                viewModel.send(CityListEvent.RequestSearchLocation(latLonString))
+                viewModel.sendEvent(CityListEvent.RequestSearchLocation(latLonString))
             }
             bZoomIn.setOnClickListener {
                 yandexMapManager.changeZoomByStep(ZOOM_STEP, map)
@@ -185,7 +189,7 @@ class CityListFragment : Fragment() {
                 yandexMapManager.changeZoomByStep(-ZOOM_STEP, map)
             }
             bCurrentLoc.setOnClickListener {
-                viewModel.send(
+                viewModel.sendEvent(
                     CityListEvent.UseGps(
                         fusedLocationClient = fusedLocationClient,
                         isMapGone = binding.mapContainer.isGone,
