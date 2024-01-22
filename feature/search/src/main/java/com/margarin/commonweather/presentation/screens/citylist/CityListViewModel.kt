@@ -34,10 +34,10 @@ class CityListViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<CityListState>(CityListState.EmptyList)
+    private val _state = MutableStateFlow<CityListState>(CityListState.Initial)
     val state = _state.asStateFlow()
 
-    internal fun send(event: CityListEvent) {
+    internal fun sendEvent(event: CityListEvent) {
         when (event) {
             is CityListEvent.GetSavedCityList -> {
                 viewModelScope.launch {
@@ -83,7 +83,7 @@ class CityListViewModel @Inject constructor(
             }
 
             is CityListEvent.OpenMap -> {
-                _state.value = CityListState.OpenedMap
+                _state.value = CityListState.Map
             }
         }
     }
@@ -97,8 +97,8 @@ class CityListViewModel @Inject constructor(
         _state.value = CityListState.Locating
         if (PermissionManager.checkLocationPermission(application)) {
             makeToast(
-                application,
-                application.getString(R.string.navigation_permissions_not_allowed)
+                context =  application,
+                text = application.getString(R.string.navigation_permissions_not_allowed)
             )
             return
         }
@@ -110,11 +110,11 @@ class CityListViewModel @Inject constructor(
                     requestSearchLocation(latLon)
                 } else {
                     yandexMapManager.mapMoveToPosition(
-                        map,
-                        it.result.latitude.toString(),
-                        it.result.longitude.toString()
+                        map = map,
+                        lat = it.result.latitude.toString(),
+                        lon = it.result.longitude.toString()
                     )
-                    _state.value = CityListState.OpenedMap
+                    _state.value = CityListState.Map
                 }
             }
     }
