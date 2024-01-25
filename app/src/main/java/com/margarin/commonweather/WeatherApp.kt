@@ -11,7 +11,8 @@ import com.margarin.commonweather.di.WeatherComponentProvider
 import com.yandex.mapkit.MapKitFactory
 import javax.inject.Inject
 
-class WeatherApp: Application(), SearchComponentProvider, WeatherComponentProvider, Configuration.Provider  {
+class WeatherApp : Application(), SearchComponentProvider, WeatherComponentProvider,
+    Configuration.Provider {
 
     val appComponent by lazy {
         DaggerAppComponent.factory().create(this)

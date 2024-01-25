@@ -36,11 +36,12 @@
     <string name="manage_cities" tools:ignore="MissingTranslation">Manage cities</string>
     <string name="search" tools:ignore="MissingTranslation">Search</string>
     <string name="locate" tools:ignore="MissingTranslation">Locate</string>
-    <string name="ok" tools:ignore="MissingTranslation" translatable="false">OK</string>
+    <string name="ok" translatable="false" tools:ignore="MissingTranslation">OK</string>
     <string name="undo" tools:ignore="MissingTranslation">Undo</string>
     <string name="loading">loading…</string>
     <string name="list_is_empty">No cities added</string>
     <string name="navigation_permissions_not_allowed">Navigation permissions not allowed</string>
     <string name="switch_on_gps">Switch on GPS</string>
     <string name="locating">Locating</string>
+    <string name="title_activity_main2">MainActivity2</string>
 </resources>

@@ -15,7 +15,7 @@ class SearchViewModel @Inject constructor(
     private val addSearchItemUseCase: AddSearchItemUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow<SearchState>(SearchState.Initial)
+    private val _state = MutableStateFlow<SearchScreenState>(SearchScreenState.SearchesList(listOf()))
     val state = _state.asStateFlow()
 
     internal fun sendEvent(event: SearchEvent) {
@@ -25,14 +25,11 @@ class SearchViewModel @Inject constructor(
                     addSearchItemUseCase(event.searchModel)
                 }
             }
-            is SearchEvent.StartQuery -> {
+
+            is SearchEvent.OnQuery -> {
                 viewModelScope.launch {
-                    _state.value =
-                        SearchState.StartedQueryText(requestSearchLocationUseCase(event.query))
+                    _state.value = SearchScreenState.SearchesList(requestSearchLocationUseCase(event.query))
                 }
-            }
-            is SearchEvent.StopQuery -> {
-                _state.value = SearchState.StoppedQueryText
             }
         }
     }
