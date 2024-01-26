@@ -42,4 +42,5 @@
     <string name="switch_on_gps">Включите GPS</string>
     <string name="locating">Определяется</string>
     <string name="search">Поиск</string>
+    <string name="enter_location">Введите местоположение</string>
 </resources>

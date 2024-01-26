@@ -15,10 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.location.LocationServices
 import com.margarin.commonweather.domain.SearchModel
 import com.margarin.commonweather.presentation.screens.search.SearchEvent
 import com.margarin.commonweather.presentation.screens.search.SearchScreenState
@@ -30,7 +32,8 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onChipClick: (String) -> Unit,
     onCardClickListener: (String) -> Unit,
-    onButtonAddClickListener: (SearchModel) -> Unit
+    onButtonAddClickListener: (SearchModel) -> Unit,
+    onButtonBackClickListener: () -> Unit
 ) {
 
     val screenState = viewModel.state.collectAsState(SearchScreenState.SearchesList(listOf()))
@@ -39,7 +42,8 @@ fun SearchScreen(
         onChipClick = onChipClick,
         onCardClickListener = onCardClickListener,
         onButtonAddClickListener = onButtonAddClickListener,
-        screenState = screenState
+        screenState = screenState,
+        onButtonBackClickListener = onButtonBackClickListener
     )
 }
 
@@ -49,36 +53,41 @@ private fun SearchScreenContent(
     onChipClick: (String) -> Unit,
     onCardClickListener: (String) -> Unit,
     onButtonAddClickListener: (SearchModel) -> Unit,
-    screenState: State<SearchScreenState>
+    screenState: State<SearchScreenState>,
+    onButtonBackClickListener: () -> Unit
 ) {
-    val currentState = screenState.value
-    if (currentState is SearchScreenState.SearchesList) {
 
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            SearchBar(
-                viewModel = viewModel,
-                queryList = currentState.queryList ?: listOf(),
-                onCardClickListener = onCardClickListener,
-                onButtonAddClickListener = onButtonAddClickListener
-            )
-            Spacer(modifier = Modifier.padding(vertical = 16.dp))
-            Text(text = stringResource(id = R.string.popular_cities))
-            Spacer(modifier = Modifier.padding(vertical = 8.dp))
-            FlowRowList(onChipClick = onChipClick)
-        }
 
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        SearchBar(
+            viewModel = viewModel,
+            onCardClickListener = onCardClickListener,
+            onButtonAddClickListener = onButtonAddClickListener,
+            screenState = screenState
+        )
+        Spacer(modifier = Modifier.padding(vertical = 16.dp))
+        Text(text = stringResource(id = R.string.popular_cities))
+        Spacer(modifier = Modifier.padding(vertical = 8.dp))
+        FlowRowList(
+            viewModel = viewModel,
+            onChipClick = onChipClick,
+            onButtonBackClickListener = onButtonBackClickListener,
+            screenState = screenState
+        )
     }
+
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchBar(
     viewModel: SearchViewModel,
-    queryList: List<SearchModel>,
+    screenState: State<SearchScreenState>,
     onCardClickListener: (String) -> Unit,
     onButtonAddClickListener: (SearchModel) -> Unit
 ) {
@@ -115,19 +124,22 @@ private fun SearchBar(
                 }
             }
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                items(
-                    items = queryList,
-                    key = { it.id }
-                ) { searchItem ->
-                    SearchItem(
-                        searchItem = searchItem,
-                        onCardClickListener = onCardClickListener,
-                        onButtonAddClickListener = onButtonAddClickListener
-                    )
+            val currentState = screenState.value
+            if (currentState is SearchScreenState.SearchesList) {
+                LazyColumn(
+                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    items(
+                        items = currentState.queryList ?: listOf(),
+                        key = { it.id }
+                    ) { searchItem ->
+                        SearchItem(
+                            searchItem = searchItem,
+                            onCardClickListener = onCardClickListener,
+                            onButtonAddClickListener = onButtonAddClickListener
+                        )
+                    }
                 }
             }
         }
@@ -168,51 +180,64 @@ private fun SearchItem(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun FlowRowList(
-    onChipClick: (String) -> Unit
+    viewModel: SearchViewModel,
+    onChipClick: (String) -> Unit,
+    onButtonBackClickListener: () -> Unit,
+    screenState: State<SearchScreenState>,
 ) {
     FlowRow(
         horizontalArrangement = Arrangement.spacedBy(
             16.dp,
-            Alignment.CenterHorizontally
+            Alignment.Start
         )
     ) {
-        ChipItem(cityName = stringResource(R.string.kazan), onChipClick)
-        ChipItem(cityName = stringResource(R.string.moscow), onChipClick)
-        ChipItem(cityName = stringResource(R.string.saint_petersburg), onChipClick)
-        ChipItem(cityName = stringResource(R.string.tashkent), onChipClick)
-        ChipItem(cityName = stringResource(R.string.kyiv), onChipClick)
-        ChipItem(cityName = stringResource(R.string.ekaterinburg), onChipClick)
-        ChipItem(cityName = stringResource(R.string.novosibirsk), onChipClick)
-        ChipItem(cityName = stringResource(R.string.minsk), onChipClick)
-        ChipItem(cityName = stringResource(R.string.almaty), onChipClick)
-        ChipItem(cityName = stringResource(R.string.ashkhabad), onChipClick)
-        ChipItem(cityName = stringResource(R.string.omsk), onChipClick)
-        ChipItem(cityName = stringResource(R.string.chelyabinsk), onChipClick)
-        ChipItem(cityName = stringResource(R.string.perm), onChipClick)
-        ChipItem(cityName = stringResource(R.string.samara), onChipClick)
-        ChipItem(cityName = stringResource(R.string.tallinn), onChipClick)
-        ChipItem(cityName = stringResource(R.string.tbilisi), onChipClick)
-        ChipItem(cityName = stringResource(R.string.tyumen), onChipClick)
-        ChipItem(cityName = stringResource(R.string.volgograd), onChipClick)
-        ChipItem(cityName = stringResource(R.string.voronezh), onChipClick)
-        ChipItem(cityName = stringResource(R.string.vilnius), onChipClick)
-        ChipItem(cityName = stringResource(R.string.krasnoyarsk), onChipClick)
-        ChipItem(cityName = stringResource(R.string.riga), onChipClick)
-        ChipItem(cityName = stringResource(R.string.bucharest), onChipClick)
-        ChipItem(cityName = stringResource(R.string.bishkek), onChipClick)
-        ChipItem(cityName = stringResource(R.string.astana), onChipClick)
-        ChipItem(cityName = stringResource(R.string.baku), onChipClick)
-        ChipItem(cityName = stringResource(R.string.erevan), onChipClick)
+        val context = LocalContext.current
+        Button(onClick = {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            val currentState = screenState.value
+            viewModel.sendEvent(SearchEvent.UseGps(fusedLocationClient = fusedLocationClient))
+            if (currentState is SearchScreenState.Close) {
+                onButtonBackClickListener()
+            }
+        }) {
+            Text(text = "Define")
+        }
+        CityItemButton(cityName = stringResource(R.string.kazan), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.moscow), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.saint_petersburg), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.tashkent), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.kyiv), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.ekaterinburg), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.novosibirsk), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.minsk), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.almaty), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.ashkhabad), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.omsk), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.chelyabinsk), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.perm), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.samara), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.tallinn), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.tbilisi), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.tyumen), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.volgograd), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.voronezh), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.vilnius), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.krasnoyarsk), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.riga), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.bucharest), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.bishkek), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.astana), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.baku), onChipClick)
+        CityItemButton(cityName = stringResource(R.string.erevan), onChipClick)
     }
 }
 
 @Composable
-private fun ChipItem(
+private fun CityItemButton(
     cityName: String,
     onChipClick: (String) -> Unit
 ) {
-    AssistChip(
-        onClick = { onChipClick(cityName) },
-        label = { Text(text = cityName) }
-    )
+    Button(onClick = { onChipClick(cityName) }) {
+        Text(text = cityName)
+    }
 }

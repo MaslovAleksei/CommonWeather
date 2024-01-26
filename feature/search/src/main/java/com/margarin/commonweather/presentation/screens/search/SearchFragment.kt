@@ -64,7 +64,10 @@ class SearchFragment : Fragment() {
                     onButtonAddClickListener = {
                         viewModel.sendEvent(SearchEvent.AddSearchItem(it))
                         findNavController().popBackStack()
-                    }
+                    },
+                    onButtonBackClickListener = {
+                        findNavController().navigateUp()
+                    },
                 )
             }
         }
