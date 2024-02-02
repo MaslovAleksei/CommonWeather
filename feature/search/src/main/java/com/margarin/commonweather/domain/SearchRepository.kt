@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
 
-    suspend fun search(query: String): List<City>?
+    suspend fun search(query: String): List<City>
 
     val favouriteCities: Flow<List<City>>
 

@@ -56,6 +56,7 @@ dependencies {
     implementation(project (":database"))
     implementation(project (":core:core"))
     implementation(project (":core:theme"))
+    implementation(project (":feature:weather"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -84,6 +85,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+
+    implementation("com.arkivanov.mvikotlin:mvikotlin:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.3.0")
+    implementation("com.arkivanov.decompose:decompose:2.2.2")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:2.2.2")
 
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")

@@ -67,6 +67,13 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
 
+
+    implementation("com.arkivanov.mvikotlin:mvikotlin:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.3.0")
+    implementation("com.arkivanov.decompose:decompose:2.2.2")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:2.2.2")
+
     testImplementation ("org.mockito:mockito-core:5.9.0")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:5.2.1")
 

@@ -82,6 +82,13 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 
+    implementation("com.arkivanov.mvikotlin:mvikotlin:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-main:3.3.0")
+    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:3.3.0")
+    implementation("com.arkivanov.decompose:decompose:2.2.2")
+    implementation("com.arkivanov.decompose:extensions-compose-jetpack:2.2.2")
+
+
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")

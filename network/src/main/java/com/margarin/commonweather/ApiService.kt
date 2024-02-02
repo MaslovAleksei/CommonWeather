@@ -16,7 +16,7 @@ interface ApiService {
     @GET("search.json")
     suspend fun getCityWeather(
         @Query(QUERY_PARAM_CITY) query: String = "Moscow"
-    ): List<CityDto>?
+    ): List<CityDto>
 
     companion object {
         private const val QUERY_PARAM_CITY = "q"

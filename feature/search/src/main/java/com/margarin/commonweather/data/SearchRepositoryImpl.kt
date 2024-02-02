@@ -14,14 +14,13 @@ class SearchRepositoryImpl @Inject constructor(
     private val searchDao: SearchDao
 ) : SearchRepository {
 
-    override suspend fun search(query: String): List<City>? {
-        var result: List<City>? = mutableListOf()
+    override suspend fun search(query: String): List<City> {
+        var result: List<City> = mutableListOf()
         try {
-            result = apiService.getCityWeather(query = query)?.map {
+            result = apiService.getCityWeather(query = query).map {
                 searchMapper.mapCityDtoToCity(it)
             }
-        } catch (_: Exception) {
-        }
+        } catch (_: Exception) {}
         return result
     }
 
