@@ -1,6 +1,6 @@
 package com.margarin.commonweather.domain
 
-data class SearchModel(
+data class City(
     val id: Int,
     val name: String?,
     val region: String?,

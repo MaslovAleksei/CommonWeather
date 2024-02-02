@@ -1,14 +1,14 @@
 package com.margarin.commonweather.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.margarin.commonweather.domain.SearchModel
+import com.margarin.commonweather.domain.City
 
-class SearchDiffCallback : DiffUtil.ItemCallback<SearchModel>() {
-    override fun areItemsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
+class SearchDiffCallback : DiffUtil.ItemCallback<City>() {
+    override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: SearchModel, newItem: SearchModel): Boolean {
+    override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
         return oldItem == newItem
     }
 }

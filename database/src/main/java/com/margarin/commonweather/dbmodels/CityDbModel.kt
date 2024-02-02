@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "search_table")
-data class SearchDbModel(
+data class CityDbModel(
     @PrimaryKey
     val id: Int,
     val name: String?,

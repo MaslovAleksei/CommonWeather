@@ -8,15 +8,15 @@ import com.margarin.commonweather.dao.SearchDao
 import com.margarin.commonweather.dao.WeatherDao
 import com.margarin.commonweather.dbmodels.ByDaysWeatherDbModel
 import com.margarin.commonweather.dbmodels.ByHoursWeatherDbModel
+import com.margarin.commonweather.dbmodels.CityDbModel
 import com.margarin.commonweather.dbmodels.CurrentWeatherDbModel
-import com.margarin.commonweather.dbmodels.SearchDbModel
 
 @Database(
     entities = [
         CurrentWeatherDbModel::class,
         ByHoursWeatherDbModel::class,
         ByDaysWeatherDbModel::class,
-        SearchDbModel::class
+        CityDbModel::class
     ], version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

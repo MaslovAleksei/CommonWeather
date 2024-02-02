@@ -9,8 +9,8 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.PermissionManager
-import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.RequestSearchLocationUseCase
+import com.margarin.commonweather.domain.usecases.AddToFavouriteUseCase
+import com.margarin.commonweather.domain.usecases.SearchCityUseCase
 import com.margarin.commonweather.isGpsEnabled
 import com.margarin.commonweather.makeToast
 import com.margarin.search.R
@@ -21,8 +21,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-    private val requestSearchLocationUseCase: RequestSearchLocationUseCase,
-    private val addSearchItemUseCase: AddSearchItemUseCase,
+    private val searchCityUseCase: SearchCityUseCase,
+    private val addSearchItemUseCase: AddToFavouriteUseCase,
     private val application: Application
 ) : ViewModel() {
 
@@ -34,14 +34,14 @@ class SearchViewModel @Inject constructor(
         when (event) {
             is SearchEvent.AddSearchItem -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    addSearchItemUseCase(event.searchModel)
+                    addSearchItemUseCase(event.city)
                 }
             }
 
             is SearchEvent.OnQuery -> {
                 viewModelScope.launch {
                     _state.value =
-                        SearchScreenState.SearchesList(requestSearchLocationUseCase(event.query))
+                        SearchScreenState.SearchesList(searchCityUseCase(event.query))
                 }
             }
 
@@ -80,7 +80,7 @@ class SearchViewModel @Inject constructor(
 
     private fun requestSearchLocation(query: String) {
         viewModelScope.launch {
-            requestSearchLocationUseCase(query).apply {
+            searchCityUseCase(query).apply {
                 if (this?.isNotEmpty() == true) {
                     addSearchItemUseCase(this.first())
                     _state.value = SearchScreenState.Close

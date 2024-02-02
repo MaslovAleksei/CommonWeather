@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.android.gms.location.LocationServices
-import com.margarin.commonweather.domain.SearchModel
+import com.margarin.commonweather.domain.City
 import com.margarin.commonweather.presentation.screens.search.SearchEvent
 import com.margarin.commonweather.presentation.screens.search.SearchScreenState
 import com.margarin.commonweather.presentation.screens.search.SearchViewModel
@@ -32,7 +32,7 @@ fun SearchScreen(
     viewModel: SearchViewModel,
     onChipClick: (String) -> Unit,
     onCardClickListener: (String) -> Unit,
-    onButtonAddClickListener: (SearchModel) -> Unit,
+    onButtonAddClickListener: (City) -> Unit,
     onButtonBackClickListener: () -> Unit
 ) {
 
@@ -52,7 +52,7 @@ private fun SearchScreenContent(
     viewModel: SearchViewModel,
     onChipClick: (String) -> Unit,
     onCardClickListener: (String) -> Unit,
-    onButtonAddClickListener: (SearchModel) -> Unit,
+    onButtonAddClickListener: (City) -> Unit,
     screenState: State<SearchScreenState>,
     onButtonBackClickListener: () -> Unit
 ) {
@@ -89,7 +89,7 @@ private fun SearchBar(
     viewModel: SearchViewModel,
     screenState: State<SearchScreenState>,
     onCardClickListener: (String) -> Unit,
-    onButtonAddClickListener: (SearchModel) -> Unit
+    onButtonAddClickListener: (City) -> Unit
 ) {
     var text by rememberSaveable { mutableStateOf("") }
     var active by rememberSaveable { mutableStateOf(false) }
@@ -148,9 +148,9 @@ private fun SearchBar(
 
 @Composable
 private fun SearchItem(
-    searchItem: SearchModel,
+    searchItem: City,
     onCardClickListener: (String) -> Unit,
-    onButtonAddClickListener: (SearchModel) -> Unit
+    onButtonAddClickListener: (City) -> Unit
 ) {
     Row(
         modifier = Modifier

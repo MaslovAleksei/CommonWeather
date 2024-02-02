@@ -13,6 +13,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        val keyWeatherApi = property("weatherapikey")?.toString() ?: error(
+            "You should add api key into gradle.properties"
+        )
+        buildConfigField("String", "WEATHER_API_KEY", "\"$keyWeatherApi\"")
     }
 
     buildTypes {
@@ -23,6 +28,9 @@ android {
                 "proguard-rules.pro"
             )
         }
+    }
+    buildFeatures {
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8

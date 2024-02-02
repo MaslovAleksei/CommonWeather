@@ -1,6 +1,6 @@
 package com.margarin.commonweather.apimodels.search
 
-data class Search(
+data class CityDto(
     val id: Int,
     val name: String?,
     val region: String?,

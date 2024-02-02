@@ -45,7 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.margarin.commonweather.domain.SearchModel
+import com.margarin.commonweather.domain.City
 import com.margarin.commonweather.log
 import com.margarin.search.R
 import kotlinx.coroutines.launch
@@ -55,7 +55,7 @@ fun CityListScreen(
     viewModel: CityListViewModel,
     onButtonBackClickListener: () -> Unit,
     onButtonSearchClickListener: () -> Unit,
-    onCityItemClickListener: (SearchModel) -> Unit
+    onCityItemClickListener: (City) -> Unit
 ) {
     val screenState = viewModel.state.collectAsState(CityListScreenState.Initial)
     CityListContent(
@@ -74,9 +74,9 @@ private fun CityListContent(
     screenState: State<CityListScreenState>,
     onButtonBackClickListener: () -> Unit,
     onButtonSearchClickListener: () -> Unit,
-    onCityItemClickListener: (SearchModel) -> Unit,
+    onCityItemClickListener: (City) -> Unit,
 
-) {
+    ) {
     val currentState = screenState.value
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val snackbarHostState = SnackbarHostState()
@@ -159,11 +159,11 @@ private fun CityListContent(
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun CitiesLazyColumn(
-    cityList: List<SearchModel>,
-    onCityItemClickListener: (SearchModel) -> Unit,
+    cityList: List<City>,
+    onCityItemClickListener: (City) -> Unit,
     onButtonSearchClickListener: () -> Unit,
     viewModel: CityListViewModel,
-    swipeToDismissListener: (SearchModel) -> Unit
+    swipeToDismissListener: (City) -> Unit
     ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -204,8 +204,8 @@ private fun CitiesLazyColumn(
 
 @Composable
 private fun CityItem(
-    cityItem: SearchModel,
-    onCityItemClickListener: (SearchModel) -> Unit
+    cityItem: City,
+    onCityItemClickListener: (City) -> Unit
 ) {
     Card(
         modifier = Modifier

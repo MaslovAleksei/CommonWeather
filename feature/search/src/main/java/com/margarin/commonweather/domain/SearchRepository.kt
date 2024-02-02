@@ -4,12 +4,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
 
-    suspend fun requestSearchLocation(query: String): List<SearchModel>?
+    suspend fun search(query: String): List<City>?
 
-    suspend fun addSearchItem(searchModel: SearchModel)
+    suspend fun addToFavourite(city: City)
 
-    suspend fun  getSavedCityList(): Flow<List<SearchModel>>
+    suspend fun removeFromFavourite(city: City)
 
-    suspend fun deleteSearchItem(searchModel: SearchModel)
+    suspend fun  getSavedCityList(): Flow<List<City>>
 
 }

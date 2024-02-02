@@ -2,7 +2,7 @@ package com.margarin.commonweather.data
 
 import com.margarin.commonweather.ApiService
 import com.margarin.commonweather.dao.SearchDao
-import com.margarin.commonweather.domain.SearchModel
+import com.margarin.commonweather.domain.City
 import com.margarin.commonweather.domain.SearchRepository
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -13,28 +13,28 @@ class SearchRepositoryImpl @Inject constructor(
     private val searchDao: SearchDao
 ) : SearchRepository {
 
-    override suspend fun requestSearchLocation(query: String): List<SearchModel>? {
-        var result: List<SearchModel>? = mutableListOf()
+    override suspend fun search(query: String): List<City>? {
+        var result: List<City>? = mutableListOf()
         try {
-            result = apiService.getSearchWeather(query = query)?.map {
-                searchMapper.mapSearchDtoToSearchModel(it)
+            result = apiService.getCityWeather(query = query)?.map {
+                searchMapper.mapCityDtoToCity(it)
             }
         } catch (_: Exception) {
         }
         return result
     }
 
-    override suspend fun addSearchItem(searchModel: SearchModel) {
-        val searchDbModel = searchMapper.mapSearchModelToSearchDbModel(searchModel)
-        searchDao.addSearchItem(searchDbModel)
+    override suspend fun addToFavourite(city: City) {
+        val cityDbModel = searchMapper.mapCityToCityDbModel(city)
+        searchDao.addSearchItem(cityDbModel)
     }
 
     override suspend fun getSavedCityList() = searchDao.getSavedCityList()
-        .map { it.map { searchDbModel ->
-            searchMapper.mapSearchDbModelToSearchModel(searchDbModel) }
+        .map { it.map { cityDbModel ->
+            searchMapper.mapCityDbModelToCity(cityDbModel) }
         }
 
-    override suspend fun deleteSearchItem(searchModel: SearchModel) {
-        searchDao.deleteSearchItem(searchModel.id)
+    override suspend fun removeFromFavourite(city: City) {
+        searchDao.removeFromFavourites(city.id)
     }
 }

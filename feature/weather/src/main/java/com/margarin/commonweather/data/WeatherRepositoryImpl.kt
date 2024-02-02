@@ -39,7 +39,7 @@ class WeatherRepositoryImpl @Inject constructor(
     internal suspend fun loadData(query: String) {
         val lang = application.getString(R.string.lang)
         try {
-            val forecastData = apiService.getForecastWeather(city = query, lang = lang)
+            val forecastData = apiService.getForecastWeather(city = query)
             if (forecastData != null) {
                 weatherDao.addCurrentWeather(
                     weatherMapper.mapForecastDataToCurrentDbModel(forecastData)

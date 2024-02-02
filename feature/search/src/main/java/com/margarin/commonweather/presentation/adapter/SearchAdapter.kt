@@ -5,17 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.ListAdapter
-import com.margarin.commonweather.domain.SearchModel
+import com.margarin.commonweather.domain.City
 import com.margarin.search.R
 import com.margarin.search.databinding.CityItemBinding
 import com.margarin.search.databinding.SearchItemBinding
 
 class SearchAdapter(private var layout: Int) :
-    ListAdapter<SearchModel, SearchHolder>(SearchDiffCallback()) {
+    ListAdapter<City, SearchHolder>(SearchDiffCallback()) {
 
-    var onItemClickListener: ((SearchModel) -> Unit)? = null
-    var onButtonDeleteClickListener: ((SearchModel) -> Unit)? = null
-    var onButtonAddToFavClickListener: ((SearchModel) -> Unit)? = null
+    var onItemClickListener: ((City) -> Unit)? = null
+    var onButtonDeleteClickListener: ((City) -> Unit)? = null
+    var onButtonAddToFavClickListener: ((City) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchHolder {
 

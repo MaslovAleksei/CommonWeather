@@ -2,8 +2,8 @@ package com.margarin.commonweather.presentation.screens.citylist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.margarin.commonweather.domain.usecases.AddSearchItemUseCase
-import com.margarin.commonweather.domain.usecases.DeleteSearchItemUseCase
+import com.margarin.commonweather.domain.usecases.AddToFavouriteUseCase
+import com.margarin.commonweather.domain.usecases.RemoveFromFavouritesUseCase
 import com.margarin.commonweather.domain.usecases.GetSavedCityListUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +14,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CityListViewModel @Inject constructor(
-    private val addSearchItemUseCase: AddSearchItemUseCase,
-    private val deleteSearchItemUseCase: DeleteSearchItemUseCase,
+    private val addSearchItemUseCase: AddToFavouriteUseCase,
+    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase,
     private val getSavedCityListUseCase: GetSavedCityListUseCase,
 ) : ViewModel() {
 
@@ -37,13 +37,13 @@ class CityListViewModel @Inject constructor(
 
             is CityListEvent.AddSearchItem -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    addSearchItemUseCase(event.searchModel)
+                    addSearchItemUseCase(event.city)
                 }
             }
 
             is CityListEvent.DeleteSearchItem -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    deleteSearchItemUseCase(event.searchModel)
+                    removeFromFavouritesUseCase(event.city)
                 }
             }
         }
