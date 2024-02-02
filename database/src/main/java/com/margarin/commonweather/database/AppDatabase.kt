@@ -20,6 +20,10 @@ import com.margarin.commonweather.dbmodels.CurrentWeatherDbModel
     ], version = 1, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
+
+    abstract fun weatherDao(): WeatherDao
+    abstract fun searchDao(): SearchDao
+
     companion object {
 
         private var db: AppDatabase? = null
@@ -42,8 +46,4 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
     }
-
-    abstract fun weatherDao(): WeatherDao
-    abstract fun searchDao(): SearchDao
-
 }

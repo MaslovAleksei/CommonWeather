@@ -10,17 +10,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SearchDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addSearchItem(search: CityDbModel)
-
     @Query("SELECT * FROM search_table")
-    fun getSavedCityList(): Flow<List<CityDbModel>>
+    fun getFavouriteCities(): Flow<List<CityDbModel>>
 
-    @Query("DELETE FROM search_table WHERE id=:searchId")
-    suspend fun removeFromFavourites(searchId: Int)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addToFavourite(cityDbModel: CityDbModel)
 
-    @Query("SELECT * FROM search_table WHERE id=:searchId LIMIT 1")
-    suspend fun getSearchItem(searchId: Int): CityDbModel
+    @Query("DELETE FROM search_table WHERE id=:cityId")
+    suspend fun removeFromFavourites(cityId: Int)
 
+    @Query("SELECT EXISTS (SELECT * FROM search_table WHERE id=:cityId LIMIT 1)")
+    fun observeIsFavourite(cityId: Int) : Flow<Boolean>
 
 }

@@ -4,6 +4,7 @@ import com.margarin.commonweather.ApiService
 import com.margarin.commonweather.dao.SearchDao
 import com.margarin.commonweather.domain.City
 import com.margarin.commonweather.domain.SearchRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -24,17 +25,22 @@ class SearchRepositoryImpl @Inject constructor(
         return result
     }
 
-    override suspend fun addToFavourite(city: City) {
-        val cityDbModel = searchMapper.mapCityToCityDbModel(city)
-        searchDao.addSearchItem(cityDbModel)
+    override val favouriteCities: Flow<List<City>> = searchDao.getFavouriteCities().map {
+        it.map { cityDbModel ->
+            searchMapper.mapCityDbModelToCity(cityDbModel)
+        }
     }
 
-    override suspend fun getSavedCityList() = searchDao.getSavedCityList()
-        .map { it.map { cityDbModel ->
-            searchMapper.mapCityDbModelToCity(cityDbModel) }
-        }
+    override fun observeIsFavourite(cityId: Int): Flow<Boolean> =
+        searchDao.observeIsFavourite(cityId)
 
-    override suspend fun removeFromFavourite(city: City) {
-        searchDao.removeFromFavourites(city.id)
+
+    override suspend fun addToFavourite(city: City) {
+        val cityDbModel = searchMapper.mapCityToCityDbModel(city)
+        searchDao.addToFavourite(cityDbModel)
+    }
+
+    override suspend fun removeFromFavourite(cityId: Int) {
+        searchDao.removeFromFavourites(cityId)
     }
 }
