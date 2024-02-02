@@ -5,16 +5,14 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.margarin.commonweather.domain.City
-import com.margarin.commonweather.domain.usecases.GetFavouriteCitiesUseCase
-import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
 import com.margarin.commonweather.presentation.screens.citylist.CityListStore.Intent
 import com.margarin.commonweather.presentation.screens.citylist.CityListStore.Label
 import com.margarin.commonweather.presentation.screens.citylist.CityListStore.State
+import com.margarin.commonweather.search.City
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal interface CityListStore : Store<Intent, State, Label> {
+interface CityListStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
 
@@ -54,10 +52,10 @@ internal interface CityListStore : Store<Intent, State, Label> {
     }
 }
 
-internal class CityListStoreFactory @Inject constructor(
+class CityListStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val getFavouriteCitiesUseCase: GetFavouriteCitiesUseCase,
-    private val getWeatherUseCase: GetWeatherUseCase
+    private val getFavouriteCitiesUseCase: com.margarin.commonweather.search.usecases.GetFavouriteCitiesUseCase,
+    private val getWeatherUseCase: com.margarin.commonweather.weather.usecases.GetWeatherUseCase
 ) {
 
     fun create(): CityListStore =

@@ -2,13 +2,12 @@ package com.margarin.commonweather
 
 import android.app.Application
 import androidx.work.Configuration
-import com.margarin.commonweather.data.workers.factory.WeatherWorkerFactory
 import com.margarin.commonweather.di.DaggerAppComponent
-import com.margarin.commonweather.di.SearchComponent
+import com.margarin.commonweather.di.SearchComponen
 import com.margarin.commonweather.di.SearchComponentProvider
-import com.margarin.commonweather.di.WeatherComponent
+import com.margarin.commonweather.di.WeatherComponen
 import com.margarin.commonweather.di.WeatherComponentProvider
-import com.yandex.mapkit.MapKitFactory
+import com.margarin.commonweather.weather.workers.factory.WeatherWorkerFactory
 import javax.inject.Inject
 
 class WeatherApp : Application(), SearchComponentProvider, WeatherComponentProvider,
@@ -24,15 +23,13 @@ class WeatherApp : Application(), SearchComponentProvider, WeatherComponentProvi
     override fun onCreate() {
         appComponent.inject(this)
         super.onCreate()
-        MapKitFactory.setApiKey("50afcc11-65c1-47b2-aa6e-92e49af0f348")
-        //TODO replace api key to local.properties
     }
 
-    override fun getSearchComponent(): SearchComponent {
+    override fun getSearchComponent(): SearchComponen {
         return appComponent
     }
 
-    override fun getWeatherComponent(): WeatherComponent {
+    override fun getWeatherComponent(): WeatherComponen {
         return appComponent
     }
 

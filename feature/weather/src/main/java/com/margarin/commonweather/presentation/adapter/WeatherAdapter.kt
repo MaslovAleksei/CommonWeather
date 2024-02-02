@@ -3,7 +3,7 @@ package com.margarin.commonweather.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
+import com.margarin.commonweather.weather.models.ByHoursWeatherModel
 import com.margarin.weather.R
 import com.margarin.weather.databinding.HourItemBinding
 

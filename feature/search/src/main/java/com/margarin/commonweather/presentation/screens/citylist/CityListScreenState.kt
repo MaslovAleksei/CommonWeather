@@ -1,6 +1,6 @@
 package com.margarin.commonweather.presentation.screens.citylist
 
-import com.margarin.commonweather.domain.City
+import com.margarin.commonweather.search.City
 
 sealed class CityListScreenState {
 

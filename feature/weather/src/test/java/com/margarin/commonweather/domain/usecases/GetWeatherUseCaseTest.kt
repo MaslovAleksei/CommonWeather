@@ -1,14 +1,9 @@
 package com.margarin.commonweather.domain.usecases
 
-import com.margarin.commonweather.domain.WeatherRepository
-import com.margarin.commonweather.domain.models.ByDaysWeatherModel
-import com.margarin.commonweather.domain.models.ByHoursWeatherModel
-import com.margarin.commonweather.domain.models.CurrentWeatherModel
-import com.margarin.commonweather.domain.models.WeatherModel
+import com.margarin.commonweather.weather.models.CurrentWeatherModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 
@@ -33,7 +28,7 @@ class GetWeatherUseCaseTest {
     )
 
     val byDaysWeatherModel = listOf(
-        ByDaysWeatherModel(
+        com.margarin.commonweather.weather.models.ByDaysWeatherModel(
             name = "test name",
             id = 10,
             date = "test date",
@@ -48,7 +43,7 @@ class GetWeatherUseCaseTest {
     )
 
     val byHoursWeatherModel = listOf(
-        ByHoursWeatherModel(
+        com.margarin.commonweather.weather.models.ByHoursWeatherModel(
             name = "test name",
             id = 12,
             time = "test time",
@@ -58,20 +53,21 @@ class GetWeatherUseCaseTest {
         )
     )
 
-    val weatherModel = WeatherModel(
+    val weatherModel = com.margarin.commonweather.weather.models.WeatherModel(
         currentWeatherModel,
         byDaysWeatherModel,
         byHoursWeatherModel
     )
 
-    val weatherRepository = mock<WeatherRepository>()
+    val weatherRepository = mock<com.margarin.commonweather.weather.WeatherRepository>()
 
     @Test
     fun `should return the same data as in repository`() = runTest {
 
         Mockito.`when`(weatherRepository.getWeather("test name")).thenReturn(weatherModel)
 
-        val useCase = GetWeatherUseCase(weatherRepository = weatherRepository)
+        val useCase =
+            com.margarin.commonweather.weather.usecases.GetWeatherUseCase(weatherRepository = weatherRepository)
         val actual = useCase.invoke(name = "test name")
         val expected = weatherModel
 

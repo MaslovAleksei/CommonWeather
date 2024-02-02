@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -52,11 +53,10 @@ android {
 
 dependencies {
 
-    implementation(project (":network"))
-    implementation(project (":database"))
     implementation(project (":core:core"))
     implementation(project (":core:theme"))
-    implementation(project (":feature:weather"))
+    implementation(project (":data"))
+    implementation(project (":domain"))
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

@@ -2,9 +2,6 @@ package com.margarin.commonweather.presentation.screens.citylist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.margarin.commonweather.domain.usecases.AddToFavouriteUseCase
-import com.margarin.commonweather.domain.usecases.GetFavouriteCitiesUseCase
-import com.margarin.commonweather.domain.usecases.RemoveFromFavouritesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,9 +11,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CityListViewModel @Inject constructor(
-    private val addSearchItemUseCase: AddToFavouriteUseCase,
-    private val removeFromFavouritesUseCase: RemoveFromFavouritesUseCase,
-    private val getFavouriteCitiesUseCase: GetFavouriteCitiesUseCase,
+    private val addSearchItemUseCase: com.margarin.commonweather.search.usecases.AddToFavouriteUseCase,
+    private val removeFromFavouritesUseCase: com.margarin.commonweather.search.usecases.RemoveFromFavouritesUseCase,
+    private val getFavouriteCitiesUseCase: com.margarin.commonweather.search.usecases.GetFavouriteCitiesUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<CityListScreenState>(CityListScreenState.Initial)

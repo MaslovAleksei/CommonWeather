@@ -5,17 +5,17 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.margarin.commonweather.domain.City
-import com.margarin.commonweather.domain.usecases.AddToFavouriteUseCase
-import com.margarin.commonweather.domain.usecases.SearchCityUseCase
 import com.margarin.commonweather.presentation.screens.search.SearchStore.Intent
 import com.margarin.commonweather.presentation.screens.search.SearchStore.Label
 import com.margarin.commonweather.presentation.screens.search.SearchStore.State
+import com.margarin.commonweather.search.City
+import com.margarin.commonweather.search.usecases.AddToFavouriteUseCase
+import com.margarin.commonweather.search.usecases.SearchCityUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal interface SearchStore : Store<Intent, State, Label> {
+interface SearchStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
 
@@ -51,7 +51,7 @@ internal interface SearchStore : Store<Intent, State, Label> {
     }
 }
 
-internal class SearchStoreFactory @Inject constructor(
+class SearchStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val searchCityUseCase: SearchCityUseCase,
     private val addToFavouriteUseCase: AddToFavouriteUseCase

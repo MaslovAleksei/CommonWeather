@@ -9,8 +9,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.margarin.commonweather.PermissionManager
-import com.margarin.commonweather.domain.usecases.AddToFavouriteUseCase
-import com.margarin.commonweather.domain.usecases.SearchCityUseCase
 import com.margarin.commonweather.isGpsEnabled
 import com.margarin.commonweather.makeToast
 import com.margarin.search.R
@@ -21,8 +19,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel @Inject constructor(
-    private val searchCityUseCase: SearchCityUseCase,
-    private val addSearchItemUseCase: AddToFavouriteUseCase,
+    private val searchCityUseCase: com.margarin.commonweather.search.usecases.SearchCityUseCase,
+    private val addSearchItemUseCase: com.margarin.commonweather.search.usecases.AddToFavouriteUseCase,
     private val application: Application
 ) : ViewModel() {
 

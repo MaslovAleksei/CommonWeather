@@ -5,22 +5,23 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
-import com.margarin.commonweather.domain.models.WeatherModel
-import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
 import com.margarin.commonweather.presentation.WeatherStore.Intent
 import com.margarin.commonweather.presentation.WeatherStore.Label
 import com.margarin.commonweather.presentation.WeatherStore.State
+import com.margarin.commonweather.search.City
+import com.margarin.commonweather.weather.models.WeatherModel
+import com.margarin.commonweather.weather.usecases.GetWeatherUseCase
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal interface WeatherStore : Store<Intent, State, Label> {
+interface WeatherStore : Store<Intent, State, Label> {
 
     sealed interface Intent {
         data object ClickAdd : Intent
     }
 
     data class State(
-        val city: String,
+        val city: City,
         val weatherState: WeatherState
     ) {
         sealed interface WeatherState {
@@ -37,12 +38,12 @@ internal interface WeatherStore : Store<Intent, State, Label> {
     }
 }
 
-internal class WeatherStoreFactory @Inject constructor(
+class WeatherStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
     private val getWeatherUseCase: GetWeatherUseCase
 ) {
 
-    fun create(city: String): WeatherStore =
+    fun create(city: City): WeatherStore =
         object : WeatherStore, Store<Intent, State, Label> by storeFactory.create(
             name = "WeatherStore",
             initialState = State(
@@ -68,13 +69,13 @@ internal class WeatherStoreFactory @Inject constructor(
     }
 
     private inner class BootstrapperImpl(
-        private val city: String
+        private val city: City
     ) : CoroutineBootstrapper<Action>() {
         override fun invoke() {
             scope.launch {
                 dispatch(Action.WeatherStartLoading)
                 try {
-                    getWeatherUseCase(city).collect {
+                    getWeatherUseCase(city.name.toString()).collect {
                         dispatch(Action.WeatherLoaded(weather = it))
                     }
                 } catch (e: Exception) {

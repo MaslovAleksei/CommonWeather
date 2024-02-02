@@ -1,10 +1,10 @@
 package com.margarin.commonweather.di
 
 import android.app.Application
-import com.margarin.commonweather.WeatherApp
 import com.margarin.commonweather.AppScope
-import com.margarin.commonweather.presentation.screens.citylist.CityListFragment
+import com.margarin.commonweather.WeatherApp
 import com.margarin.commonweather.presentation.WeatherFragment
+import com.margarin.commonweather.presentation.screens.citylist.CityListFragment
 import com.margarin.commonweather.presentation.screens.search.SearchFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -12,15 +12,12 @@ import dagger.Component
 @AppScope
 @Component(
     modules = [
-        WeatherModule::class,
-        SearchModule::class,
         ViewModelModule::class,
-        NetworkModule::class,
-        DatabaseModule::class,
+        DataModule::class,
         WorkerModule::class
     ]
 )
-interface AppComponent : SearchComponent, WeatherComponent {
+interface AppComponent : SearchComponen, WeatherComponen {
 
     fun inject(application: WeatherApp)
 

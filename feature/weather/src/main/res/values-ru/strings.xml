@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="lang">ru</string>
     <string name="today">Сегодня</string>
     <string name="pressure">Давление</string>
     <string name="chance_of_rain">Вероятность дождя</string>
@@ -26,18 +25,6 @@
     <string name="updated">"обновлено: "</string>
     <string name="now">Сейчас</string>
     <string name="error_loading">Ошибка загрузки</string>
-    <string name="january">января</string>
-    <string name="february">февраля</string>
-    <string name="march">марта</string>
-    <string name="april">апреля</string>
-    <string name="may">мая</string>
-    <string name="june">июня</string>
-    <string name="july">июля</string>
-    <string name="august">августа</string>
-    <string name="september">сентября</string>
-    <string name="october">октября</string>
-    <string name="november">ноября</string>
-    <string name="december">декабря</string>
     <string name="at">в</string>
     <string name="feels_like">"Ощущается как: "</string>
     <string name="app_widget_description">Погода в данный момент</string>

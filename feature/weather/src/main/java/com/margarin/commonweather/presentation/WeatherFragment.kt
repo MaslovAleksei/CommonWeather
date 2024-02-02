@@ -166,21 +166,21 @@ class WeatherFragment : Fragment() {
                                     iv1dayCondition.setImageResource(
                                         it.weather.byDaysWeatherModel?.get(0)?.icon_url!!
                                     )
-                                    iv2dayCondition.setImageResource(
-                                        it.weather.byDaysWeatherModel[1].icon_url!!
-                                    )
-                                    iv3dayCondition.setImageResource(
-                                        it.weather.byDaysWeatherModel[2].icon_url!!
-                                    )
-                                    tv1dayName.text = getString(R.string.today)
-                                    tv2dayName.text = it.weather.byDaysWeatherModel[1].date
-                                    tv3dayName.text = it.weather.byDaysWeatherModel[2].date
-                                    tv1dayCondition.text =
-                                        it.weather.byDaysWeatherModel[0].condition
-                                    tv2dayCondition.text =
-                                        it.weather.byDaysWeatherModel[1].condition
-                                    tv3dayCondition.text =
-                                        it.weather.byDaysWeatherModel[2].condition
+//                                    iv2dayCondition.setImageResource(
+//                                        it.weather.byDaysWeatherModel[1].icon_url!!
+//                                    )
+//                                    iv3dayCondition.setImageResource(
+//                                        it.weather.byDaysWeatherModel[2].icon_url!!
+//                                    )
+//                                    tv1dayName.text = getString(R.string.today)
+//                                    tv2dayName.text = it.weather.byDaysWeatherModel[1].date
+//                                    tv3dayName.text = it.weather.byDaysWeatherModel[2].date
+//                                    tv1dayCondition.text =
+//                                        it.weather.byDaysWeatherModel[0].condition
+//                                    tv2dayCondition.text =
+//                                        it.weather.byDaysWeatherModel[1].condition
+//                                    tv3dayCondition.text =
+//                                        it.weather.byDaysWeatherModel[2].condition
                                 }
 
                                 cardViewWind.apply {

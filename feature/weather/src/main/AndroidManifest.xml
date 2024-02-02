@@ -3,7 +3,7 @@
 
     <application>
         <receiver
-            android:name="com.margarin.commonweather.data.widget.WeatherWidget"
+            android:name="com.margarin.commonweather.weather.widget.WeatherWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

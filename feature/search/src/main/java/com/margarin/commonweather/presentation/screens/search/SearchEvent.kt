@@ -1,7 +1,7 @@
 package com.margarin.commonweather.presentation.screens.search
 
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.margarin.commonweather.domain.City
+import com.margarin.commonweather.search.City
 
 sealed class SearchEvent {
 

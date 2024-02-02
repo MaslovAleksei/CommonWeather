@@ -2,8 +2,6 @@ package com.margarin.commonweather.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.margarin.commonweather.domain.usecases.GetWeatherUseCase
-import com.margarin.commonweather.domain.usecases.RefreshDataUseCase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,8 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class WeatherViewModel @Inject constructor(
-    private val refreshDataUseCase: RefreshDataUseCase,
-    private val getWeatherUseCase: GetWeatherUseCase
+    private val refreshDataUseCase: com.margarin.commonweather.weather.usecases.RefreshDataUseCase,
+    private val getWeatherUseCase: com.margarin.commonweather.weather.usecases.GetWeatherUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<WeatherState>(WeatherState.Initial)

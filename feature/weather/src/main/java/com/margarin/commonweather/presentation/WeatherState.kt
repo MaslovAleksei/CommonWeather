@@ -1,6 +1,6 @@
 package com.margarin.commonweather.presentation
 
-import com.margarin.commonweather.domain.models.WeatherModel
+import com.margarin.commonweather.weather.models.WeatherModel
 
 sealed class WeatherState {
 

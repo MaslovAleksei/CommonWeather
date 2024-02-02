@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="today">Сегодня</string>
+    <string name="pressure">Давление</string>
+    <string name="chance_of_rain">Вероятность дождя</string>
+    <string name="uv">УФ</string>
+    <string name="real_feel">Ощущается</string>
+    <string name="humidity">Влажность</string>
+    <string name="_3_day_forecast">Прогноз на 3 дня</string>
+    <string name="more_details">Подробнее</string>
+    <string name="_24_hour_forecast">Прогноз на 24 ч</string>
+    <string name="data_provided_by_weather_api">данные предоставлены Weather API</string>
+    <string name="loading">загрузка…</string>
+    <string name="moscow">Москва</string>
+    <string name="km_h">км/ч</string>
+    <string name="mbar">mbar</string>
+    <string name="south">Юг</string>
+    <string name="north">Север</string>
+    <string name="west">Запад</string>
+    <string name="east">Восток</string>
+    <string name="south_east">Юго-восток</string>
+    <string name="south_west">Юго-запад</string>
+    <string name="north_east">Северо-восток</string>
+    <string name="north_west">Северо-запад</string>
+    <string name="updated">"обновлено: "</string>
+    <string name="now">Сейчас</string>
+    <string name="error_loading">Ошибка загрузки</string>
+    <string name="january">января</string>
+    <string name="february">февраля</string>
+    <string name="march">марта</string>
+    <string name="april">апреля</string>
+    <string name="may">мая</string>
+    <string name="june">июня</string>
+    <string name="july">июля</string>
+    <string name="august">августа</string>
+    <string name="september">сентября</string>
+    <string name="october">октября</string>
+    <string name="november">ноября</string>
+    <string name="december">декабря</string>
+    <string name="at">в</string>
+    <string name="feels_like">"Ощущается как: "</string>
+    <string name="app_widget_description">Погода в данный момент</string>
+
+</resources>
