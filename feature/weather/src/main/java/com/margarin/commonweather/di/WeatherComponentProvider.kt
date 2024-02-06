@@ -1,5 +1,5 @@
-package com.margarin.commonweather.di
-
-interface WeatherComponentProvider {
-    fun getWeatherComponent(): WeatherComponen
-}
+//package com.margarin.commonweather.di
+//
+//interface WeatherComponentProvider {
+//    fun getWeatherComponent(): WeatherComponen
+//}

@@ -1,33 +1,28 @@
 package com.margarin.commonweather.di
 
-import android.app.Application
+import android.content.Context
 import com.margarin.commonweather.AppScope
-import com.margarin.commonweather.WeatherApp
-import com.margarin.commonweather.presentation.WeatherFragment
-import com.margarin.commonweather.presentation.screens.citylist.CityListFragment
-import com.margarin.commonweather.presentation.screens.search.SearchFragment
+import com.margarin.commonweather.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 
 @AppScope
 @Component(
     modules = [
-        ViewModelModule::class,
         DataModule::class,
-        WorkerModule::class
+        WorkerModule::class,
+        StoreModule::class
     ]
 )
-interface AppComponent : SearchComponen, WeatherComponen {
+interface AppComponent {
 
-    fun inject(application: WeatherApp)
-
-    override fun injectCityListFragment(cityListFragment: CityListFragment)
-    override fun injectSearchFragment(searchFragment: SearchFragment)
-    override fun injectWeatherFragment(weatherFragment: WeatherFragment)
+    fun inject(activity: MainActivity)
 
     @Component.Factory
     interface Factory {
 
-        fun create(@BindsInstance application: Application): AppComponent
+        fun create(
+            @BindsInstance context: Context
+        ): AppComponent
     }
 }

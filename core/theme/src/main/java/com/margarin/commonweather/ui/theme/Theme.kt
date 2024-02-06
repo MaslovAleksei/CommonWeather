@@ -1,4 +1,4 @@
-package com.margarin.commonweather.presentation.screens.search.compose.ui.theme
+package com.margarin.commonweather.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -1,6 +1,6 @@
 package com.margarin.commonweather.weather
 
-import android.app.Application
+import android.content.Context
 import com.margarin.commonweather.DD
 import com.margarin.commonweather.HH_MM
 import com.margarin.commonweather.MM
@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
-class WeatherConverter @Inject constructor (private val application: Application) {
+class WeatherConverter @Inject constructor (private val context: Context) {
 
     internal fun convertConditionImage(url: String): Int? {
         return when (url) {
@@ -116,22 +116,22 @@ class WeatherConverter @Inject constructor (private val application: Application
 
     internal fun convertWindDirections(dir: String?): String? {
         return when (dir) {
-            "S" -> application.getString(R.string.south)
-            "N" -> application.getString(R.string.north)
-            "W" -> application.getString(R.string.west)
-            "E" -> application.getString(R.string.east)
-            "SE" -> application.getString(R.string.south_east)
-            "ESE" -> application.getString(R.string.south_east)
-            "SSE" -> application.getString(R.string.south_east)
-            "SW" -> application.getString(R.string.south_west)
-            "WSW" -> application.getString(R.string.south_west)
-            "SSW" -> application.getString(R.string.south_west)
-            "NE" -> application.getString(R.string.north_east)
-            "NNE" -> application.getString(R.string.north_east)
-            "ENE" -> application.getString(R.string.north_east)
-            "NW" -> application.getString(R.string.north_west)
-            "WNW" -> application.getString(R.string.north_west)
-            "NNW" -> application.getString(R.string.north_west)
+            "S" -> context.getString(R.string.south)
+            "N" -> context.getString(R.string.north)
+            "W" -> context.getString(R.string.west)
+            "E" -> context.getString(R.string.east)
+            "SE" -> context.getString(R.string.south_east)
+            "ESE" -> context.getString(R.string.south_east)
+            "SSE" -> context.getString(R.string.south_east)
+            "SW" -> context.getString(R.string.south_west)
+            "WSW" -> context.getString(R.string.south_west)
+            "SSW" -> context.getString(R.string.south_west)
+            "NE" -> context.getString(R.string.north_east)
+            "NNE" -> context.getString(R.string.north_east)
+            "ENE" -> context.getString(R.string.north_east)
+            "NW" -> context.getString(R.string.north_west)
+            "WNW" -> context.getString(R.string.north_west)
+            "NNW" -> context.getString(R.string.north_west)
             else -> null
         }
     }
@@ -160,18 +160,18 @@ class WeatherConverter @Inject constructor (private val application: Application
 
     private fun convertMonthNumberToName(number: String): String {
         return when (number) {
-            "01" -> application.getString(R.string.january)
-            "02" -> application.getString(R.string.february)
-            "03" -> application.getString(R.string.march)
-            "04" -> application.getString(R.string.april)
-            "05" -> application.getString(R.string.may)
-            "06" -> application.getString(R.string.june)
-            "07" -> application.getString(R.string.july)
-            "08" -> application.getString(R.string.august)
-            "09" -> application.getString(R.string.september)
-            "10" -> application.getString(R.string.october)
-            "11" -> application.getString(R.string.november)
-            "12" -> application.getString(R.string.december)
+            "01" -> context.getString(R.string.january)
+            "02" -> context.getString(R.string.february)
+            "03" -> context.getString(R.string.march)
+            "04" -> context.getString(R.string.april)
+            "05" -> context.getString(R.string.may)
+            "06" -> context.getString(R.string.june)
+            "07" -> context.getString(R.string.july)
+            "08" -> context.getString(R.string.august)
+            "09" -> context.getString(R.string.september)
+            "10" -> context.getString(R.string.october)
+            "11" -> context.getString(R.string.november)
+            "12" -> context.getString(R.string.december)
             else -> ""
         }
     }
@@ -182,8 +182,8 @@ class WeatherConverter @Inject constructor (private val application: Application
             convertDate(date, YYYY_MM_DD_HH_MM, MM) ?: ""
         )
         val time = convertDate(date, YYYY_MM_DD_HH_MM, HH_MM)
-        val string = "${application.getString(R.string.updated)} $day " +
-                "$month ${application.getString(R.string.at)} $time"
+        val string = "${context.getString(R.string.updated)} $day " +
+                "$month ${context.getString(R.string.at)} $time"
         return string
     }
 

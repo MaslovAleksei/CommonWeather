@@ -1,6 +1,6 @@
 package com.margarin.commonweather.di
 
-import android.app.Application
+import android.content.Context
 import com.margarin.commonweather.AppScope
 import com.margarin.commonweather.local.dao.SearchDao
 import com.margarin.commonweather.local.dao.WeatherDao
@@ -30,14 +30,14 @@ interface DataModule {
 
         @Provides
         @AppScope
-        fun provideCurrentWeatherDao(application: Application): WeatherDao {
-            return AppDatabase.getInstance(application).weatherDao()
+        fun provideCurrentWeatherDao(context: Context): WeatherDao {
+            return AppDatabase.getInstance(context).weatherDao()
         }
 
         @Provides
         @AppScope
-        fun provideSearchDao(application: Application): SearchDao {
-            return AppDatabase.getInstance(application).searchDao()
+        fun provideSearchDao(context: Context): SearchDao {
+            return AppDatabase.getInstance(context).searchDao()
         }
 
         @Provides

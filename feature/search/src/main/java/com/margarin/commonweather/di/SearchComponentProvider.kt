@@ -1,5 +1,5 @@
-package com.margarin.commonweather.di
-
-interface SearchComponentProvider {
-    fun getSearchComponent(): SearchComponen
-}
+//package com.margarin.commonweather.di
+//
+//interface SearchComponentProvider {
+//    fun getSearchComponent(): SearchComponen
+//}

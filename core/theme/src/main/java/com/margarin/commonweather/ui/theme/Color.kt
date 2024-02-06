@@ -1,4 +1,4 @@
-package com.margarin.commonweather.presentation.screens.search.compose.ui.theme
+package com.margarin.commonweather.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

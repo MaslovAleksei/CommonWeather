@@ -1,6 +1,6 @@
 package com.margarin.commonweather.weather
 
-import android.app.Application
+import android.content.Context
 import com.margarin.commonweather.DD_MM
 import com.margarin.commonweather.HH
 import com.margarin.commonweather.HH_MM
@@ -20,7 +20,7 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class WeatherMapper @Inject constructor(
-    private val application: Application,
+    private val context: Context,
     private val converter: WeatherConverter
 ) {
 
@@ -74,7 +74,7 @@ class WeatherMapper @Inject constructor(
                 condition = db.condition,
                 icon_url = converter.convertConditionImage(db.icon_url.toString()),
                 last_updated = converter.createStringLastUpdated(db.last_updated.toString()),
-                wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}",
+                wind_kph = "${db.wind_kph} ${context.getString(R.string.km_h)}",
                 wind_dir = converter.convertWindDirections(db.wind_dir),
                 wind_dir_img = converter.bindWindImage(db.wind_dir),
                 temp_c = db.temp_c.toString(),
@@ -99,7 +99,7 @@ class WeatherMapper @Inject constructor(
             mintemp_c = "${db.mintemp_c}°",
             condition = db.condition,
             icon_url = converter.convertConditionImage(db.icon_url.toString()),
-            maxwind_kph = "${db.maxwind_kph} ${application.getString(R.string.km_h)}",
+            maxwind_kph = "${db.maxwind_kph} ${context.getString(R.string.km_h)}",
             chance_of_rain = "${db.chance_of_rain}%",
             day_of_week = db.date
         )
@@ -108,7 +108,7 @@ class WeatherMapper @Inject constructor(
         val hourLastUpd = converter.convertDate(db.currentTime, YYYY_MM_DD_HH_MM, HH)
         val hour = converter.convertDate(db.time, YYYY_MM_DD_HH_MM, HH)
         val time = if (hourLastUpd == hour) {
-            application.getString(R.string.now)
+            context.getString(R.string.now)
         } else {
             converter.convertDate(db.time, YYYY_MM_DD_HH_MM, HH_MM)
         }
@@ -118,7 +118,7 @@ class WeatherMapper @Inject constructor(
             time = time,
             temp_c = "${db.temp_c}°",
             icon_url = converter.convertConditionImage(db.icon_url.toString()),
-            wind_kph = "${db.wind_kph} ${application.getString(R.string.km_h)}"
+            wind_kph = "${db.wind_kph} ${context.getString(R.string.km_h)}"
         )
     }
 

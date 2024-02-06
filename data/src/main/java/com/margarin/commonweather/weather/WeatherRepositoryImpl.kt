@@ -1,7 +1,6 @@
 package com.margarin.commonweather.weather
 
 import android.app.AlarmManager
-import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -17,7 +16,7 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(
     private val weatherMapper: WeatherMapper,
     private val weatherDao: com.margarin.commonweather.local.dao.WeatherDao,
-    private val application: Application
+    private val context: Context
 ) : WeatherRepository {
 
     override suspend fun refreshData(query: String): Boolean {
@@ -54,7 +53,7 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     private fun initRefreshWeatherWorker(location: String) {
-        val workManager = WorkManager.getInstance(application)
+        val workManager = WorkManager.getInstance(context)
         workManager.enqueueUniquePeriodicWork(
             RefreshWeatherWorker.NAME,
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
@@ -63,15 +62,15 @@ class WeatherRepositoryImpl @Inject constructor(
     }
 
     private fun initCurrentNotificationManager() {
-        val alarmManager = application.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
             set(Calendar.HOUR_OF_DAY, 7)
             set(Calendar.MINUTE, 20)
         }
-        val alarmIntent = CurrentWeatherNotificationReceiver.newIntent(application)
+        val alarmIntent = CurrentWeatherNotificationReceiver.newIntent(context)
         val pendingIntent = PendingIntent.getBroadcast(
-            application,
+            context,
             100,
             alarmIntent,
             PendingIntent.FLAG_IMMUTABLE

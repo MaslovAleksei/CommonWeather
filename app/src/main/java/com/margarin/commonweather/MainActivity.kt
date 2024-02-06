@@ -1,13 +1,24 @@
 package com.margarin.commonweather
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.arkivanov.decompose.defaultComponentContext
+import com.margarin.commonweather.root.DefaultRootComponent
+import com.margarin.commonweather.root.RootContent
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var rootComponentFactory: DefaultRootComponent.Factory
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (applicationContext as WeatherApp).appComponent.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        PermissionManager.requireNavigationPermission(this)
+        setContent {
+            RootContent(component = rootComponentFactory.create(defaultComponentContext()))
+        }
+        //PermissionManager.requireNavigationPermission(this)
     }
 }

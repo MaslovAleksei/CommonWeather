@@ -1,16 +1,22 @@
 package com.margarin.commonweather.presentation
 
+import android.content.Context
+import androidx.core.content.ContextCompat.getString
 import com.arkivanov.mvikotlin.core.store.Reducer
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.CoroutineExecutor
+import com.margarin.commonweather.LOCATION
+import com.margarin.commonweather.loadFromDataStore
 import com.margarin.commonweather.presentation.WeatherStore.Intent
 import com.margarin.commonweather.presentation.WeatherStore.Label
 import com.margarin.commonweather.presentation.WeatherStore.State
 import com.margarin.commonweather.search.City
 import com.margarin.commonweather.weather.models.WeatherModel
 import com.margarin.commonweather.weather.usecases.GetWeatherUseCase
+import com.margarin.commonweather.weather.usecases.RefreshDataUseCase
+import com.margarin.weather.R
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,7 +46,9 @@ interface WeatherStore : Store<Intent, State, Label> {
 
 class WeatherStoreFactory @Inject constructor(
     private val storeFactory: StoreFactory,
-    private val getWeatherUseCase: GetWeatherUseCase
+    private val getWeatherUseCase: GetWeatherUseCase,
+    private val refreshWeatherUseCase: RefreshDataUseCase,
+    private val context: Context
 ) {
 
     fun create(city: City): WeatherStore =
@@ -74,8 +82,14 @@ class WeatherStoreFactory @Inject constructor(
         override fun invoke() {
             scope.launch {
                 dispatch(Action.WeatherStartLoading)
+                val savedCityValue = loadFromDataStore(
+                    context,
+                    LOCATION,
+                    getString(context, R.string.moscow)
+                )
                 try {
-                    getWeatherUseCase(city.name.toString()).collect {
+                    refreshWeatherUseCase(savedCityValue)
+                    getWeatherUseCase(savedCityValue).collect {
                         dispatch(Action.WeatherLoaded(weather = it))
                     }
                 } catch (e: Exception) {
